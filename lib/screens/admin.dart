@@ -84,7 +84,7 @@ class _AdminScreenState extends State<AdminScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Продавец: ${application['name']} ${application['lastName']}',
+                  'Продавец: ${application['name']}',
                   style: TextStyle(color: Colors.white.withOpacity(0.8)),
                 ),
                 const SizedBox(height: 8),
@@ -338,7 +338,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${application['name']} ${application['lastName']}',
+                        '${application['name']}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
