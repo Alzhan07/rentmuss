@@ -6,6 +6,7 @@ import '../models/user.dart';
 import 'login.dart';
 import 'favorites.dart';
 import 'admin.dart';
+import 'seller.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -396,102 +397,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _applyForSeller() async {
-    final formKey = GlobalKey<FormState>();
-    final shopNameController = TextEditingController();
-    final shopDescriptionController = TextEditingController();
-
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A2E),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Заявка на продавца',
-          style: TextStyle(color: Colors.white),
-        ),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: shopNameController,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Название магазина',
-                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Введите название магазина' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: shopDescriptionController,
-                style: const TextStyle(color: Colors.white),
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: 'Описание (необязательно)',
-                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Отмена',
-              style: TextStyle(color: Colors.white.withOpacity(0.7)),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (formKey.currentState!.validate()) {
-                final result = await ApiService.applyForSeller(
-                  shopName: shopNameController.text,
-                  shopDescription: shopDescriptionController.text.isNotEmpty
-                      ? shopDescriptionController.text
-                      : null,
-                );
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(result['message']),
-                      backgroundColor:
-                          result['success'] ? Colors.green : Colors.red,
-                    ),
-                  );
-                  if (result['success']) {
-                    await _loadUserData();
-                  }
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFE94560),
-            ),
-            child: const Text('Отправить'),
-          ),
-        ],
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SellerFormScreen(),
       ),
     );
 
-    shopNameController.dispose();
-    shopDescriptionController.dispose();
+    // Если заявка была успешно отправлена, обновляем данные пользователя
+    if (result == true) {
+      await _loadUserData();
+    }
   }
 
   Color _getRoleColor(UserRole role) {
