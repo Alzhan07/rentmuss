@@ -1,0 +1,581 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import '../services/api_service.dart';
+import '../models/user.dart';
+import 'login.dart';
+import 'favorites.dart';
+import 'admin.dart';
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  User? _user;
+  bool _isLoading = true;
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    setState(() => _isLoading = true);
+    final result = await ApiService.getUserProfile();
+    if (result['success'] == true && result['user'] != null) {
+      setState(() {
+        _user = User.fromJson(result['user']);
+        _isLoading = false;
+      });
+    } else {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 75,
+    );
+
+    if (image != null) {
+      setState(() {
+        _imageFile = File(image.path);
+      });
+      await ApiService.uploadAvatar(_imageFile!);
+      await _loadUserData();
+    }
+  }
+
+  Future<void> _changePassword() async {
+    final formKey = GlobalKey<FormState>();
+    final oldPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'Сменить пароль',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: oldPasswordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Старый пароль',
+                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Введите старый пароль' : null,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: newPasswordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Новый пароль',
+                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                validator: (value) =>
+                    (value?.length ?? 0) < 6 ? 'Минимум 6 символов' : null,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: confirmPasswordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Подтвердите пароль',
+                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                validator: (value) => value != newPasswordController.text
+                    ? 'Пароли не совпадают'
+                    : null,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Отмена',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                final result = await ApiService.changePassword(
+                  oldPassword: oldPasswordController.text,
+                  newPassword: newPasswordController.text,
+                );
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(result['message']),
+                      backgroundColor:
+                          result['success'] ? Colors.green : Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFE94560),
+            ),
+            child: const Text('Сохранить'),
+          ),
+        ],
+      ),
+    );
+
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFF1A1A2E),
+              const Color(0xFF16213E),
+            ],
+          ),
+        ),
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Stack(
+                        children: [
+                          Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xFFE94560),
+                                width: 3,
+                              ),
+                            ),
+                            child: ClipOval(
+                              child: _imageFile != null
+                                  ? Image.file(_imageFile!, fit: BoxFit.cover)
+                                  : _buildDefaultAvatar(),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: _pickImage,
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFE94560),
+                                  shape: BoxShape.circle,
+                                ),
+                                child:
+                                    const Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        _user?.fullName ?? 'Пользователь',
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _user?.email ?? 'Email не указан',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withOpacity(0.7),
+                        ),
+                      ),
+                      if (_user?.role != null)
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: _getRoleColor(_user!.role),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            _getRoleText(_user!.role),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 40),
+                      _buildMenuCard(
+                        icon: Icons.favorite,
+                        title: 'Избранное',
+                        subtitle: 'Ваши сохраненные площадки',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const FavoritesScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      if (_user?.isAdmin == true)
+                        _buildMenuCard(
+                          icon: Icons.admin_panel_settings,
+                          title: 'Админ-панель',
+                          subtitle: 'Управление заявками продавцов',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AdminScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                      if (_user?.canApplyForSeller == true)
+                        _buildMenuCard(
+                          icon: Icons.store,
+                          title: 'Стать продавцом',
+                          subtitle: 'Подать заявку на продавца',
+                          onTap: _applyForSeller,
+                        ),
+                      if (_user?.sellerApplication?.status == SellerApplicationStatus.pending)
+                        _buildMenuCard(
+                          icon: Icons.pending,
+                          title: 'Заявка на рассмотрении',
+                          subtitle: 'Ожидайте одобрения администратора',
+                          onTap: () {},
+                        ),
+                      if (_user?.isSeller == true)
+                        _buildMenuCard(
+                          icon: Icons.store,
+                          title: 'Мой магазин',
+                          subtitle: _user?.sellerInfo?.shopName ?? 'Управление магазином',
+                          onTap: () {
+                            // TODO: Navigate to seller dashboard
+                          },
+                        ),
+                      _buildMenuCard(
+                        icon: Icons.lock_outline,
+                        title: 'Сменить пароль',
+                        subtitle: 'Обновите пароль для безопасности',
+                        onTap: _changePassword,
+                      ),
+                      _buildMenuCard(
+                        icon: Icons.edit,
+                        title: 'Редактировать профиль',
+                        subtitle: 'Изменить личную информацию',
+                        onTap: () {
+                          // TODO: Implement edit profile
+                        },
+                      ),
+                      _buildMenuCard(
+                        icon: Icons.notifications_outlined,
+                        title: 'Уведомления',
+                        subtitle: 'Настройте уведомления',
+                        onTap: () {
+                          // TODO: Implement notifications settings
+                        },
+                      ),
+                      _buildMenuCard(
+                        icon: Icons.help_outline,
+                        title: 'Помощь',
+                        subtitle: 'FAQ и поддержка',
+                        onTap: () {
+                          // TODO: Implement help
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await ApiService.logout();
+                              if (context.mounted) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white.withOpacity(0.1),
+                              foregroundColor: const Color(0xFFE94560),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                side: const BorderSide(
+                                  color: Color(0xFFE94560),
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                            child: const Text(
+                              'Выйти',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
+                ),
+              ),
+      ),
+    );
+  }
+
+  Future<void> _applyForSeller() async {
+    final formKey = GlobalKey<FormState>();
+    final shopNameController = TextEditingController();
+    final shopDescriptionController = TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'Заявка на продавца',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: shopNameController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Название магазина',
+                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Введите название магазина' : null,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: shopDescriptionController,
+                style: const TextStyle(color: Colors.white),
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'Описание (необязательно)',
+                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Отмена',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                final result = await ApiService.applyForSeller(
+                  shopName: shopNameController.text,
+                  shopDescription: shopDescriptionController.text.isNotEmpty
+                      ? shopDescriptionController.text
+                      : null,
+                );
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(result['message']),
+                      backgroundColor:
+                          result['success'] ? Colors.green : Colors.red,
+                    ),
+                  );
+                  if (result['success']) {
+                    await _loadUserData();
+                  }
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFE94560),
+            ),
+            child: const Text('Отправить'),
+          ),
+        ],
+      ),
+    );
+
+    shopNameController.dispose();
+    shopDescriptionController.dispose();
+  }
+
+  Color _getRoleColor(UserRole role) {
+    switch (role) {
+      case UserRole.admin:
+        return const Color(0xFFE94560);
+      case UserRole.seller:
+        return const Color(0xFF533483);
+      case UserRole.user:
+      default:
+        return const Color(0xFF0F3460);
+    }
+  }
+
+  String _getRoleText(UserRole role) {
+    switch (role) {
+      case UserRole.admin:
+        return 'Администратор';
+      case UserRole.seller:
+        return 'Продавец';
+      case UserRole.user:
+      default:
+        return 'Пользователь';
+    }
+  }
+
+  Widget _buildDefaultAvatar() {
+    return Container(
+      color: const Color(0xFF0F3460),
+      child: const Icon(
+        Icons.person,
+        size: 60,
+        color: Color(0xFFE94560),
+      ),
+    );
+  }
+
+  Widget _buildMenuCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+        ),
+      ),
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        leading: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE94560).withOpacity(0.2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: const Color(0xFFE94560), size: 24),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.6),
+            fontSize: 13,
+          ),
+        ),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          color: Colors.white.withOpacity(0.5),
+          size: 16,
+        ),
+      ),
+    );
+  }
+}
