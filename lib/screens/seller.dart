@@ -29,15 +29,15 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
     try {
       final result = await ApiService.applyForSeller(
         shopName: _shopNameController.text,
-        shopDescription: _shopDescriptionController.text.isNotEmpty
-            ? _shopDescriptionController.text
-            : null,
+        shopDescription:
+            _shopDescriptionController.text.isNotEmpty
+                ? _shopDescriptionController.text
+                : null,
       );
 
       if (!mounted) return;
 
       if (result['success']) {
-        // Показываем успешное сообщение
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message'] ?? 'Заявка успешно отправлена!'),
@@ -45,7 +45,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
             duration: const Duration(seconds: 3),
           ),
         );
-        // Возвращаемся назад с результатом
+
         Navigator.pop(context, true);
       } else {
         // Показываем ошибку
@@ -101,7 +101,6 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Иконка и приветственный текст
                 Center(
                   child: Column(
                     children: [
@@ -141,7 +140,6 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                 ),
                 const SizedBox(height: 40),
 
-                // Название магазина
                 Text(
                   'Название магазина',
                   style: TextStyle(
@@ -157,9 +155,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                   enabled: !_isSubmitting,
                   decoration: InputDecoration(
                     hintText: 'Например: Музыкальный Мир',
-                    hintStyle: TextStyle(
-                      color: Colors.white.withOpacity(0.3),
-                    ),
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                     prefixIcon: Icon(
                       Icons.store_outlined,
                       color: Colors.white.withOpacity(0.5),
@@ -185,17 +181,11 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Colors.red,
-                        width: 1,
-                      ),
+                      borderSide: const BorderSide(color: Colors.red, width: 1),
                     ),
                     focusedErrorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
+                      borderSide: const BorderSide(color: Colors.red, width: 2),
                     ),
                   ),
                   validator: (value) {
@@ -210,7 +200,6 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Описание магазина
                 Text(
                   'Описание магазина',
                   style: TextStyle(
@@ -235,10 +224,8 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                   maxLines: 5,
                   maxLength: 500,
                   decoration: InputDecoration(
-                    hintText: 'Расскажите о вашем магазине, какие услуги вы предлагаете...',
-                    hintStyle: TextStyle(
-                      color: Colors.white.withOpacity(0.3),
-                    ),
+                    hintText: 'Расскажите о вашем магазине',
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.1),
                     border: OutlineInputBorder(
@@ -265,7 +252,6 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Информационная карточка
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -285,7 +271,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'После отправки заявки администратор рассмотрит её и примет решение. Вы получите уведомление о результате.',
+                          'После отправки заявки администратор рассмотрит её и примет решение.',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.9),
                             fontSize: 13,
@@ -298,7 +284,6 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Кнопка отправки
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -313,29 +298,30 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                       ),
                       elevation: 0,
                     ),
-                    child: _isSubmitting
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.send, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Отправить заявку',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                    child:
+                        _isSubmitting
+                            ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
                               ),
-                            ],
-                          ),
+                            )
+                            : const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.send, size: 20),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Отправить заявку',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                   ),
                 ),
               ],
