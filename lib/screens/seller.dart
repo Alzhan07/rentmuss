@@ -1,1 +1,2 @@
 class Seller {}
+Мао Мао
