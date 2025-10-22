@@ -294,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: EdgeInsets.zero,
                           ),
                           child: const Text(
-                            'Сгл',
+                            'Неғып тұрсың? Тіркел!',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
