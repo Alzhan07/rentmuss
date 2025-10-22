@@ -404,7 +404,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
 
-    // Если заявка была успешно отправлена, обновляем данные пользователя
+    // Егер өтішініш сәтті өткен болса, пайдаланушыны туралы деректерді жаңартамыз
     if (result == true) {
       await _loadUserData();
     }

@@ -274,7 +274,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'аккаунт жоқпа жаным? ',
+                          'Аккаунт жоқпа? ',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.7),
                             fontSize: 15,
@@ -294,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: EdgeInsets.zero,
                           ),
                           child: const Text(
-                            'Неғып тұрсың? Тіркел!',
+                            'Дереу тіркел!',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
