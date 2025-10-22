@@ -1,6 +1,6 @@
 class Venue {
   final String id;
-  final String username;
+  final String name;
   final String type; // 'stage', 'instrument', 'studio'
   final String description;
   final double pricePerHour;
@@ -12,7 +12,7 @@ class Venue {
 
   Venue({
     required this.id,
-    required this.username,
+    required this.name,
     required this.type,
     required this.description,
     required this.pricePerHour,
@@ -26,16 +26,15 @@ class Venue {
   factory Venue.fromJson(Map<String, dynamic> json) {
     return Venue(
       id: json['_id'] ?? json['id'] ?? '',
-      username: json['username'] ?? '',
+      name: json['name'] ?? '',
       type: json['type'] ?? '',
       description: json['description'] ?? '',
       pricePerHour: (json['pricePerHour'] ?? 0).toDouble(),
       imageUrl: json['imageUrl'] ?? '',
       rating: (json['rating'] ?? 0).toDouble(),
       location: json['location'] ?? '',
-      amenities: json['amenities'] != null
-          ? List<String>.from(json['amenities'])
-          : [],
+      amenities:
+          json['amenities'] != null ? List<String>.from(json['amenities']) : [],
       isAvailable: json['isAvailable'] ?? true,
     );
   }
@@ -43,7 +42,7 @@ class Venue {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'username': username,
+      'name': name,
       'type': type,
       'description': description,
       'pricePerHour': pricePerHour,

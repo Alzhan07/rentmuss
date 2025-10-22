@@ -36,9 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A2E),
       body: SafeArea(
-        child: _currentIndex == 4
-            ? const ProfileScreen()
-            : _buildHomeContent(),
+        child: _currentIndex == 4 ? const ProfileScreen() : _buildHomeContent(),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -131,7 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.notifications_outlined, color: Colors.white),
+              icon: const Icon(
+                Icons.notifications_outlined,
+                color: Colors.white,
+              ),
               onPressed: () {
                 // TODO: Implement notifications
               },
@@ -169,18 +170,22 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.1),
-          ),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
         ),
         child: TextField(
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: 'Поиск сцен, инструментов, студий...',
             hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-            prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.5)),
+            prefixIcon: Icon(
+              Icons.search,
+              color: Colors.white.withOpacity(0.5),
+            ),
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 16,
+            ),
           ),
         ),
       ),
@@ -189,10 +194,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildCategorySection() {
     final categories = [
-      {'icon': Icons.theater_comedy, 'label': 'Сцены', 'color': const Color(0xFFE94560)},
-      {'icon': Icons.piano, 'label': 'Инструменты', 'color': const Color(0xFF0F3460)},
+      {
+        'icon': Icons.theater_comedy,
+        'label': 'Сцены',
+        'color': const Color(0xFFE94560),
+      },
+      {
+        'icon': Icons.piano,
+        'label': 'Инструменты',
+        'color': const Color(0xFF0F3460),
+      },
       {'icon': Icons.mic, 'label': 'Студии', 'color': const Color(0xFF533483)},
-      {'icon': Icons.headphones, 'label': 'Оборудование', 'color': const Color(0xFF16537E)},
+      {
+        'icon': Icons.headphones,
+        'label': 'Оборудование',
+        'color': const Color(0xFF16537E),
+      },
     ];
 
     return SizedBox(
@@ -365,9 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.1),
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
@@ -381,27 +396,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 160,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    height: 160,
-                    color: Colors.grey.shade800,
-                    child: const Center(
-                      child: CircularProgressIndicator(color: Color(0xFFE94560)),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    height: 160,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          const Color(0xFF0F3460),
-                          const Color(0xFF16213E),
-                        ],
+                  placeholder:
+                      (context, url) => Container(
+                        height: 160,
+                        color: Colors.grey.shade800,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0xFFE94560),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: const Icon(Icons.music_note, color: Colors.white54, size: 50),
-                  ),
+                  errorWidget:
+                      (context, url, error) => Container(
+                        height: 160,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              const Color(0xFF0F3460),
+                              const Color(0xFF16213E),
+                            ],
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.music_note,
+                          color: Colors.white54,
+                          size: 50,
+                        ),
+                      ),
                 ),
                 Positioned(
                   top: 12,
@@ -423,7 +446,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   top: 12,
                   left: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE94560),
                       borderRadius: BorderRadius.circular(12),
@@ -464,7 +490,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      Icon(Icons.location_on, color: Colors.white.withOpacity(0.6), size: 14),
+                      Icon(
+                        Icons.location_on,
+                        color: Colors.white.withOpacity(0.6),
+                        size: 14,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
