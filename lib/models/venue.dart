@@ -1,6 +1,6 @@
 class Venue {
   final String id;
-  final String name;
+  final String username;
   final String type; // 'stage', 'instrument', 'studio'
   final String description;
   final double pricePerHour;
@@ -12,7 +12,7 @@ class Venue {
 
   Venue({
     required this.id,
-    required this.name,
+    required this.username,
     required this.type,
     required this.description,
     required this.pricePerHour,
@@ -26,7 +26,7 @@ class Venue {
   factory Venue.fromJson(Map<String, dynamic> json) {
     return Venue(
       id: json['_id'] ?? json['id'] ?? '',
-      name: json['name'] ?? '',
+      username: json['username'] ?? '',
       type: json['type'] ?? '',
       description: json['description'] ?? '',
       pricePerHour: (json['pricePerHour'] ?? 0).toDouble(),
@@ -43,7 +43,7 @@ class Venue {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
+      'username': username,
       'type': type,
       'description': description,
       'pricePerHour': pricePerHour,

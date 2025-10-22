@@ -11,8 +11,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _lastnameController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -22,8 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _lastnameController.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -36,8 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = true);
 
     final result = await ApiService.register(
-      name: _nameController.text.trim(),
-      lastName: _lastnameController.text.trim(),
+      username: _usernameController.text.trim(),
       password: _passwordController.text,
       email: _emailController.text.trim().isNotEmpty
           ? _emailController.text.trim()
@@ -108,7 +105,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               color: Color(0xFFE94560),
                             ),
                           ),
+
                           const SizedBox(height: 30),
+
                           const Text(
                             'Регистрация',
                             style: TextStyle(
@@ -119,7 +118,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             textAlign: TextAlign.center,
                           ),
+
                           const SizedBox(height: 8),
+
                           Text(
                             'Присоединяйтесь к RentMus',
                             style: TextStyle(
@@ -129,9 +130,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             textAlign: TextAlign.center,
                           ),
+
                           const SizedBox(height: 40),
+
                           TextFormField(
-                            controller: _nameController,
+                            controller: _usernameController,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               labelText: 'Имя',
@@ -186,64 +189,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             },
                           ),
+                          
                           const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _lastnameController,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              labelText: 'Фамилия',
-                              labelStyle: TextStyle(
-                                color: Colors.white.withOpacity(0.7),
-                              ),
-                              hintText: 'Иванов',
-                              hintStyle: TextStyle(
-                                color: Colors.white.withOpacity(0.3),
-                              ),
-                              prefixIcon: Icon(
-                                Icons.person_outline,
-                                color: Color(0xFFE94560),
-                              ),
-                              filled: true,
-                              fillColor: Colors.white.withOpacity(0.1),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide.none,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                  color: Colors.white.withOpacity(0.2),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(
-                                  color: Color(0xFFE94560),
-                                  width: 2,
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                  color: Colors.red.shade300,
-                                ),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(
-                                  color: Colors.red,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Введите фамилию';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
+
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -304,7 +252,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             },
                           ),
+
                           const SizedBox(height: 16),
+
                           TextFormField(
                             controller: _passwordController,
                             obscureText: _obscurePassword,
@@ -390,7 +340,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             },
                           ),
+
                           const SizedBox(height: 16),
+
                           TextFormField(
                             controller: _confirmPasswordController,
                             obscureText: _obscureConfirmPassword,
@@ -466,7 +418,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             },
                           ),
+
                           const SizedBox(height: 32),
+
                           SizedBox(
                             height: 56,
                             child: ElevatedButton(
@@ -505,7 +459,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                             ),
                           ),
+
                           const SizedBox(height: 24),
+                          
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

@@ -93,8 +93,7 @@ class SellerApplication {
 
 class User {
   final String id;
-  final String name;
-  final String lastName;
+  final String username;
   final String? email;
   final UserRole role;
   final SellerInfo? sellerInfo;
@@ -104,8 +103,7 @@ class User {
 
   User({
     required this.id,
-    required this.name,
-    required this.lastName,
+    required this.username,
     this.email,
     this.role = UserRole.user,
     this.sellerInfo,
@@ -117,8 +115,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'] ?? json['id'] ?? '',
-      name: json['name'] ?? '',
-      lastName: json['lastName'] ?? '',
+      username: json['username'] ?? '',
       email: json['email'],
       role: _parseRole(json['role']),
       sellerInfo: json['sellerInfo'] != null
@@ -146,8 +143,7 @@ class User {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'lastName': lastName,
+      'username': username,
       'email': email,
       'role': role.name,
       'sellerInfo': sellerInfo?.toJson(),
@@ -158,8 +154,7 @@ class User {
   }
 
   User copyWith({
-    String? name,
-    String? lastName,
+    String? username,
     String? email,
     UserRole? role,
     SellerInfo? sellerInfo,
@@ -167,8 +162,7 @@ class User {
   }) {
     return User(
       id: id,
-      name: name ?? this.name,
-      lastName: lastName ?? this.lastName,
+      username: username ?? this.username,
       email: email ?? this.email,
       role: role ?? this.role,
       sellerInfo: sellerInfo ?? this.sellerInfo,
@@ -179,7 +173,7 @@ class User {
   }
 
   // Удобные геттеры
-  String get fullName => '$name $lastName';
+  String get fullName => '$username';
   bool get isSeller => role == UserRole.seller;
   bool get isAdmin => role == UserRole.admin;
   bool get canApplyForSeller => role == UserRole.user &&

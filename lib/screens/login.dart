@@ -12,16 +12,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _lastNameController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -32,8 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     final result = await ApiService.login(
-      name: _nameController.text.trim(),
-      lastName: _lastNameController.text.trim(),
+      username: _usernameController.text.trim(),
       password: _passwordController.text,
     );
 
@@ -68,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
+
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -90,7 +88,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Color(0xFFE94560),
                       ),
                     ),
+
                     const SizedBox(height: 40),
+
                     const Text(
                       'RentMus',
                       style: TextStyle(
@@ -111,14 +111,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
+
                     const SizedBox(height: 50),
+
                     TextFormField(
-                      controller: _nameController,
+                      controller: _usernameController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        labelText: 'Имя',
+                        labelText: 'Имя пользователя',
                         labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                        hintText: 'Иван',
+                        hintText: 'ivan123',
                         hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                         prefixIcon:
                             Icon(Icons.person_outline, color: Color(0xFFE94560)),
@@ -128,11 +130,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide.none,
                         ),
+
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide:
                               BorderSide(color: Colors.white.withOpacity(0.2)),
                         ),
+
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: const BorderSide(
@@ -140,68 +144,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 2,
                           ),
                         ),
+
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide(color: Colors.red.shade300),
                         ),
+
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: const BorderSide(color: Colors.red, width: 2),
                         ),
                       ),
+
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Введите имя';
+                          return 'Введите имя пользователя';
                         }
                         return null;
                       },
                     ),
+            
                     const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _lastNameController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Фамилия',
-                        labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                        hintText: 'Иванов',
-                        hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
-                        prefixIcon:
-                            Icon(Icons.person_outline, color: Color(0xFFE94560)),
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.1),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide:
-                              BorderSide(color: Colors.white.withOpacity(0.2)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFE94560),
-                            width: 2,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(color: Colors.red.shade300),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(color: Colors.red, width: 2),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Введите фамилию';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
+
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
@@ -224,17 +188,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             setState(() => _obscurePassword = !_obscurePassword);
                           },
                         ),
+
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.1),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide.none,
                         ),
+
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide:
                               BorderSide(color: Colors.white.withOpacity(0.2)),
                         ),
+
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: const BorderSide(
@@ -242,15 +209,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 2,
                           ),
                         ),
+
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide(color: Colors.red.shade300),
                         ),
+
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: const BorderSide(color: Colors.red, width: 2),
                         ),
                       ),
+
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Введите пароль';
@@ -258,7 +228,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         return null;
                       },
                     ),
+
                     const SizedBox(height: 32),
+
                     SizedBox(
                       height: 56,
                       child: ElevatedButton(
@@ -272,6 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           elevation: 8,
                           shadowColor: const Color(0xFFE94560).withOpacity(0.5),
                         ),
+
                         child:
                             _isLoading
                                 ? const SizedBox(
@@ -291,15 +264,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 1,
                                   ),
-                                ),
+                                ),                       
                       ),
                     ),
+
                     const SizedBox(height: 24),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Нет аккаунта? ',
+                          'аккаунт жоқпа жаным? ',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.7),
                             fontSize: 15,
@@ -319,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: EdgeInsets.zero,
                           ),
                           child: const Text(
-                            'Зарегистрироваться',
+                            'Сгл',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,

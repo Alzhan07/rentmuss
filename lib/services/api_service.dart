@@ -20,8 +20,7 @@ class ApiService {
 
   // Регистрация пользователя
   static Future<Map<String, dynamic>> register({
-    required String name,
-    required String lastName,
+    required String username,
     required String password,
     String? email,
   }) async {
@@ -30,8 +29,7 @@ class ApiService {
         Uri.parse('$baseUrl/auth/register'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'name': name,
-          'lastName': lastName,
+          'username': username,
           'password': password,
           if (email != null && email.isNotEmpty) 'email': email,
         }),
@@ -68,8 +66,7 @@ class ApiService {
 
   // Вход пользователя
   static Future<Map<String, dynamic>> login({
-    required String name,
-    required String lastName,
+    required String username,
     required String password,
   }) async {
     try {
@@ -77,8 +74,7 @@ class ApiService {
         Uri.parse('$baseUrl/auth/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'name': name,
-          'lastName': lastName,
+          'username': username,
           'password': password,
         }),
       );
@@ -455,8 +451,7 @@ class ApiService {
 
   // Обновить профиль
   static Future<Map<String, dynamic>> updateProfile({
-    String? name,
-    String? lastName,
+    String? username,
     String? email,
   }) async {
     try {
@@ -465,8 +460,7 @@ class ApiService {
         Uri.parse('$baseUrl/user/profile'),
         headers: headers,
         body: jsonEncode({
-          if (name != null) 'name': name,
-          if (lastName != null) 'lastName': lastName,
+          if (username != null) 'username': username,
           if (email != null) 'email': email,
         }),
       );
