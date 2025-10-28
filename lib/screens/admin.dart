@@ -57,7 +57,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(result['message'] ?? 'Операция выполнена'),
+        content: Text(result['message'] ?? 'Операция орындалды'),
         backgroundColor: result['success'] ? Colors.green : Colors.red,
       ),
     );
@@ -76,7 +76,7 @@ class _AdminScreenState extends State<AdminScreen> {
           (context) => AlertDialog(
             backgroundColor: const Color(0xFF16213E),
             title: Text(
-              approve ? 'Одобрить заявку?' : 'Отклонить заявку?',
+              approve ? 'Өтінімді қабылдайсыз ба?' : 'Өтінімді қабылдамайсыз ба?',
               style: const TextStyle(color: Colors.white),
             ),
             content: Column(
@@ -84,12 +84,12 @@ class _AdminScreenState extends State<AdminScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Продавец: ${application['name']}',
+                  'Сатушы: ${application['username']}',
                   style: TextStyle(color: Colors.white.withOpacity(0.8)),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Магазин: ${application['sellerApplication']?['shopName'] ?? 'Не указано'}',
+                  'Дүкен: ${application['sellerApplication']?['shopName'] ?? 'Берілмеген'}',
                   style: TextStyle(color: Colors.white.withOpacity(0.8)),
                 ),
                 if (!approve) ...[
@@ -99,11 +99,11 @@ class _AdminScreenState extends State<AdminScreen> {
                     style: const TextStyle(color: Colors.white),
                     maxLines: 3,
                     decoration: InputDecoration(
-                      labelText: 'Причина отклонения',
+                      labelText: 'Бас тарту себебі',
                       labelStyle: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                       ),
-                      hintText: 'Укажите причину отклонения заявки',
+                      hintText: 'Өтінімді қабылдамау себебін көрсетіңіз',
                       hintStyle: TextStyle(
                         color: Colors.white.withOpacity(0.3),
                       ),
@@ -135,7 +135,7 @@ class _AdminScreenState extends State<AdminScreen> {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Отмена',
+                  'Бас тарту',
                   style: TextStyle(color: Colors.white.withOpacity(0.7)),
                 ),
               ),
@@ -151,7 +151,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: approve ? Colors.green : Colors.red,
                 ),
-                child: Text(approve ? 'Одобрить' : 'Отклонить'),
+                child: Text(approve ? 'Қабылдау' : 'Бас тарту'),
               ),
             ],
           ),
@@ -180,6 +180,7 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
         ],
       ),
+      
       body: Column(
         children: [
           _buildFilterChips(),
@@ -203,7 +204,7 @@ class _AdminScreenState extends State<AdminScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Нет заявок',
+                            'Өтінімдер табылмады',
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.7),
                               fontSize: 18,
@@ -234,13 +235,13 @@ class _AdminScreenState extends State<AdminScreen> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            _buildFilterChip('Все', 'all'),
+            _buildFilterChip('Барлығы', 'all'),
             const SizedBox(width: 8),
-            _buildFilterChip('На рассмотрении', 'pending'),
+            _buildFilterChip('Қаралуда', 'pending'),
             const SizedBox(width: 8),
-            _buildFilterChip('Одобренные', 'approved'),
+            _buildFilterChip('Қабылданған', 'approved'),
             const SizedBox(width: 8),
-            _buildFilterChip('Отклоненные', 'rejected'),
+            _buildFilterChip('Бас тартылған', 'rejected'),
           ],
         ),
       ),
@@ -276,9 +277,9 @@ class _AdminScreenState extends State<AdminScreen> {
     final sellerApp = application['sellerApplication'];
     final status = sellerApp?['status'] ?? 'none';
     final appliedAt = sellerApp?['appliedAt'];
-    final shopName = sellerApp?['shopName'] ?? 'Не указано';
+    final shopName = sellerApp?['shopName'] ?? 'Берілмеген';
     final shopDescription =
-        sellerApp?['shopDescription'] ?? 'Описание отсутствует';
+        sellerApp?['shopDescription'] ?? 'Сипаттама берілмеген';
 
     Color statusColor;
     String statusText;
@@ -287,22 +288,22 @@ class _AdminScreenState extends State<AdminScreen> {
     switch (status) {
       case 'pending':
         statusColor = Colors.orange;
-        statusText = 'На рассмотрении';
+        statusText = 'Қаралуда';
         statusIcon = Icons.pending;
         break;
       case 'approved':
         statusColor = Colors.green;
-        statusText = 'Одобрено';
+        statusText = 'Қабылданған';
         statusIcon = Icons.check_circle;
         break;
       case 'rejected':
         statusColor = Colors.red;
-        statusText = 'Отклонено';
+        statusText = 'Бас тартылған';
         statusIcon = Icons.cancel;
         break;
       default:
         statusColor = Colors.grey;
-        statusText = 'Неизвестно';
+        statusText = 'Белгісіз';
         statusIcon = Icons.help;
     }
 
@@ -338,7 +339,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${application['name']}',
+                        '${application['username']}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -347,7 +348,7 @@ class _AdminScreenState extends State<AdminScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        application['email'] ?? 'Email не указан',
+                        application['email'] ?? 'Email берілмеген',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.6),
                           fontSize: 14,
@@ -387,9 +388,9 @@ class _AdminScreenState extends State<AdminScreen> {
             const SizedBox(height: 16),
             const Divider(color: Colors.white24),
             const SizedBox(height: 16),
-            _buildInfoRow(Icons.store, 'Название магазина', shopName),
+            _buildInfoRow(Icons.store, 'Дүкен атауы', shopName),
             const SizedBox(height: 12),
-            _buildInfoRow(Icons.description, 'Описание', shopDescription),
+            _buildInfoRow(Icons.description, 'Сипаттама', shopDescription),
             if (appliedAt != null) ...[
               const SizedBox(height: 12),
               _buildInfoRow(
@@ -402,7 +403,7 @@ class _AdminScreenState extends State<AdminScreen> {
               const SizedBox(height: 12),
               _buildInfoRow(
                 Icons.error_outline,
-                'Причина отклонения',
+                'Бас тарту себебі',
                 sellerApp['rejectionReason'],
                 isError: true,
               ),
@@ -417,7 +418,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     child: ElevatedButton.icon(
                       onPressed: () => _showReviewDialog(application, false),
                       icon: const Icon(Icons.close),
-                      label: const Text('Отклонить'),
+                      label: const Text('Бас тарту'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
@@ -433,7 +434,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     child: ElevatedButton.icon(
                       onPressed: () => _showReviewDialog(application, true),
                       icon: const Icon(Icons.check),
-                      label: const Text('Одобрить'),
+                      label: const Text('Қабылдау'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.white,
