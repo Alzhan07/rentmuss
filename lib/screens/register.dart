@@ -110,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           const SizedBox(height: 30),
 
                           const Text(
-                            'Регистрация',
+                            'Тіркелу',
                             style: TextStyle(
                               fontSize: 36,
                               fontWeight: FontWeight.bold,
@@ -123,7 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           const SizedBox(height: 8),
 
                           Text(
-                            'Присоединяйтесь к RentMus',
+                            'RentMus-ге қосылыңыз',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.white.withOpacity(0.7),
@@ -138,11 +138,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _usernameController,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Имя',
+                              labelText: 'Аты',
                               labelStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.7),
                               ),
-                              hintText: 'Иван',
+                              hintText: 'Мақсат',
                               hintStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.3),
                               ),
@@ -185,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Введите имя';
+                                return 'Атыңызды енгізіңіз';
                               }
                               return null;
                             },
@@ -247,7 +247,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               // Email теперь необязательный
                               if (value != null && value.isNotEmpty) {
                                 if (!value.contains('@')) {
-                                  return 'Введите корректный email';
+                                  return 'Дұрыс email енгізіңіз';
                                 }
                               }
                               return null;
@@ -261,11 +261,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: _obscurePassword,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Пароль',
+                              labelText: 'Құпия сөз',
                               labelStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.7),
                               ),
-                              hintText: 'Минимум 8 символов',
+                              hintText: 'Кем дегенде 8 символ',
                               hintStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.3),
                               ),
@@ -321,24 +321,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Введите пароль';
+                                return 'Құпия сөзді енгізіңіз';
                               }
                               if (value.length < 8) {
-                                return 'Пароль должен быть минимум 8 символов';
+                                return 'Құпия сөз кем дегенде 8 символдан тұруы тиіс';
                               }
                               if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                                return 'Пароль должен содержать заглавную букву';
+                                return 'Құпия сөзде үлкен әріп болуы тиіс';
                               }
                               if (!RegExp(r'[a-z]').hasMatch(value)) {
-                                return 'Пароль должен содержать строчную букву';
+                                return 'Құпия сөзде кіші әріп болуы тиіс';
                               }
                               if (!RegExp(r'[0-9]').hasMatch(value)) {
-                                return 'Пароль должен содержать цифру';
+                                return 'Құпия сөзде сан болуы тиіс';
                               }
                               if (!RegExp(
                                 r'[!@#$%^&*()_+=\[\]{};:",.<>?|`~\-\\/]',
                               ).hasMatch(value)) {
-                                return 'Пароль должен содержать спецсимвол';
+                                return 'Құпия сөзде арнайы символ болуы тиіс';
                               }
                               return null;
                             },
@@ -351,11 +351,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: _obscureConfirmPassword,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Подтвердите пароль',
+                              labelText: 'Құпия сөзді растаңыз',
                               labelStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.7),
                               ),
-                              hintText: 'Повторите пароль',
+                              hintText: 'Құпия сөзді қайталаңыз',
                               hintStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.3),
                               ),
@@ -413,10 +413,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Подтвердите пароль';
+                                return 'Құпия сөзді растаңыз';
                               }
                               if (value != _passwordController.text) {
-                                return 'Пароли не совпадают';
+                                return 'Құпия сөздер сәйкес келмейді';
                               }
                               return null;
                             },
@@ -453,7 +453,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ),
                                       )
                                       : const Text(
-                                        'Зарегистрироваться',
+                                        'Тіркелу',
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
@@ -469,7 +469,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Уже есть аккаунт? ',
+                                'Аккаунт бар ма? ',
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.7),
                                   fontSize: 15,
@@ -484,7 +484,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   padding: EdgeInsets.zero,
                                 ),
                                 child: const Text(
-                                  'Войти',
+                                  'Кіру',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
