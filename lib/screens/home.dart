@@ -70,22 +70,22 @@ class _HomeScreenState extends State<HomeScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
-              label: 'Главная',
+              label: 'Басты бет',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.piano_outlined),
               activeIcon: Icon(Icons.piano),
-              label: 'Инструменты',
+              label: 'Аспаптар',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.theater_comedy_outlined),
               activeIcon: Icon(Icons.theater_comedy),
-              label: 'Сцены',
+              label: 'Сахналар',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.mic_outlined),
               activeIcon: Icon(Icons.mic),
-              label: 'Студии',
+              label: 'Студиялар',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
@@ -148,11 +148,11 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 24),
               _buildCategorySection(),
               const SizedBox(height: 24),
-              _buildSectionTitle('Популярные'),
+              _buildSectionTitle('Танымал'),
               const SizedBox(height: 16),
               _buildPopularVenues(),
               const SizedBox(height: 24),
-              _buildSectionTitle('Рекомендуем'),
+              _buildSectionTitle('Ұсынылатындар'),
               const SizedBox(height: 16),
               _buildRecommendedVenues(),
               const SizedBox(height: 40),
@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: TextField(
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: 'Поиск сцен, инструментов, студий...',
+            hintText: 'Сахналарды, аспаптарды, студияларды іздеу...',
             hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
             prefixIcon: Icon(
               Icons.search,
