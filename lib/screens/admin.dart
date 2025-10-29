@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/api_service.dart';
+import '../models/user.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -90,7 +91,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Дүкен: ${application['sellerInfo']?['shopName'] ?? 'Берілмеген'}',
+                  'Дүкен: ${application['sellerApplication']?['shopName'] ?? 'Берілмеген'}',
                   style: TextStyle(color: Colors.white.withOpacity(0.8)),
                 ),
                 if (!approve) ...[
@@ -107,6 +108,25 @@ class _AdminScreenState extends State<AdminScreen> {
                       hintText: 'Өтінімді қабылдамау себебін көрсетіңіз',
                       hintStyle: TextStyle(
                         color: Colors.white.withOpacity(0.3),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colors.white.withOpacity(0.2),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Color(0xFFE94560),
+                          width: 2,
+                        ),
                       ),
                     ),
                   ),
@@ -155,7 +175,14 @@ class _AdminScreenState extends State<AdminScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white),
+            onPressed: _loadApplications,
+          ),
+        ],
       ),
+
       body: Column(
         children: [
           _buildFilterChips(),
@@ -168,19 +195,34 @@ class _AdminScreenState extends State<AdminScreen> {
                       ),
                     )
                     : _filteredApplications.isEmpty
-                    ? const Center(
-                      child: Text(
-                        'Өтінімдер табылмады',
-                        style: TextStyle(color: Colors.white),
+                    ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.inbox_outlined,
+                            size: 80,
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Өтінімдер табылмады',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
                       ),
                     )
                     : ListView.builder(
                       padding: const EdgeInsets.all(16),
                       itemCount: _filteredApplications.length,
-                      itemBuilder:
-                          (context, index) => _buildApplicationCard(
-                            _filteredApplications[index],
-                          ),
+                      itemBuilder: (context, index) {
+                        return _buildApplicationCard(
+                          _filteredApplications[index],
+                        );
+                      },
                     ),
           ),
         ],
@@ -190,17 +232,20 @@ class _AdminScreenState extends State<AdminScreen> {
 
   Widget _buildFilterChips() {
     return Container(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          _buildFilterChip('Барлығы', 'all'),
-          const SizedBox(width: 8),
-          _buildFilterChip('Қаралуда', 'pending'),
-          const SizedBox(width: 8),
-          _buildFilterChip('Қабылданған', 'approved'),
-          const SizedBox(width: 8),
-          _buildFilterChip('Бас тартылған', 'rejected'),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _buildFilterChip('Барлығы', 'all'),
+            const SizedBox(width: 8),
+            _buildFilterChip('Қаралуда', 'pending'),
+            const SizedBox(width: 8),
+            _buildFilterChip('Қабылданған', 'approved'),
+            const SizedBox(width: 8),
+            _buildFilterChip('Бас тартылған', 'rejected'),
+          ],
+        ),
       ),
     );
   }
@@ -210,10 +255,23 @@ class _AdminScreenState extends State<AdminScreen> {
     return FilterChip(
       label: Text(label),
       selected: isSelected,
-      onSelected: (_) => setState(() => _filterStatus = value),
+      onSelected: (selected) {
+        setState(() {
+          _filterStatus = value;
+        });
+      },
       backgroundColor: Colors.white.withOpacity(0.05),
       selectedColor: const Color(0xFFE94560),
-      labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.white54),
+      labelStyle: TextStyle(
+        color: isSelected ? Colors.white : Colors.white.withOpacity(0.7),
+        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      ),
+      side: BorderSide(
+        color:
+            isSelected
+                ? const Color(0xFFE94560)
+                : Colors.white.withOpacity(0.2),
+      ),
     );
   }
 
@@ -223,100 +281,228 @@ class _AdminScreenState extends State<AdminScreen> {
 
     final status = sellerApp?['status'] ?? 'none';
     final appliedAt = sellerApp?['appliedAt']?['\$date'];
-    final createdAt = application['createdAt']?['\$date'];
-    final updatedAt = application['updatedAt']?['\$date'];
 
     final shopName = sellerInfo?['shopName'] ?? 'Берілмеген';
-    final shopDescription = sellerInfo?['shopDescription'] ?? 'Сипаттама жоқ';
+    final shopDescription =
+        sellerInfo?['shopDescription'] ?? 'Сипаттама берілмеген';
 
-    return Card(
-      color: Colors.white.withOpacity(0.06),
+    Color statusColor;
+    String statusText;
+    IconData statusIcon;
+
+    switch (status) {
+      case 'pending':
+        statusColor = Colors.orange;
+        statusText = 'Қаралуда';
+        statusIcon = Icons.pending;
+        break;
+      case 'approved':
+        statusColor = Colors.green;
+        statusText = 'Қабылданған';
+        statusIcon = Icons.check_circle;
+        break;
+      case 'rejected':
+        statusColor = Colors.red;
+        statusText = 'Бас тартылған';
+        statusIcon = Icons.cancel;
+        break;
+      default:
+        statusColor = Colors.grey;
+        statusText = 'Белгісіз';
+        statusIcon = Icons.help;
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow(Icons.person, 'Сатушы', application['username']),
-            _buildInfoRow(
-              Icons.email,
-              'Email',
-              application['email'] ?? 'Берілмеген',
-            ),
-            _buildInfoRow(Icons.store, 'Дүкен', shopName),
-            _buildInfoRow(Icons.description, 'Сипаттама', shopDescription),
-
-            if (appliedAt != null)
-              _buildInfoRow(
-                Icons.calendar_today,
-                'Өтініш берілді',
-                _formatDate(appliedAt),
-              ),
-
-            if (createdAt != null)
-              _buildInfoRow(
-                Icons.date_range,
-                'Тіркелген күні',
-                _formatDate(createdAt),
-              ),
-
-            if (updatedAt != null)
-              _buildInfoRow(
-                Icons.update,
-                'Соңғы жаңарту',
-                _formatDate(updatedAt),
-              ),
-
-            const SizedBox(height: 12),
             Row(
               children: [
-                if (status == 'pending')
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => _showReviewDialog(application, true),
-                      child: const Text('Қабылдау'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      ),
-                    ),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE94560).withOpacity(0.2),
+                    shape: BoxShape.circle,
                   ),
-                if (status == 'pending') const SizedBox(width: 8),
-                if (status == 'pending')
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => _showReviewDialog(application, false),
-                      child: const Text('Бас тарту'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                    ),
+                  child: const Icon(
+                    Icons.person,
+                    color: Color(0xFFE94560),
+                    size: 24,
                   ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${application['username']}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        application['email'] ?? 'Email берілмеген',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.6),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: statusColor),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(statusIcon, size: 16, color: statusColor),
+                      const SizedBox(width: 4),
+                      Text(
+                        statusText,
+                        style: TextStyle(
+                          color: statusColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
+            const SizedBox(height: 16),
+            const Divider(color: Colors.white24),
+            const SizedBox(height: 16),
+            _buildInfoRow(Icons.store, 'Дүкен атауы', shopName),
+            const SizedBox(height: 12),
+            _buildInfoRow(Icons.description, 'Сипаттама', shopDescription),
+            if (appliedAt != null) ...[
+              const SizedBox(height: 12),
+              _buildInfoRow(
+                Icons.calendar_today,
+                'Дата подачи',
+                _formatDate(appliedAt),
+              ),
+            ],
+            if (sellerApp?['rejectionReason'] != null) ...[
+              const SizedBox(height: 12),
+              _buildInfoRow(
+                Icons.error_outline,
+                'Бас тарту себебі',
+                sellerApp['rejectionReason'],
+                isError: true,
+              ),
+            ],
+            if (status == 'pending') ...[
+              const SizedBox(height: 16),
+              const Divider(color: Colors.white24),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showReviewDialog(application, false),
+                      icon: const Icon(Icons.close),
+                      label: const Text('Бас тарту'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showReviewDialog(application, true),
+                      icon: const Icon(Icons.check),
+                      label: const Text('Қабылдау'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.white54),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              "$label: $value",
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
+  Widget _buildInfoRow(
+    IconData icon,
+    String label,
+    String value, {
+    bool isError = false,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 20,
+          color: isError ? Colors.red : Colors.white.withOpacity(0.6),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.6),
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: TextStyle(
+                  color: isError ? Colors.red : Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   String _formatDate(dynamic dateObj) {
+    // Если пришёл объект типа {"$date": <value>}
     if (dateObj is Map && dateObj.containsKey('\$date')) {
       dateObj = dateObj['\$date'];
     }
@@ -325,9 +511,11 @@ class _AdminScreenState extends State<AdminScreen> {
       DateTime date;
 
       if (dateObj is int) {
+        // Если timestamp
         date = DateTime.fromMillisecondsSinceEpoch(dateObj);
       } else if (dateObj is String) {
-        date = DateTime.tryParse(dateObj) ?? DateTime.now();
+        // Если строка ISO
+        date = DateTime.parse(dateObj);
       } else {
         return dateObj.toString();
       }
