@@ -54,46 +54,48 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFFE94560)))
-          : _favorites.isEmpty
+      body:
+          _isLoading
+              ? const Center(
+                child: CircularProgressIndicator(color: Color(0xFFE94560)),
+              )
+              : _favorites.isEmpty
               ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.favorite_border,
-                        size: 80,
-                        color: Colors.white.withOpacity(0.3),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.favorite_border,
+                      size: 80,
+                      color: Colors.white.withOpacity(0.3),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Нет избранных',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: 18,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Нет избранных',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
-                          fontSize: 18,
-                        ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Добавьте что-нибудь в избранное',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.5),
+                        fontSize: 14,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Добавьте что-нибудь в избранное',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _favorites.length,
-                  itemBuilder: (context, index) {
-                    final venue = _favorites[index];
-                    return _buildFavoriteCard(venue);
-                  },
+                    ),
+                  ],
                 ),
+              )
+              : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _favorites.length,
+                itemBuilder: (context, index) {
+                  final venue = _favorites[index];
+                  return _buildFavoriteCard(venue);
+                },
+              ),
     );
   }
 
@@ -103,9 +105,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.1),
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -119,18 +119,26 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   height: 180,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    height: 180,
-                    color: Colors.grey.shade800,
-                    child: const Center(
-                      child: CircularProgressIndicator(color: Color(0xFFE94560)),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    height: 180,
-                    color: Colors.grey.shade800,
-                    child: const Icon(Icons.image, color: Colors.white54, size: 50),
-                  ),
+                  placeholder:
+                      (context, url) => Container(
+                        height: 180,
+                        color: Colors.grey.shade800,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0xFFE94560),
+                          ),
+                        ),
+                      ),
+                  errorWidget:
+                      (context, url, error) => Container(
+                        height: 180,
+                        color: Colors.grey.shade800,
+                        child: const Icon(
+                          Icons.image,
+                          color: Colors.white54,
+                          size: 50,
+                        ),
+                      ),
                 ),
                 Positioned(
                   top: 12,
@@ -155,7 +163,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   top: 12,
                   left: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE94560),
                       borderRadius: BorderRadius.circular(20),
@@ -211,7 +222,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.location_on, color: Colors.white.withOpacity(0.6), size: 16),
+                      Icon(
+                        Icons.location_on,
+                        color: Colors.white.withOpacity(0.6),
+                        size: 16,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
@@ -249,9 +264,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          // TODO: Navigate to booking
-                        },
+                        onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFE94560),
                           shape: RoundedRectangleBorder(

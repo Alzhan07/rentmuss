@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadVenues() async {
     setState(() => _isLoading = true);
-    // TODO: Load real venues from API
+
     setState(() => _isLoading = false);
   }
 
@@ -133,9 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Icons.notifications_outlined,
                 color: Colors.white,
               ),
-              onPressed: () {
-                // TODO: Implement notifications
-              },
+              onPressed: () {},
             ),
           ],
         ),
@@ -285,9 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           TextButton(
-            onPressed: () {
-              // TODO: Show all
-            },
+            onPressed: () {},
             child: Text(
               'Все',
               style: TextStyle(

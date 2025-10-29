@@ -48,7 +48,6 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
 
         Navigator.pop(context, true);
       } else {
-        // Показываем ошибку
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message'] ?? 'Ошибка при отправке заявки'),
@@ -98,7 +97,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
-            child: Column(
+            child: Column(  
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(

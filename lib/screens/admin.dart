@@ -76,7 +76,9 @@ class _AdminScreenState extends State<AdminScreen> {
           (context) => AlertDialog(
             backgroundColor: const Color(0xFF16213E),
             title: Text(
-              approve ? 'Өтінімді қабылдайсыз ба?' : 'Өтінімді қабылдамайсыз ба?',
+              approve
+                  ? 'Өтінімді қабылдайсыз ба?'
+                  : 'Өтінімді қабылдамайсыз ба?',
               style: const TextStyle(color: Colors.white),
             ),
             content: Column(
@@ -143,7 +145,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                   _reviewApplication(
-                    userId: application['_id'] ?? application['id'],
+                    userId: application['_id']?['\$oid'],
                     approved: approve,
                     rejectionReason: approve ? null : reasonController.text,
                   );
@@ -180,7 +182,7 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
         ],
       ),
-      
+
       body: Column(
         children: [
           _buildFilterChips(),
@@ -275,11 +277,13 @@ class _AdminScreenState extends State<AdminScreen> {
 
   Widget _buildApplicationCard(Map<String, dynamic> application) {
     final sellerApp = application['sellerApplication'];
+    final sellerInfo = application['sellerInfo'];
+
     final status = sellerApp?['status'] ?? 'none';
-    final appliedAt = sellerApp?['appliedAt'];
-    final shopName = sellerApp?['shopName'] ?? 'Берілмеген';
+    final appliedAt = sellerApp?['appliedAt']?['\$date'];
+    final shopName = sellerInfo?['shopName'] ?? 'Берілмеген';
     final shopDescription =
-        sellerApp?['shopDescription'] ?? 'Сипаттама берілмеген';
+        sellerInfo?['shopDescription'] ?? 'Сипаттама берілмеген';
 
     Color statusColor;
     String statusText;
@@ -496,12 +500,16 @@ class _AdminScreenState extends State<AdminScreen> {
     );
   }
 
-  String _formatDate(String dateStr) {
+  String _formatDate(dynamic dateObj) {
+    if (dateObj is Map && dateObj.containsKey('\$date')) {
+      dateObj = dateObj['\$date'];
+    }
+
     try {
-      final date = DateTime.parse(dateStr);
+      final date = DateTime.parse(dateObj);
       return DateFormat('dd.MM.yyyy HH:mm').format(date);
     } catch (e) {
-      return dateStr;
+      return dateObj.toString();
     }
   }
 }

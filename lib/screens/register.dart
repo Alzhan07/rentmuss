@@ -36,9 +36,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final result = await ApiService.register(
       username: _usernameController.text.trim(),
       password: _passwordController.text,
-      email: _emailController.text.trim().isNotEmpty
-          ? _emailController.text.trim()
-          : null,
+      email:
+          _emailController.text.trim().isNotEmpty
+              ? _emailController.text.trim()
+              : null,
     );
 
     setState(() => _isLoading = false);
@@ -189,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             },
                           ),
-                          
+
                           const SizedBox(height: 16),
 
                           TextFormField(
@@ -334,7 +335,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               if (!RegExp(r'[0-9]').hasMatch(value)) {
                                 return 'Пароль должен содержать цифру';
                               }
-                              if (!RegExp(r'[!@#$%^&*()_+=\[\]{};:",.<>?|`~\-\\/]').hasMatch(value)) {
+                              if (!RegExp(
+                                r'[!@#$%^&*()_+=\[\]{};:",.<>?|`~\-\\/]',
+                              ).hasMatch(value)) {
                                 return 'Пароль должен содержать спецсимвол';
                               }
                               return null;
@@ -461,7 +464,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
 
                           const SizedBox(height: 24),
-                          
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

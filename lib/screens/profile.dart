@@ -65,109 +65,126 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A2E),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Сменить пароль',
-          style: TextStyle(color: Colors.white),
-        ),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: oldPasswordController,
-                obscureText: true,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Старый пароль',
-                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: const Color(0xFF1A1A2E),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: const Text(
+              'Сменить пароль',
+              style: TextStyle(color: Colors.white),
+            ),
+            content: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: oldPasswordController,
+                    obscureText: true,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: 'Старый пароль',
+                      labelStyle: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    validator:
+                        (value) =>
+                            value?.isEmpty ?? true
+                                ? 'Введите старый пароль'
+                                : null,
                   ),
-                ),
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Введите старый пароль' : null,
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: newPasswordController,
+                    obscureText: true,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: 'Новый пароль',
+                      labelStyle: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    validator:
+                        (value) =>
+                            (value?.length ?? 0) < 6
+                                ? 'Минимум 6 символов'
+                                : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: confirmPasswordController,
+                    obscureText: true,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: 'Подтвердите пароль',
+                      labelStyle: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    validator:
+                        (value) =>
+                            value != newPasswordController.text
+                                ? 'Пароли не совпадают'
+                                : null,
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: newPasswordController,
-                obscureText: true,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Новый пароль',
-                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Отмена',
+                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
                 ),
-                validator: (value) =>
-                    (value?.length ?? 0) < 6 ? 'Минимум 6 символов' : null,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: confirmPasswordController,
-                obscureText: true,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Подтвердите пароль',
-                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    final result = await ApiService.changePassword(
+                      oldPassword: oldPasswordController.text,
+                      newPassword: newPasswordController.text,
+                    );
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(result['message']),
+                          backgroundColor:
+                              result['success'] ? Colors.green : Colors.red,
+                        ),
+                      );
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE94560),
                 ),
-                validator: (value) => value != newPasswordController.text
-                    ? 'Пароли не совпадают'
-                    : null,
+                child: const Text('Сохранить'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Отмена',
-              style: TextStyle(color: Colors.white.withOpacity(0.7)),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (formKey.currentState!.validate()) {
-                final result = await ApiService.changePassword(
-                  oldPassword: oldPasswordController.text,
-                  newPassword: newPasswordController.text,
-                );
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(result['message']),
-                      backgroundColor:
-                          result['success'] ? Colors.green : Colors.red,
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFE94560),
-            ),
-            child: const Text('Сохранить'),
-          ),
-        ],
-      ),
     );
 
     oldPasswordController.dispose();
@@ -183,215 +200,218 @@ class _ProfileScreenState extends State<ProfileScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFF1A1A2E),
-              const Color(0xFF16213E),
-            ],
+            colors: [const Color(0xFF1A1A2E), const Color(0xFF16213E)],
           ),
         ),
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Stack(
-                        children: [
-                          Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: const Color(0xFFE94560),
-                                width: 3,
-                              ),
-                            ),
-                            child: ClipOval(
-                              child: _imageFile != null
-                                  ? Image.file(_imageFile!, fit: BoxFit.cover)
-                                  : _buildDefaultAvatar(),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: _pickImage,
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFE94560),
-                                  shape: BoxShape.circle,
+        child:
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        Stack(
+                          children: [
+                            Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: const Color(0xFFE94560),
+                                  width: 3,
                                 ),
+                              ),
+                              child: ClipOval(
                                 child:
-                                    const Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                                    _imageFile != null
+                                        ? Image.file(
+                                          _imageFile!,
+                                          fit: BoxFit.cover,
+                                        )
+                                        : _buildDefaultAvatar(),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        _user?.fullName ?? 'Пользователь',
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _user?.email ?? 'Email не указан',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withOpacity(0.7),
-                        ),
-                      ),
-                      if (_user?.role != null)
-                        Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: _getRoleColor(_user!.role),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            _getRoleText(_user!.role),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 40),
-                      _buildMenuCard(
-                        icon: Icons.favorite,
-                        title: 'Избранное',
-                        subtitle: 'Ваши сохраненные площадки',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const FavoritesScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      if (_user?.isAdmin == true)
-                        _buildMenuCard(
-                          icon: Icons.admin_panel_settings,
-                          title: 'Админ-панель',
-                          subtitle: 'Управление заявками продавцов',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const AdminScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      if (_user?.canApplyForSeller == true)
-                        _buildMenuCard(
-                          icon: Icons.store,
-                          title: 'Стать продавцом',
-                          subtitle: 'Подать заявку на продавца',
-                          onTap: _applyForSeller,
-                        ),
-                      if (_user?.sellerApplication?.status == SellerApplicationStatus.pending)
-                        _buildMenuCard(
-                          icon: Icons.pending,
-                          title: 'Заявка на рассмотрении',
-                          subtitle: 'Ожидайте одобрения администратора',
-                          onTap: () {},
-                        ),
-                      if (_user?.isSeller == true)
-                        _buildMenuCard(
-                          icon: Icons.store,
-                          title: 'Мой магазин',
-                          subtitle: _user?.sellerInfo?.shopName ?? 'Управление магазином',
-                          onTap: () {
-                            // TODO: Navigate to seller dashboard
-                          },
-                        ),
-                      _buildMenuCard(
-                        icon: Icons.lock_outline,
-                        title: 'Сменить пароль',
-                        subtitle: 'Обновите пароль для безопасности',
-                        onTap: _changePassword,
-                      ),
-                      _buildMenuCard(
-                        icon: Icons.edit,
-                        title: 'Редактировать профиль',
-                        subtitle: 'Изменить личную информацию',
-                        onTap: () {
-                          // TODO: Implement edit profile
-                        },
-                      ),
-                      _buildMenuCard(
-                        icon: Icons.notifications_outlined,
-                        title: 'Уведомления',
-                        subtitle: 'Настройте уведомления',
-                        onTap: () {
-                          // TODO: Implement notifications settings
-                        },
-                      ),
-                      _buildMenuCard(
-                        icon: Icons.help_outline,
-                        title: 'Помощь',
-                        subtitle: 'FAQ и поддержка',
-                        onTap: () {
-                          // TODO: Implement help
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await ApiService.logout();
-                              if (context.mounted) {
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreen(),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: GestureDetector(
+                                onTap: _pickImage,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFFE94560),
+                                    shape: BoxShape.circle,
                                   ),
-                                  (route) => false,
-                                );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white.withOpacity(0.1),
-                              foregroundColor: const Color(0xFFE94560),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                side: const BorderSide(
-                                  color: Color(0xFFE94560),
-                                  width: 2,
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
                                 ),
                               ),
                             ),
-                            child: const Text(
-                              'Выйти',
-                              style: TextStyle(
-                                fontSize: 18,
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          _user?.fullName ?? 'Пользователь',
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _user?.email ?? 'Email не указан',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white.withOpacity(0.7),
+                          ),
+                        ),
+                        if (_user?.role != null)
+                          Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _getRoleColor(_user!.role),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              _getRoleText(_user!.role),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
+                        const SizedBox(height: 40),
+                        _buildMenuCard(
+                          icon: Icons.favorite,
+                          title: 'Избранное',
+                          subtitle: 'Ваши сохраненные площадки',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const FavoritesScreen(),
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                      const SizedBox(height: 40),
-                    ],
+                        if (_user?.isAdmin == true)
+                          _buildMenuCard(
+                            icon: Icons.admin_panel_settings,
+                            title: 'Админ-панель',
+                            subtitle: 'Управление заявками продавцов',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AdminScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        if (_user?.canApplyForSeller == true)
+                          _buildMenuCard(
+                            icon: Icons.store,
+                            title: 'Стать продавцом',
+                            subtitle: 'Подать заявку на продавца',
+                            onTap: _applyForSeller,
+                          ),
+                        if (_user?.sellerApplication?.status ==
+                            SellerApplicationStatus.pending)
+                          _buildMenuCard(
+                            icon: Icons.pending,
+                            title: 'Заявка на рассмотрении',
+                            subtitle: 'Ожидайте одобрения администратора',
+                            onTap: () {},
+                          ),
+                        if (_user?.isSeller == true)
+                          _buildMenuCard(
+                            icon: Icons.store,
+                            title: 'Мой магазин',
+                            subtitle:
+                                _user?.sellerInfo?.shopName ??
+                                'Управление магазином',
+                            onTap: () {},
+                          ),
+                        _buildMenuCard(
+                          icon: Icons.lock_outline,
+                          title: 'Сменить пароль',
+                          subtitle: 'Обновите пароль для безопасности',
+                          onTap: _changePassword,
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.edit,
+                          title: 'Редактировать профиль',
+                          subtitle: 'Изменить личную информацию',
+                          onTap: () {},
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.notifications_outlined,
+                          title: 'Уведомления',
+                          subtitle: 'Настройте уведомления',
+                          onTap: () {},
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.help_outline,
+                          title: 'Помощь',
+                          subtitle: 'FAQ и поддержка',
+                          onTap: () {},
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                await ApiService.logout();
+                                if (context.mounted) {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginScreen(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white.withOpacity(0.1),
+                                foregroundColor: const Color(0xFFE94560),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  side: const BorderSide(
+                                    color: Color(0xFFE94560),
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              child: const Text(
+                                'Выйти',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                      ],
+                    ),
                   ),
                 ),
-              ),
       ),
     );
   }
@@ -399,12 +419,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _applyForSeller() async {
     final result = await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (context) => const SellerFormScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const SellerFormScreen()),
     );
 
-    // Егер өтішініш сәтті өткен болса, пайдаланушыны туралы деректерді жаңартамыз
     if (result == true) {
       await _loadUserData();
     }
@@ -437,11 +454,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildDefaultAvatar() {
     return Container(
       color: const Color(0xFF0F3460),
-      child: const Icon(
-        Icons.person,
-        size: 60,
-        color: Color(0xFFE94560),
-      ),
+      child: const Icon(Icons.person, size: 60, color: Color(0xFFE94560)),
     );
   }
 
@@ -456,9 +469,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.1),
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: ListTile(
         onTap: onTap,
@@ -481,10 +492,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         subtitle: Text(
           subtitle,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.6),
-            fontSize: 13,
-          ),
+          style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
