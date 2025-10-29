@@ -501,14 +501,26 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   String _formatDate(dynamic dateObj) {
+    // Если пришёл объект типа {"$date": <value>}
     if (dateObj is Map && dateObj.containsKey('\$date')) {
       dateObj = dateObj['\$date'];
     }
 
     try {
-      final date = DateTime.parse(dateObj);
+      DateTime date;
+
+      if (dateObj is int) {
+        // Если timestamp
+        date = DateTime.fromMillisecondsSinceEpoch(dateObj);
+      } else if (dateObj is String) {
+        // Если строка ISO
+        date = DateTime.parse(dateObj);
+      } else {
+        return dateObj.toString();
+      }
+
       return DateFormat('dd.MM.yyyy HH:mm').format(date);
-    } catch (e) {
+    } catch (_) {
       return dateObj.toString();
     }
   }
