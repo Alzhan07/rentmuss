@@ -502,7 +502,6 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   String _formatDate(dynamic dateObj) {
-    // Если пришёл объект типа {"$date": <value>}
     if (dateObj is Map && dateObj.containsKey('\$date')) {
       dateObj = dateObj['\$date'];
     }
