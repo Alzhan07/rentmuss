@@ -60,8 +60,12 @@ class SellerApplication {
   factory SellerApplication.fromJson(Map<String, dynamic> json) {
     return SellerApplication(
       status: _parseStatus(json['status']),
-      appliedAt: json['appliedAt'] != null ? DateTime.parse(json['appliedAt']) : null,
-      reviewedAt: json['reviewedAt'] != null ? DateTime.parse(json['reviewedAt']) : null,
+      appliedAt:
+          json['appliedAt'] != null ? DateTime.parse(json['appliedAt']) : null,
+      reviewedAt:
+          json['reviewedAt'] != null
+              ? DateTime.parse(json['reviewedAt'])
+              : null,
       reviewedBy: json['reviewedBy'],
       rejectionReason: json['rejectionReason'],
     );
@@ -118,14 +122,18 @@ class User {
       username: json['username'] ?? '',
       email: json['email'],
       role: _parseRole(json['role']),
-      sellerInfo: json['sellerInfo'] != null
-          ? SellerInfo.fromJson(json['sellerInfo'])
-          : null,
-      sellerApplication: json['sellerApplication'] != null
-          ? SellerApplication.fromJson(json['sellerApplication'])
-          : null,
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      sellerInfo:
+          json['sellerInfo'] != null
+              ? SellerInfo.fromJson(json['sellerInfo'])
+              : null,
+      sellerApplication:
+          json['sellerApplication'] != null
+              ? SellerApplication.fromJson(json['sellerApplication'])
+              : null,
+      createdAt:
+          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      updatedAt:
+          json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
     );
   }
 
@@ -172,11 +180,11 @@ class User {
     );
   }
 
-  // Удобные геттеры
   String get fullName => '$username';
   bool get isSeller => role == UserRole.seller;
   bool get isAdmin => role == UserRole.admin;
-  bool get canApplyForSeller => role == UserRole.user &&
+  bool get canApplyForSeller =>
+      role == UserRole.user &&
       (sellerApplication?.status == SellerApplicationStatus.none ||
-       sellerApplication?.status == SellerApplicationStatus.rejected);
+          sellerApplication?.status == SellerApplicationStatus.rejected);
 }
