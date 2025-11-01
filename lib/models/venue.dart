@@ -1,7 +1,7 @@
 class Venue {
   final String id;
   final String name;
-  final String type; // 'stage', 'instrument', 'studio'
+  final String type;
   final String description;
   final double pricePerHour;
   final String imageUrl;

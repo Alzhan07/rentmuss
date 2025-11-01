@@ -281,6 +281,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
     final status = sellerApp?['status'] ?? 'none';
     final appliedAt = sellerApp?['appliedAt']?['\$date'];
+
     final shopName = sellerInfo?['shopName'] ?? 'Берілмеген';
     final shopDescription =
         sellerInfo?['shopDescription'] ?? 'Сипаттама берілмеген';
@@ -501,7 +502,6 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   String _formatDate(dynamic dateObj) {
-    // Если пришёл объект типа {"$date": <value>}
     if (dateObj is Map && dateObj.containsKey('\$date')) {
       dateObj = dateObj['\$date'];
     }
