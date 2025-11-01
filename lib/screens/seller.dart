@@ -127,7 +127,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Заполните форму ниже, чтобы подать заявку.\nМы рассмотрим её в ближайшее время.',
+                        'Өтініш беру үшін төмендегі нысанды толтырыңыз.\nБіз оны жақын арада қарастырамыз.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.7),

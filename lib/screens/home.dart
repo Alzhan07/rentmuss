@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Text(
-                'Музыкальные пространства',
+                'Музыкалық алаң',
                 style: TextStyle(
                   color: Color(0xFFE94560),
                   fontSize: 14,
@@ -194,18 +194,18 @@ class _HomeScreenState extends State<HomeScreen> {
     final categories = [
       {
         'icon': Icons.theater_comedy,
-        'label': 'Сцены',
+        'label': 'Сахналар',
         'color': const Color(0xFFE94560),
       },
       {
         'icon': Icons.piano,
-        'label': 'Инструменты',
+        'label': 'Аспаптар',
         'color': const Color(0xFF0F3460),
       },
-      {'icon': Icons.mic, 'label': 'Студии', 'color': const Color(0xFF533483)},
+      {'icon': Icons.mic, 'label': 'Студиялар', 'color': const Color(0xFF533483)},
       {
         'icon': Icons.headphones,
-        'label': 'Оборудование',
+        'label': 'Жабдықтар',
         'color': const Color(0xFF16537E),
       },
     ];
@@ -285,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
           TextButton(
             onPressed: () {},
             child: Text(
-              'Все',
+              'Барлығы',
               style: TextStyle(
                 color: const Color(0xFFE94560).withOpacity(0.8),
                 fontSize: 14,
@@ -301,23 +301,23 @@ class _HomeScreenState extends State<HomeScreen> {
     final sampleVenues = [
       Venue(
         id: '1',
-        name: 'Большая сцена "Арена"',
+        name: 'Зәулім сахна "Арена"',
         type: 'stage',
-        description: 'Профессиональная сцена с отличной акустикой',
+        description: 'Керемет акустикасы бар кәсіби сахна',
         pricePerHour: 5000,
         imageUrl: 'https://via.placeholder.com/400x200',
         rating: 4.8,
-        location: 'Москва, ул. Пушкина',
+        location: 'Астана, Ұлы Дала көшесі',
       ),
       Venue(
         id: '2',
         name: 'Steinway Grand Piano',
         type: 'instrument',
-        description: 'Концертный рояль в идеальном состоянии',
+        description: 'Концерттік рояль тамаша жағдайда',
         pricePerHour: 3000,
         imageUrl: 'https://via.placeholder.com/400x200',
         rating: 4.9,
-        location: 'Москва, Тверская',
+        location: 'Астана, Күйші Дина көшесі, 36',
       ),
     ];
 
@@ -338,23 +338,23 @@ class _HomeScreenState extends State<HomeScreen> {
     final sampleVenues = [
       Venue(
         id: '3',
-        name: 'Студия звукозаписи "Звук"',
+        name: 'Дыбыс жазу студиясы "Арнау"',
         type: 'studio',
-        description: 'Современная студия со всем оборудованием',
+        description: 'Заманауи студия барлық жабдықтармен жабдықталған',
         pricePerHour: 4000,
         imageUrl: 'https://via.placeholder.com/400x200',
         rating: 4.7,
-        location: 'Москва, Арбат',
+        location: 'Астана, Мәңгілік Ел даңғылы, 15',
       ),
       Venue(
         id: '4',
         name: 'Fender Stratocaster',
         type: 'instrument',
-        description: 'Легендарная электрогитара',
+        description: 'Электрогитара Fender',
         pricePerHour: 1500,
         imageUrl: 'https://via.placeholder.com/400x200',
         rating: 4.6,
-        location: 'Москва, Сокол',
+        location: 'Астана, Сарайшық көшесі, 22',
       ),
     ];
 
@@ -510,7 +510,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${venue.pricePerHour.toInt()} ₽/час',
+                        '${venue.pricePerHour.toInt()} ₸/сағат',
                         style: const TextStyle(
                           color: Color(0xFFE94560),
                           fontSize: 16,

@@ -42,7 +42,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'Избранное',
+          'Таңдаулылар',
           style: TextStyle(
             color: Colors.white,
             fontSize: 24,
@@ -71,7 +71,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Нет избранных',
+                      'Таңдаулылар жоқ',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                         fontSize: 18,
@@ -79,7 +79,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Добавьте что-нибудь в избранное',
+                      'Таңдаулыларға бірдеңе қосыңыз',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.5),
                         fontSize: 14,
@@ -271,7 +271,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('Забронировать'),
+                        child: const Text('Брондау'),
                       ),
                     ],
                   ),
@@ -287,11 +287,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   String _getTypeLabel(String type) {
     switch (type) {
       case 'stage':
-        return 'Сцена';
+        return 'Сахна';
       case 'instrument':
-        return 'Инструмент';
+        return 'Аспаптар';
       case 'studio':
-        return 'Студия';
+        return 'Студиялар';
       default:
         return type;
     }
