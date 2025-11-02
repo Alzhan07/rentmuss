@@ -384,39 +384,67 @@ class ApiService {
     }
   }
 
-  // Получить избранные площадки
-  static Future<List<Map<String, dynamic>>> getFavorites() async {
+  // ========== МЕТОДЫ ИЗБРАННОГО ==========
+
+  // Получить все избранные (с опциональной фильтрацией по типу)
+  static Future<Map<String, dynamic>> getFavorites({String? type}) async {
     try {
       final headers = await _getHeaders();
+      var url = '$baseUrl/favorites';
+      if (type != null) {
+        url += '?type=$type';
+      }
+
       final response = await http.get(
-        Uri.parse('$baseUrl/favorites'),
+        Uri.parse(url),
         headers: headers,
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return List<Map<String, dynamic>>.from(data['favorites'] ?? []);
+        return {
+          'success': true,
+          'favorites': List<Map<String, dynamic>>.from(data['favorites'] ?? []),
+        };
       }
-      return [];
+      return {
+        'success': false,
+        'message': 'Ошибка получения избранного',
+        'favorites': [],
+      };
     } catch (e) {
-      return [];
+      return {
+        'success': false,
+        'message': 'Ошибка подключения: $e',
+        'favorites': [],
+      };
     }
   }
 
   // Добавить в избранное
-  static Future<Map<String, dynamic>> addFavorite(String venueId) async {
+  static Future<Map<String, dynamic>> addToFavorites({
+    required String itemType,
+    required String itemId,
+    required Map<String, dynamic> itemData,
+  }) async {
     try {
       final headers = await _getHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/favorites/$venueId'),
+        Uri.parse('$baseUrl/favorites/add'),
         headers: headers,
+        body: jsonEncode({
+          'itemType': itemType,
+          'itemId': itemId,
+          'itemData': itemData,
+        }),
       );
 
       final data = jsonDecode(response.body);
 
       return {
-        'success': response.statusCode == 200,
+        'success': response.statusCode == 200 || response.statusCode == 201,
         'message': data['message'] ?? 'Добавлено в избранное',
+        'favorite': data['favorite'],
       };
     } catch (e) {
       return {
@@ -427,12 +455,19 @@ class ApiService {
   }
 
   // Удалить из избранного
-  static Future<Map<String, dynamic>> removeFavorite(String venueId) async {
+  static Future<Map<String, dynamic>> removeFromFavorites({
+    required String itemType,
+    required String itemId,
+  }) async {
     try {
       final headers = await _getHeaders();
       final response = await http.delete(
-        Uri.parse('$baseUrl/favorites/$venueId'),
+        Uri.parse('$baseUrl/favorites/remove'),
         headers: headers,
+        body: jsonEncode({
+          'itemType': itemType,
+          'itemId': itemId,
+        }),
       );
 
       final data = jsonDecode(response.body);
@@ -445,6 +480,41 @@ class ApiService {
       return {
         'success': false,
         'message': 'Ошибка удаления из избранного: $e',
+      };
+    }
+  }
+
+  // Проверить, в избранном ли элемент
+  static Future<Map<String, dynamic>> checkIsFavorite({
+    required String itemType,
+    required String itemId,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/favorites/check'),
+        headers: headers,
+        body: jsonEncode({
+          'itemType': itemType,
+          'itemId': itemId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': true,
+          'isFavorite': data['isFavorite'] ?? false,
+        };
+      }
+      return {
+        'success': false,
+        'isFavorite': false,
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'isFavorite': false,
       };
     }
   }
@@ -480,6 +550,93 @@ class ApiService {
       };
     } catch (e) {
       return {'success': false, 'message': 'Ошибка обновления профиля: $e'};
+    }
+  }
+
+  // ========== ВОССТАНОВЛЕНИЕ ПАРОЛЯ ==========
+
+  // Запросить код восстановления пароля
+  static Future<Map<String, dynamic>> forgotPassword({
+    required String email,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/forgot-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
+
+      final data = jsonDecode(response.body);
+
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Ошибка отправки кода',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка подключения к серверу: $e',
+      };
+    }
+  }
+
+  // Проверить код восстановления
+  static Future<Map<String, dynamic>> verifyResetCode({
+    required String email,
+    required String code,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/verify-reset-code'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'code': code,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Ошибка проверки кода',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка подключения к серверу: $e',
+      };
+    }
+  }
+
+  // Сбросить пароль
+  static Future<Map<String, dynamic>> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/reset-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'code': code,
+          'newPassword': newPassword,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Ошибка сброса пароля',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка подключения к серверу: $e',
+      };
     }
   }
 }

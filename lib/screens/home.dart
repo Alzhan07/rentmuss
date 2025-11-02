@@ -4,6 +4,9 @@ import '../services/api_service.dart';
 import '../models/venue.dart';
 import 'login.dart';
 import 'profile.dart';
+import 'instruments.dart';
+import 'stages.dart';
+import 'studios.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,12 +34,61 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _isLoading = false);
   }
 
+  Widget _getSelectedScreen() {
+    switch (_currentIndex) {
+      case 0:
+        return _buildHomeContent();
+      case 1:
+        return const InstrumentsScreen();
+      case 2:
+        return const StagesScreen();
+      case 3:
+        return const StudiosScreen();
+      case 4:
+        return const ProfileScreen();
+      default:
+        return _buildHomeContent();
+    }
+  }
+
+  Widget _buildComingSoon(String title) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.construction,
+            size: 80,
+            color: Colors.white.withOpacity(0.3),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            '$title - Скоро',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Эта функция находится в разработке',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.5),
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A2E),
       body: SafeArea(
-        child: _currentIndex == 4 ? const ProfileScreen() : _buildHomeContent(),
+        child: _getSelectedScreen(),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

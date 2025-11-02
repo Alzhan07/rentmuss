@@ -19,6 +19,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
+  // Требования к паролю
+  bool _hasMinLength = false;
+  bool _hasUpperCase = false;
+  bool _hasLowerCase = false;
+  bool _hasDigit = false;
+  bool _hasSpecialChar = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordController.addListener(_checkPassword);
+  }
+
+  void _checkPassword() {
+    final password = _passwordController.text;
+    setState(() {
+      _hasMinLength = password.length >= 8;
+      _hasUpperCase = RegExp(r'[A-Z]').hasMatch(password);
+      _hasLowerCase = RegExp(r'[a-z]').hasMatch(password);
+      _hasDigit = RegExp(r'[0-9]').hasMatch(password);
+      _hasSpecialChar = RegExp(r'[!@#$%^&*()_+=\[\]{};:",.<>?|`~\-\\/]').hasMatch(password);
+    });
+  }
+
   @override
   void dispose() {
     _usernameController.dispose();
@@ -344,6 +368,54 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                           ),
 
+                          const SizedBox(height: 12),
+
+                          // Индикаторы требований к паролю
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.1),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Требования к паролю:',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.9),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                _buildPasswordRequirement(
+                                  'Минимум 8 символов',
+                                  _hasMinLength,
+                                ),
+                                _buildPasswordRequirement(
+                                  'Заглавная буква (A-Z)',
+                                  _hasUpperCase,
+                                ),
+                                _buildPasswordRequirement(
+                                  'Строчная буква (a-z)',
+                                  _hasLowerCase,
+                                ),
+                                _buildPasswordRequirement(
+                                  'Цифра (0-9)',
+                                  _hasDigit,
+                                ),
+                                _buildPasswordRequirement(
+                                  'Спецсимвол (!@#\$%^&*)',
+                                  _hasSpecialChar,
+                                ),
+                              ],
+                            ),
+                          ),
+
                           const SizedBox(height: 16),
 
                           TextFormField(
@@ -502,6 +574,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordRequirement(String text, bool isMet) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(
+            isMet ? Icons.check_circle : Icons.circle_outlined,
+            size: 18,
+            color: isMet ? const Color(0xFF00D9A5) : Colors.white.withOpacity(0.4),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: TextStyle(
+              color: isMet ? const Color(0xFF00D9A5) : Colors.white.withOpacity(0.6),
+              fontSize: 12,
+              fontWeight: isMet ? FontWeight.w600 : FontWeight.normal,
+            ),
+          ),
+        ],
       ),
     );
   }

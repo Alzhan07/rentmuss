@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/api_service.dart';
@@ -19,6 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   User? _user;
   bool _isLoading = true;
   File? _imageFile;
+  XFile? _webImage;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -50,10 +52,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (image != null) {
       setState(() {
-        _imageFile = File(image.path);
+        if (kIsWeb) {
+          _webImage = image;
+        } else {
+          _imageFile = File(image.path);
+        }
       });
-      await ApiService.uploadAvatar(_imageFile!);
-      await _loadUserData();
+
+      // Для веба нужно использовать XFile напрямую
+      if (kIsWeb) {
+        // Пока что просто сохраним изображение локально
+        // TODO: Реализовать загрузку на сервер для веба
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Загрузка аватара на веб пока не поддерживается'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      } else {
+        await ApiService.uploadAvatar(_imageFile!);
+        await _loadUserData();
+      }
     }
   }
 
@@ -224,13 +243,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                               child: ClipOval(
-                                child:
-                                    _imageFile != null
+                                child: kIsWeb
+                                    ? (_webImage != null
+                                        ? Image.network(
+                                            _webImage!.path,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) =>
+                                                _buildDefaultAvatar(),
+                                          )
+                                        : _buildDefaultAvatar())
+                                    : (_imageFile != null
                                         ? Image.file(
-                                          _imageFile!,
-                                          fit: BoxFit.cover,
-                                        )
-                                        : _buildDefaultAvatar(),
+                                            _imageFile!,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : _buildDefaultAvatar()),
                               ),
                             ),
                             Positioned(

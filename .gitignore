@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Server environment variables
+lib/server/.env
+lib/server/node_modules/

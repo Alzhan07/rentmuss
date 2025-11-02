@@ -86,7 +86,7 @@ class _AdminScreenState extends State<AdminScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Сатушы: ${application['username']}',
+                  'Сатушы: ${application['username'] ?? 'Имя не указано'}',
                   style: TextStyle(color: Colors.white.withOpacity(0.8)),
                 ),
                 const SizedBox(height: 8),
@@ -280,7 +280,29 @@ class _AdminScreenState extends State<AdminScreen> {
     final sellerInfo = application['sellerInfo'];
 
     final status = sellerApp?['status'] ?? 'none';
-    final appliedAt = sellerApp?['appliedAt']?['\$date'];
+
+    // Правильная обработка даты из MongoDB
+    DateTime? appliedAt;
+    try {
+      final dateValue = sellerApp?['appliedAt'];
+      if (dateValue != null) {
+        if (dateValue is String) {
+          appliedAt = DateTime.parse(dateValue);
+        } else if (dateValue is Map && dateValue.containsKey('\$date')) {
+          final dateData = dateValue['\$date'];
+          if (dateData is int) {
+            appliedAt = DateTime.fromMillisecondsSinceEpoch(dateData);
+          } else if (dateData is String) {
+            appliedAt = DateTime.parse(dateData);
+          }
+        } else if (dateValue is DateTime) {
+          appliedAt = dateValue;
+        }
+      }
+    } catch (e) {
+      print('Error parsing date: $e');
+      appliedAt = null;
+    }
 
     final shopName = sellerInfo?['shopName'] ?? 'Берілмеген';
     final shopDescription =
@@ -344,7 +366,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${application['username']}',
+                        application['username'] ?? 'Имя не указано',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -501,27 +523,13 @@ class _AdminScreenState extends State<AdminScreen> {
     );
   }
 
-  String _formatDate(dynamic dateObj) {
-    if (dateObj is Map && dateObj.containsKey('\$date')) {
-      dateObj = dateObj['\$date'];
-    }
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Дата не указана';
 
     try {
-      DateTime date;
-
-      if (dateObj is int) {
-        // Если timestamp
-        date = DateTime.fromMillisecondsSinceEpoch(dateObj);
-      } else if (dateObj is String) {
-        // Если строка ISO
-        date = DateTime.parse(dateObj);
-      } else {
-        return dateObj.toString();
-      }
-
       return DateFormat('dd.MM.yyyy HH:mm').format(date);
     } catch (_) {
-      return dateObj.toString();
+      return 'Неверная дата';
     }
   }
 }
