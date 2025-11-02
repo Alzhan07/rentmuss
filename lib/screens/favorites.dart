@@ -90,7 +90,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
         backgroundColor: const Color(0xFF16213E),
         elevation: 0,
         title: const Text(
-          'Избранное',
+          'Таңдаулылар',
           style: TextStyle(
             color: Colors.white,
             fontSize: 24,
@@ -120,47 +120,48 @@ class _FavoritesScreenState extends State<FavoritesScreen>
           ],
         ),
       ),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFFE94560)),
-            )
-          : _favorites.isEmpty
+      body:
+          _isLoading
+              ? const Center(
+                child: CircularProgressIndicator(color: Color(0xFFE94560)),
+              )
+              : _favorites.isEmpty
               ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.favorite_border,
-                        size: 80,
-                        color: Colors.white.withOpacity(0.3),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.favorite_border,
+                      size: 80,
+                      color: Colors.white.withOpacity(0.3),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Таңдаулылар жоқ',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: 18,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Нет избранных',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
-                          fontSize: 18,
-                        ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Таңдаулыларға бірдеңе қосыңыз',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.5),
+                        fontSize: 14,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Добавьте что-нибудь в избранное',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _favorites.length,
-                  itemBuilder: (context, index) {
-                    final favorite = _favorites[index];
-                    return _buildFavoriteCard(favorite);
-                  },
+                    ),
+                  ],
                 ),
+              )
+              : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _favorites.length,
+                itemBuilder: (context, index) {
+                  final favorite = _favorites[index];
+                  return _buildFavoriteCard(favorite);
+                },
+              ),
     );
   }
 
@@ -194,40 +195,42 @@ class _FavoritesScreenState extends State<FavoritesScreen>
               children: [
                 imageUrl.isNotEmpty
                     ? CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        height: 180,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          height: 180,
-                          color: Colors.grey.shade800,
-                          child: const Center(
-                            child: CircularProgressIndicator(
-                              color: Color(0xFFE94560),
+                      imageUrl: imageUrl,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      placeholder:
+                          (context, url) => Container(
+                            height: 180,
+                            color: Colors.grey.shade800,
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFFE94560),
+                              ),
                             ),
                           ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          height: 180,
-                          color: const Color(0xFF0F3460),
-                          child: Icon(
-                            _getTypeIcon(itemType),
-                            color: Colors.white54,
-                            size: 50,
+                      errorWidget:
+                          (context, url, error) => Container(
+                            height: 180,
+                            color: const Color(0xFF0F3460),
+                            child: Icon(
+                              _getTypeIcon(itemType),
+                              color: Colors.white54,
+                              size: 50,
+                            ),
                           ),
-                        ),
-                      )
+                    )
                     : Container(
-                        height: 180,
-                        color: const Color(0xFF0F3460),
-                        child: Center(
-                          child: Icon(
-                            _getTypeIcon(itemType),
-                            color: const Color(0xFFE94560),
-                            size: 60,
-                          ),
+                      height: 180,
+                      color: const Color(0xFF0F3460),
+                      child: Center(
+                        child: Icon(
+                          _getTypeIcon(itemType),
+                          color: const Color(0xFFE94560),
+                          size: 60,
                         ),
                       ),
+                    ),
                 Positioned(
                   top: 12,
                   right: 12,
@@ -295,7 +298,11 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                         const SizedBox(width: 8),
                         Row(
                           children: [
-                            const Icon(Icons.star, color: Colors.amber, size: 20),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 20,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               rating.toStringAsFixed(1),
@@ -393,7 +400,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('Подробнее'),
+                        child: const Text('Брондау'),
                       ),
                     ],
                   ),
@@ -421,12 +428,12 @@ class _FavoritesScreenState extends State<FavoritesScreen>
 
   String _getTypeLabel(String type) {
     switch (type) {
-      case 'instrument':
-        return 'Инструмент';
       case 'stage':
-        return 'Сцена';
+        return 'Сахна';
+      case 'instrument':
+        return 'Аспаптар';
       case 'studio':
-        return 'Студия';
+        return 'Студиялар';
       default:
         return type;
     }

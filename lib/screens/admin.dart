@@ -422,7 +422,7 @@ class _AdminScreenState extends State<AdminScreen> {
               const SizedBox(height: 12),
               _buildInfoRow(
                 Icons.calendar_today,
-                'Дата подачи',
+                'Берілген күні',
                 _formatDate(appliedAt),
               ),
             ],

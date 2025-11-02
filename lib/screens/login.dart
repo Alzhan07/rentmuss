@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Аренда музыкальных пространств',
+                      'Музыкалық кеңістікті жалға алу',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.white.withOpacity(0.7),
@@ -119,9 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _usernameController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        labelText: 'Имя пользователя',
+                        labelText: 'Пайдаланушы аты',
                         labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                        hintText: 'ivan123',
+                        hintText: 'Мақсат123',
                         hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                         prefixIcon:
                             Icon(Icons.person_outline, color: Color(0xFFE94560)),
@@ -159,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Введите имя пользователя';
+                          return 'Пайдаланушы атын енгізіңіз';
                         }
                         return null;
                       },
@@ -172,9 +172,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: _obscurePassword,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        labelText: 'Пароль',
+                        labelText: 'Құпия сөз',
                         labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                        hintText: 'Введите пароль',
+                        hintText: 'Құпия сөзді енгізіңіз',
                         hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                         prefixIcon:
                             Icon(Icons.lock_outline, color: Color(0xFFE94560)),
@@ -224,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Введите пароль';
+                          return 'Құпия сөзді енгізіңіз';
                         }
                         return null;
                       },
@@ -259,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 )
                                 : const Text(
-                                  'Войти',
+                                  'Кіру',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,

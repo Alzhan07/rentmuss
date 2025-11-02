@@ -40,7 +40,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
       if (result['success']) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result['message'] ?? 'Заявка успешно отправлена!'),
+            content: Text(result['message'] ?? 'Өтінім сәтті жіберілді!'),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 3),
           ),
@@ -48,9 +48,10 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
 
         Navigator.pop(context, true);
       } else {
+        // Показываем ошибку
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result['message'] ?? 'Ошибка при отправке заявки'),
+            content: Text(result['message'] ?? 'Өтінімді жіберу кезінде қате пайда болды'),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -60,7 +61,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Произошла ошибка: $e'),
+            content: Text('Қате пайда болды: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -84,7 +85,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Заявка на продавца',
+          'Сатушыға өтінім',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -97,7 +98,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
-            child: Column(  
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
@@ -117,7 +118,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                       ),
                       const SizedBox(height: 24),
                       const Text(
-                        'Станьте продавцом',
+                        'Сатушы болыңыз',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 28,
@@ -126,7 +127,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Заполните форму ниже, чтобы подать заявку.\nМы рассмотрим её в ближайшее время.',
+                        'Өтініш беру үшін төмендегі нысанды толтырыңыз.\nБіз оны жақын арада қарастырамыз.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.7),
@@ -140,7 +141,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                 const SizedBox(height: 40),
 
                 Text(
-                  'Название магазина',
+                  'Дүкеннің атауы',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 16,
@@ -153,7 +154,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                   style: const TextStyle(color: Colors.white),
                   enabled: !_isSubmitting,
                   decoration: InputDecoration(
-                    hintText: 'Например: Музыкальный Мир',
+                    hintText: 'Мысалы: Муызка әлемі',
                     hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                     prefixIcon: Icon(
                       Icons.store_outlined,
@@ -189,10 +190,10 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Пожалуйста, введите название магазина';
+                      return 'Өтінеміз, дүкеннің атауын енгізіңіз';
                     }
                     if (value.trim().length < 3) {
-                      return 'Название должно содержать минимум 3 символа';
+                      return 'Атауы кем дегенде 3 таңбадан тұруы керек';
                     }
                     return null;
                   },
@@ -200,7 +201,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                 const SizedBox(height: 24),
 
                 Text(
-                  'Описание магазина',
+                  'Дүкеннің сипаттамасы',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 16,
@@ -223,7 +224,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                   maxLines: 5,
                   maxLength: 500,
                   decoration: InputDecoration(
-                    hintText: 'Расскажите о вашем магазине',
+                    hintText: 'Дүкеніңіз туралы қысқаша сипаттама енгізіңіз',
                     hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.1),
@@ -270,7 +271,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'После отправки заявки администратор рассмотрит её и примет решение.',
+                          'Өтінімді жібергеннен кейін админ оны қарап, шешім қабылдайды.',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.9),
                             fontSize: 13,
@@ -313,7 +314,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
                                 Icon(Icons.send, size: 20),
                                 SizedBox(width: 8),
                                 Text(
-                                  'Отправить заявку',
+                                  'Өтінімді жіберу',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,

@@ -91,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(20),
             ),
             title: const Text(
-              'Сменить пароль',
+              'Құпия сөзді өзгерту',
               style: TextStyle(color: Colors.white),
             ),
             content: Form(
@@ -104,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     obscureText: true,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'Старый пароль',
+                      labelText: 'Ескі құпия сөз',
                       labelStyle: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                       ),
@@ -118,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     validator:
                         (value) =>
                             value?.isEmpty ?? true
-                                ? 'Введите старый пароль'
+                                ? 'Ескі құпия сөзді енгізіңіз'
                                 : null,
                   ),
                   const SizedBox(height: 12),
@@ -127,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     obscureText: true,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'Новый пароль',
+                      labelText: 'Жаңа құпия сөз',
                       labelStyle: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                       ),
@@ -141,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     validator:
                         (value) =>
                             (value?.length ?? 0) < 6
-                                ? 'Минимум 6 символов'
+                                ? 'Кем дегенде 6 таңба болуы керек'
                                 : null,
                   ),
                   const SizedBox(height: 12),
@@ -150,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     obscureText: true,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'Подтвердите пароль',
+                      labelText: 'Құпия сөзді растаңыз',
                       labelStyle: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                       ),
@@ -164,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     validator:
                         (value) =>
                             value != newPasswordController.text
-                                ? 'Пароли не совпадают'
+                                ? 'Құпия сөздер сәйкес келмейді'
                                 : null,
                   ),
                 ],
@@ -174,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Отмена',
+                  'Бас тарту',
                   style: TextStyle(color: Colors.white.withOpacity(0.7)),
                 ),
               ),
@@ -200,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFE94560),
                 ),
-                child: const Text('Сохранить'),
+                child: const Text('Сақтау'),
               ),
             ],
           ),
@@ -283,7 +283,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          _user?.fullName ?? 'Пользователь',
+                          _user?.fullName ?? 'Пайдаланушы',
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -292,7 +292,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          _user?.email ?? 'Email не указан',
+                          _user?.email ?? 'Email көрсетілмеген',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white.withOpacity(0.7),
@@ -321,8 +321,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(height: 40),
                         _buildMenuCard(
                           icon: Icons.favorite,
-                          title: 'Избранное',
-                          subtitle: 'Ваши сохраненные площадки',
+                          title: 'Таңдаулылар',
+                          subtitle: 'Сіздің сақталған алаңдарыңыз',
                           onTap: () {
                             Navigator.push(
                               context,
@@ -336,7 +336,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _buildMenuCard(
                             icon: Icons.admin_panel_settings,
                             title: 'Админ-панель',
-                            subtitle: 'Управление заявками продавцов',
+                            subtitle: 'Сатушылардың өтінімдерін басқару',
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -349,49 +349,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (_user?.canApplyForSeller == true)
                           _buildMenuCard(
                             icon: Icons.store,
-                            title: 'Стать продавцом',
-                            subtitle: 'Подать заявку на продавца',
+                            title: 'Сатушы болу',
+                            subtitle: 'Сатушы болуға өтінім беру',
                             onTap: _applyForSeller,
                           ),
                         if (_user?.sellerApplication?.status ==
                             SellerApplicationStatus.pending)
                           _buildMenuCard(
                             icon: Icons.pending,
-                            title: 'Заявка на рассмотрении',
-                            subtitle: 'Ожидайте одобрения администратора',
+                            title: 'Өтініміңіз қаралуда',
+                            subtitle: 'Администратор жауабын күтіңіз',
                             onTap: () {},
                           ),
                         if (_user?.isSeller == true)
                           _buildMenuCard(
                             icon: Icons.store,
-                            title: 'Мой магазин',
+                            title: 'Менің дүкенім',
                             subtitle:
                                 _user?.sellerInfo?.shopName ??
-                                'Управление магазином',
+                                'Дүкенді басқару',
                             onTap: () {},
                           ),
                         _buildMenuCard(
                           icon: Icons.lock_outline,
-                          title: 'Сменить пароль',
-                          subtitle: 'Обновите пароль для безопасности',
+                          title: 'Құпия сөзді өзгерту',
+                          subtitle: 'Қауіпсіздік үшін құпия сөзді жаңартыңыз',
                           onTap: _changePassword,
                         ),
                         _buildMenuCard(
                           icon: Icons.edit,
-                          title: 'Редактировать профиль',
-                          subtitle: 'Изменить личную информацию',
+                          title: 'Профильді өзгерту',
+                          subtitle: 'Жеке ақпаратты өзгерту',
                           onTap: () {},
                         ),
                         _buildMenuCard(
                           icon: Icons.notifications_outlined,
-                          title: 'Уведомления',
-                          subtitle: 'Настройте уведомления',
+                          title: 'Хабарламалар',
+                          subtitle: 'Хабарламаларды реттеңіз',
                           onTap: () {},
                         ),
                         _buildMenuCard(
                           icon: Icons.help_outline,
-                          title: 'Помощь',
-                          subtitle: 'FAQ и поддержка',
+                          title: 'Көмек',
+                          subtitle: 'FAQ және қолдау',
                           onTap: () {},
                         ),
                         const SizedBox(height: 20),
@@ -425,7 +425,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                               child: const Text(
-                                'Выйти',
+                                'Шығу',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -471,10 +471,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       case UserRole.admin:
         return 'Администратор';
       case UserRole.seller:
-        return 'Продавец';
+        return 'Сатушы';
       case UserRole.user:
       default:
-        return 'Пользователь';
+        return 'Пайдаланушы';
     }
   }
 
