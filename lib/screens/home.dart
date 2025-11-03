@@ -270,49 +270,63 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
-          return Container(
-            width: 100,
-            margin: const EdgeInsets.only(right: 16),
-            child: Column(
-              children: [
-                Container(
-                  width: 70,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        category['color'] as Color,
-                        (category['color'] as Color).withOpacity(0.7),
+          return GestureDetector(
+            onTap: () {
+              // Переключаемся на соответствующую вкладку
+              setState(() {
+                if (category['label'] == 'Сахналар') {
+                  _currentIndex = 2; // Stages
+                } else if (category['label'] == 'Аспаптар') {
+                  _currentIndex = 1; // Instruments
+                } else if (category['label'] == 'Студиялар') {
+                  _currentIndex = 3; // Studios
+                }
+              });
+            },
+            child: Container(
+              width: 100,
+              margin: const EdgeInsets.only(right: 16),
+              child: Column(
+                children: [
+                  Container(
+                    width: 70,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          category['color'] as Color,
+                          (category['color'] as Color).withOpacity(0.7),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: (category['color'] as Color).withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: (category['color'] as Color).withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    child: Icon(
+                      category['icon'] as IconData,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
-                  child: Icon(
-                    category['icon'] as IconData,
-                    color: Colors.white,
-                    size: 32,
+                  const SizedBox(height: 8),
+                  Text(
+                    category['label'] as String,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  category['label'] as String,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
@@ -424,17 +438,30 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildVenueCard(Venue venue, {double width = 280}) {
-    return Container(
-      width: width,
-      margin: const EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Column(
+    return GestureDetector(
+      onTap: () {
+        // Переходим на соответствующую страницу в зависимости от типа
+        setState(() {
+          if (venue.type == 'stage') {
+            _currentIndex = 2; // Stages
+          } else if (venue.type == 'instrument') {
+            _currentIndex = 1; // Instruments
+          } else if (venue.type == 'studio') {
+            _currentIndex = 3; // Studios
+          }
+        });
+      },
+      child: Container(
+        width: width,
+        margin: const EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(
@@ -581,6 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

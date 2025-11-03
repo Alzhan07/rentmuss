@@ -50,6 +50,7 @@ class _StagesScreenState extends State<StagesScreen> {
   Future<void> _loadStages() async {
     setState(() => _isLoading = true);
 
+    // Сначала загружаем тестовые данные
     await Future.delayed(const Duration(milliseconds: 500));
 
     final sampleStages = [
@@ -242,8 +243,52 @@ class _StagesScreenState extends State<StagesScreen> {
     setState(() {
       _allStages = sampleStages;
       _filteredStages = sampleStages;
-      _isLoading = false;
     });
+
+    // Теперь пробуем загрузить данные с сервера и добавить к тестовым
+    try {
+      final response = await ApiService.getAllStages(
+        search: _searchQuery.isNotEmpty ? _searchQuery : null,
+      );
+
+      if (response['success']) {
+        final stagesData = response['stages'] as List;
+        final serverStages = stagesData.map((data) {
+          return Stage(
+            id: data['_id'] is String ? data['_id'] : data['_id']['\$oid'],
+            name: data['name'] ?? '',
+            type: 'Концертные',
+            description: data['description'] ?? '',
+            pricePerHour: (data['pricePerHour'] ?? 0).toDouble(),
+            pricePerDay: (data['pricePerDay'] ?? 0).toDouble(),
+            imageUrls: (data['imageUrls'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+            rating: (data['rating'] ?? 0).toDouble(),
+            reviewsCount: data['reviewsCount'] ?? 0,
+            location: data['location'] ?? '',
+            address: data['location'] ?? '',
+            capacity: data['capacity'] ?? 0,
+            areaSquareMeters: (data['size'] ?? 0).toDouble(),
+            hasSound: (data['facilities'] as List?)?.contains('Звуковая система') ?? false,
+            hasLighting: (data['facilities'] as List?)?.contains('Система освещения') ?? false,
+            hasBackstage: (data['facilities'] as List?)?.contains('Бэкстейдж') ?? false,
+            hasParking: (data['facilities'] as List?)?.contains('Парковка') ?? false,
+            amenities: (data['facilities'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+            ownerId: data['ownerId'] ?? '',
+            ownerName: data['ownerName'] ?? '',
+            createdAt: DateTime.tryParse(data['createdAt'] ?? '') ?? DateTime.now(),
+          );
+        }).toList();
+
+        setState(() {
+          _allStages = [...sampleStages, ...serverStages];
+          _applyFilters();
+        });
+      }
+    } catch (e) {
+      print('Error loading stages from server: $e');
+    }
+
+    setState(() => _isLoading = false);
   }
 
   void _applyFilters() {
@@ -723,7 +768,7 @@ class _StagesScreenState extends State<StagesScreen> {
                     Row(
                       children: [
                         Text(
-                          '${stage.pricePerHour.toInt()} ₽',
+                          '${stage.pricePerHour.toInt()} ₸',
                           style: const TextStyle(
                             color: Color(0xFFE94560),
                             fontSize: 18,
@@ -864,7 +909,7 @@ class _StagesScreenState extends State<StagesScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          '${stage.pricePerHour.toInt()} ₽/час',
+                          '${stage.pricePerHour.toInt()} ₸/час',
                           style: const TextStyle(
                             color: Color(0xFFE94560),
                             fontSize: 13,

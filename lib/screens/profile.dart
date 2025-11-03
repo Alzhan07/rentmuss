@@ -8,6 +8,7 @@ import 'login.dart';
 import 'favorites.dart';
 import 'admin.dart';
 import 'seller.dart';
+import 'seller_form.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -367,7 +368,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             subtitle:
                                 _user?.sellerInfo?.shopName ??
                                 'Дүкенді басқару',
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.pushNamed(context, '/seller');
+                            },
                           ),
                         _buildMenuCard(
                           icon: Icons.lock_outline,
