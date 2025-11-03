@@ -334,7 +334,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${widget.stage.pricePerHour.toInt()} ₽',
+                    '${widget.stage.pricePerHour.toInt()} ₸',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 32,
@@ -364,7 +364,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                '${widget.stage.pricePerDay.toInt()} ₽',
+                '${widget.stage.pricePerDay.toInt()} ₸',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -568,7 +568,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                   ),
                 ),
                 Text(
-                  '${(widget.stage.pricePerHour * _rentalHours).toInt()} ₽',
+                  '${(widget.stage.pricePerHour * _rentalHours).toInt()} ₸',
                   style: const TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 24,
@@ -1067,7 +1067,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'От ${widget.stage.pricePerHour.toInt()} ₽/час',
+                  'От ${widget.stage.pricePerHour.toInt()} ₸/час',
                   style: const TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 20,
@@ -1075,7 +1075,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                   ),
                 ),
                 Text(
-                  'или ${widget.stage.pricePerDay.toInt()} ₽/день',
+                  'или ${widget.stage.pricePerDay.toInt()} ₸/день',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 12,

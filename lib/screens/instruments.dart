@@ -49,7 +49,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
   Future<void> _loadInstruments() async {
     setState(() => _isLoading = true);
 
-    // Временные данные для демонстрации
+    // Сначала загружаем тестовые данные
     await Future.delayed(const Duration(milliseconds: 500));
 
     final sampleInstruments = [
@@ -207,8 +207,51 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
     setState(() {
       _allInstruments = sampleInstruments;
       _filteredInstruments = sampleInstruments;
-      _isLoading = false;
     });
+
+    // Теперь пробуем загрузить данные с сервера и добавить к тестовым
+    try {
+      final response = await ApiService.getAllInstruments(
+        category: _selectedCategory != 'Все' ? _selectedCategory : null,
+        search: _searchQuery.isNotEmpty ? _searchQuery : null,
+      );
+
+      if (response['success']) {
+        final instrumentsData = response['instruments'] as List;
+        final serverInstruments = instrumentsData.map((data) {
+          return Instrument(
+            id: data['_id'] is String ? data['_id'] : data['_id']['\$oid'],
+            name: data['name'] ?? '',
+            category: data['category'] ?? 'Другое',
+            brand: data['brand'] ?? '',
+            model: data['model'] ?? '',
+            description: data['description'] ?? '',
+            pricePerHour: (data['pricePerHour'] ?? 0).toDouble(),
+            pricePerDay: (data['pricePerDay'] ?? 0).toDouble(),
+            imageUrls: (data['imageUrls'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+            rating: (data['rating'] ?? 0).toDouble(),
+            reviewsCount: data['reviewsCount'] ?? 0,
+            location: data['location'] ?? '',
+            condition: data['condition'] ?? 'good',
+            features: (data['features'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+            ownerId: data['ownerId'] ?? '',
+            ownerName: data['ownerName'] ?? '',
+            createdAt: DateTime.tryParse(data['createdAt'] ?? '') ?? DateTime.now(),
+          );
+        }).toList();
+
+        setState(() {
+          // Добавляем данные с сервера к тестовым
+          _allInstruments = [...sampleInstruments, ...serverInstruments];
+          _applyFilters();
+        });
+      }
+    } catch (e) {
+      print('Error loading instruments from server: $e');
+      // Продолжаем работать с тестовыми данными
+    }
+
+    setState(() => _isLoading = false);
   }
 
   void _applyFilters() {
@@ -390,7 +433,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
               setState(() {
                 _selectedCategory = category['name'] as String;
               });
-              _applyFilters();
+              _loadInstruments();
             },
             child: Container(
               margin: const EdgeInsets.only(right: 12),
@@ -707,7 +750,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                     Row(
                       children: [
                         Text(
-                          '${instrument.pricePerHour.toInt()} ₽',
+                          '${instrument.pricePerHour.toInt()} ₸',
                           style: const TextStyle(
                             color: Color(0xFFE94560),
                             fontSize: 18,
@@ -859,7 +902,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${instrument.pricePerHour.toInt()} ₽/час',
+                              '${instrument.pricePerHour.toInt()} ₸/час',
                               style: const TextStyle(
                                 color: Color(0xFFE94560),
                                 fontSize: 13,

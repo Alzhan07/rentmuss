@@ -373,7 +373,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                         children: [
                           if (pricePerHour > 0)
                             Text(
-                              '${pricePerHour.toInt()} ₽/час',
+                              '${pricePerHour.toInt()} ₸/час',
                               style: const TextStyle(
                                 color: Color(0xFFE94560),
                                 fontSize: 18,
@@ -382,7 +382,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                             ),
                           if (pricePerDay != null && pricePerDay > 0)
                             Text(
-                              '${pricePerDay.toInt()} ₽/день',
+                              '${pricePerDay.toInt()} ₸/день',
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.7),
                                 fontSize: 14,

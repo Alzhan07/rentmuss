@@ -639,4 +639,302 @@ class ApiService {
       };
     }
   }
+
+  // ========== ЛИСТИНГИ (ИНСТРУМЕНТЫ/СЦЕНЫ/СТУДИИ) ==========
+
+  // Получить мои листинги (для продавца)
+  static Future<Map<String, dynamic>> getMyInstruments() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(
+        Uri.parse('$baseUrl/listings/instruments/my'),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'instruments': data['instruments'] ?? [],
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+        'instruments': [],
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> getMyStages() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(
+        Uri.parse('$baseUrl/listings/stages/my'),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'stages': data['stages'] ?? [],
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+        'stages': [],
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> getMyStudios() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(
+        Uri.parse('$baseUrl/listings/studios/my'),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'studios': data['studios'] ?? [],
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+        'studios': [],
+      };
+    }
+  }
+
+  // Получить все инструменты (публичный)
+  static Future<Map<String, dynamic>> getAllInstruments({String? category, String? search}) async {
+    try {
+      final headers = await _getHeaders();
+      var url = '$baseUrl/listings/instruments';
+      final queryParams = <String, String>{};
+
+      if (category != null && category.isNotEmpty) {
+        queryParams['category'] = category;
+      }
+      if (search != null && search.isNotEmpty) {
+        queryParams['search'] = search;
+      }
+
+      if (queryParams.isNotEmpty) {
+        url += '?${Uri(queryParameters: queryParams).query}';
+      }
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'instruments': data['instruments'] ?? [],
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+        'instruments': [],
+      };
+    }
+  }
+
+  // Получить все сцены (публичный)
+  static Future<Map<String, dynamic>> getAllStages({String? search}) async {
+    try {
+      final headers = await _getHeaders();
+      var url = '$baseUrl/listings/stages';
+
+      if (search != null && search.isNotEmpty) {
+        url += '?search=$search';
+      }
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'stages': data['stages'] ?? [],
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+        'stages': [],
+      };
+    }
+  }
+
+  // Получить все студии (публичный)
+  static Future<Map<String, dynamic>> getAllStudios({String? search}) async {
+    try {
+      final headers = await _getHeaders();
+      var url = '$baseUrl/listings/studios';
+
+      if (search != null && search.isNotEmpty) {
+        url += '?search=$search';
+      }
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'studios': data['studios'] ?? [],
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+        'studios': [],
+      };
+    }
+  }
+
+  // Создать листинг
+  static Future<Map<String, dynamic>> createInstrument(Map<String, dynamic> data) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/listings/instruments'),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+
+      final responseData = jsonDecode(response.body);
+      return {
+        'success': responseData['success'] ?? false,
+        'message': responseData['message'] ?? 'Ошибка создания',
+        'instrument': responseData['instrument'],
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> createStage(Map<String, dynamic> data) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/listings/stages'),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+
+      final responseData = jsonDecode(response.body);
+      return {
+        'success': responseData['success'] ?? false,
+        'message': responseData['message'] ?? 'Ошибка создания',
+        'stage': responseData['stage'],
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> createStudio(Map<String, dynamic> data) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/listings/studios'),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+
+      final responseData = jsonDecode(response.body);
+      return {
+        'success': responseData['success'] ?? false,
+        'message': responseData['message'] ?? 'Ошибка создания',
+        'studio': responseData['studio'],
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+      };
+    }
+  }
+
+  // Удалить листинг
+  static Future<Map<String, dynamic>> deleteInstrument(String id) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.delete(
+        Uri.parse('$baseUrl/listings/instruments/$id'),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Удалено',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteStage(String id) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.delete(
+        Uri.parse('$baseUrl/listings/stages/$id'),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Удалено',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteStudio(String id) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.delete(
+        Uri.parse('$baseUrl/listings/studios/$id'),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Удалено',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Ошибка: $e',
+      };
+    }
+  }
 }

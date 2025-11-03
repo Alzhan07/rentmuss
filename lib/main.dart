@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/login.dart';
 import 'screens/home.dart';
+import 'screens/seller.dart';
+import 'screens/add_instrument.dart';
+import 'screens/add_stage.dart';
+import 'screens/add_studio.dart';
 import 'services/api_service.dart';
 
 void main() {
@@ -33,6 +37,12 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
+      routes: {
+        '/seller': (context) => const SellerScreen(),
+        '/add-instrument': (context) => const AddInstrumentScreen(),
+        '/add-stage': (context) => const AddStageScreen(),
+        '/add-studio': (context) => const AddStudioScreen(),
+      },
       home: FutureBuilder<bool>(
         future: ApiService.isLoggedIn(),
         builder: (context, snapshot) {

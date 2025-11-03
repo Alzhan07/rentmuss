@@ -378,7 +378,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${widget.instrument.pricePerHour.toInt()} ₽',
+                    '${widget.instrument.pricePerHour.toInt()} ₸',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 32,
@@ -408,7 +408,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                '${widget.instrument.pricePerDay.toInt()} ₽',
+                '${widget.instrument.pricePerDay.toInt()} ₸',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -515,7 +515,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
                   ),
                 ),
                 Text(
-                  '${(widget.instrument.pricePerHour * _rentalHours).toInt()} ₽',
+                  '${(widget.instrument.pricePerHour * _rentalHours).toInt()} ₸',
                   style: const TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 24,
@@ -828,7 +828,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'От ${widget.instrument.pricePerHour.toInt()} ₽/час',
+                  'От ${widget.instrument.pricePerHour.toInt()} ₸/час',
                   style: const TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 20,
@@ -836,7 +836,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
                   ),
                 ),
                 Text(
-                  'или ${widget.instrument.pricePerDay.toInt()} ₽/день',
+                  'или ${widget.instrument.pricePerDay.toInt()} ₸/день',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 12,

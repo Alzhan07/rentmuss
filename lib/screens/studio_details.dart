@@ -356,7 +356,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${widget.studio.pricePerHour.toInt()} ₽',
+                    '${widget.studio.pricePerHour.toInt()} ₸',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 32,
@@ -386,7 +386,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                '${widget.studio.pricePerDay.toInt()} ₽',
+                '${widget.studio.pricePerDay.toInt()} ₸',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -493,7 +493,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                   ),
                 ),
                 Text(
-                  '${(widget.studio.pricePerHour * _rentalHours).toInt()} ₽',
+                  '${(widget.studio.pricePerHour * _rentalHours).toInt()} ₸',
                   style: const TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 24,
@@ -1041,7 +1041,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'От ${widget.studio.pricePerHour.toInt()} ₽/час',
+                  'От ${widget.studio.pricePerHour.toInt()} ₸/час',
                   style: const TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 20,
@@ -1049,7 +1049,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                   ),
                 ),
                 Text(
-                  'или ${widget.studio.pricePerDay.toInt()} ₽/день',
+                  'или ${widget.studio.pricePerDay.toInt()} ₸/день',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 12,

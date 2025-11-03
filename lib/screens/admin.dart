@@ -144,11 +144,29 @@ class _AdminScreenState extends State<AdminScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  _reviewApplication(
-                    userId: application['_id']?['\$oid'],
-                    approved: approve,
-                    rejectionReason: approve ? null : reasonController.text,
-                  );
+
+                  // Получаем ID в правильном формате
+                  String? userId;
+                  if (application['_id'] is String) {
+                    userId = application['_id'];
+                  } else if (application['_id'] is Map) {
+                    userId = application['_id']['\$oid'];
+                  }
+
+                  if (userId != null) {
+                    _reviewApplication(
+                      userId: userId,
+                      approved: approve,
+                      rejectionReason: approve ? null : reasonController.text,
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Қате: ID табылмады'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: approve ? Colors.green : Colors.red,

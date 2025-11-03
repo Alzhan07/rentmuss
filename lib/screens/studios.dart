@@ -47,6 +47,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
   Future<void> _loadStudios() async {
     setState(() => _isLoading = true);
 
+    // Сначала загружаем тестовые данные
     await Future.delayed(const Duration(milliseconds: 500));
 
     final sampleStudios = [
@@ -240,8 +241,55 @@ class _StudiosScreenState extends State<StudiosScreen> {
     setState(() {
       _allStudios = sampleStudios;
       _filteredStudios = sampleStudios;
-      _isLoading = false;
     });
+
+    // Теперь пробуем загрузить данные с сервера и добавить к тестовым
+    try {
+      final response = await ApiService.getAllStudios(
+        search: _searchQuery.isNotEmpty ? _searchQuery : null,
+      );
+
+      if (response['success']) {
+        final studiosData = response['studios'] as List;
+        final serverStudios = studiosData.map((data) {
+          return Studio(
+            id: data['_id'] is String ? data['_id'] : data['_id']['\$oid'],
+            name: data['name'] ?? '',
+            type: 'Звукозапись',
+            description: data['description'] ?? '',
+            pricePerHour: (data['pricePerHour'] ?? 0).toDouble(),
+            pricePerDay: (data['pricePerDay'] ?? 0).toDouble(),
+            imageUrls: (data['imageUrls'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+            rating: (data['rating'] ?? 0).toDouble(),
+            reviewsCount: data['reviewsCount'] ?? 0,
+            location: data['location'] ?? '',
+            address: data['location'] ?? '',
+            areaSquareMeters: (data['size'] ?? 0).toDouble(),
+            hasEngineer: false,
+            hasInstruments: (data['equipment'] as List?)?.contains('Музыкальные инструменты') ?? false,
+            hasSoundproofing: (data['amenities'] as List?)?.contains('Звукоизоляция') ?? false,
+            hasAirConditioning: (data['amenities'] as List?)?.contains('Кондиционер') ?? false,
+            equipment: (data['equipment'] as List<dynamic>?)?.join(', ') ?? '',
+            amenities: [
+              ...(data['equipment'] as List<dynamic>?)?.map((e) => e.toString()) ?? [],
+              ...(data['amenities'] as List<dynamic>?)?.map((e) => e.toString()) ?? [],
+            ],
+            ownerId: data['ownerId'] ?? '',
+            ownerName: data['ownerName'] ?? '',
+            createdAt: DateTime.tryParse(data['createdAt'] ?? '') ?? DateTime.now(),
+          );
+        }).toList();
+
+        setState(() {
+          _allStudios = [...sampleStudios, ...serverStudios];
+          _applyFilters();
+        });
+      }
+    } catch (e) {
+      print('Error loading studios from server: $e');
+    }
+
+    setState(() => _isLoading = false);
   }
 
   void _applyFilters() {
@@ -689,7 +737,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
                     Row(
                       children: [
                         Text(
-                          '${studio.pricePerHour.toInt()} ₽',
+                          '${studio.pricePerHour.toInt()} ₸',
                           style: const TextStyle(
                             color: Color(0xFFE94560),
                             fontSize: 18,
@@ -831,7 +879,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          '${studio.pricePerHour.toInt()} ₽/час',
+                          '${studio.pricePerHour.toInt()} ₸/час',
                           style: const TextStyle(
                             color: Color(0xFFE94560),
                             fontSize: 13,
