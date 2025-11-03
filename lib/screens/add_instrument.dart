@@ -18,23 +18,23 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
   final _descriptionController = TextEditingController();
   final _locationController = TextEditingController();
 
-  String _selectedCategory = 'Гитары';
-  String _selectedCondition = 'Отличное';
+  String _selectedCategory = 'Гитаралар';
+  String _selectedCondition = 'Керемет';
   bool _isSubmitting = false;
 
   final List<String> _categories = [
-    'Гитары',
-    'Клавишные',
-    'Ударные',
-    'Духовые',
-    'Струнные',
+    'Гитаралар',
+    'Пернетақталы',
+    'Ұрмалы',
+    'Үрмелі',
+    'Шекті',
     'Бас'
   ];
 
   final List<String> _conditions = [
-    'Отличное',
-    'Хорошее',
-    'Удовлетворительное'
+    'Керемет',
+    'Жақсы',
+    'Қанағаттанарлық'
   ];
 
   @override
@@ -74,21 +74,21 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
       if (response['success']) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Инструмент добавлен!')),
+            const SnackBar(content: Text('Аспап қосылды!')),
           );
           Navigator.pop(context, true);
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response['message'] ?? 'Ошибка добавления')),
+            SnackBar(content: Text(response['message'] ?? 'Қосуда қате орын алды!')),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка: $e')),
+          SnackBar(content: Text('Қате: $e')),
         );
       }
     } finally {
@@ -100,7 +100,7 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Добавить инструмент'),
+        title: const Text('Аспап қосу'),
       ),
       body: Form(
         key: _formKey,
@@ -110,13 +110,13 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                labelText: 'Название',
-                hintText: 'Например: Акустическая гитара Yamaha',
+                labelText: 'Атауы',
+                hintText: 'Мысалы: Акустикалық гитара Yamaha',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите название';
+                  return 'Атауын енгізіңіз';
                 }
                 return null;
               },
@@ -125,7 +125,7 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
             DropdownButtonFormField<String>(
               value: _selectedCategory,
               decoration: const InputDecoration(
-                labelText: 'Категория',
+                labelText: 'Санат',
                 border: OutlineInputBorder(),
               ),
               items: _categories.map((category) {
@@ -145,12 +145,12 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
               controller: _brandController,
               decoration: const InputDecoration(
                 labelText: 'Бренд',
-                hintText: 'Например: Yamaha, Fender, Gibson',
+                hintText: 'Мысалы: Yamaha, Fender, Gibson',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите бренд';
+                  return 'Брендін енгізіңіз';
                 }
                 return null;
               },
@@ -160,12 +160,12 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
               controller: _modelController,
               decoration: const InputDecoration(
                 labelText: 'Модель',
-                hintText: 'Например: FG800',
+                hintText: 'Мысалы: FG800',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите модель';
+                  return 'Модельді енгізіңіз';
                 }
                 return null;
               },
@@ -174,7 +174,7 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
             DropdownButtonFormField<String>(
               value: _selectedCondition,
               decoration: const InputDecoration(
-                labelText: 'Состояние',
+                labelText: 'Күйі',
                 border: OutlineInputBorder(),
               ),
               items: _conditions.map((condition) {
@@ -193,18 +193,18 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
             TextFormField(
               controller: _pricePerHourController,
               decoration: const InputDecoration(
-                labelText: 'Цена за час (₸)',
+                labelText: 'Сағаттық баға (₸)',
                 border: OutlineInputBorder(),
                 prefixText: '₸ ',
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите цену за час';
+                  return 'Сағаттық бағаны енгізіңіз';
                 }
                 final price = double.tryParse(value);
                 if (price == null || price <= 0) {
-                  return 'Введите корректную цену';
+                  return 'Дұрыс бағаны енгізіңіз';
                 }
                 return null;
               },
@@ -213,18 +213,18 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
             TextFormField(
               controller: _pricePerDayController,
               decoration: const InputDecoration(
-                labelText: 'Цена за день (₸)',
+                labelText: 'Күндік баға (₸)',
                 border: OutlineInputBorder(),
                 prefixText: '₸ ',
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите цену за день';
+                  return 'Күндік бағаны енгізіңіз';
                 }
                 final price = double.tryParse(value);
                 if (price == null || price <= 0) {
-                  return 'Введите корректную цену';
+                  return 'Дұрыс бағаны енгізіңіз';
                 }
                 return null;
               },
@@ -233,13 +233,13 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
             TextFormField(
               controller: _locationController,
               decoration: const InputDecoration(
-                labelText: 'Местоположение',
-                hintText: 'Например: г. Алматы, ул. Абая 150',
+                labelText: 'Орналасқан жері',
+                hintText: 'Мысалы: Алматы қаласы, Абай Құнанбаев көшесі, 150',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите местоположение';
+                  return 'Орналасқан жерін енгізіңіз';
                 }
                 return null;
               },
@@ -248,14 +248,14 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
             TextFormField(
               controller: _descriptionController,
               decoration: const InputDecoration(
-                labelText: 'Описание',
-                hintText: 'Опишите инструмент подробнее',
+                labelText: 'Сипаттамасы',
+                hintText: 'Аспаптың толық сипаттамасын енгізіңіз',
                 border: OutlineInputBorder(),
               ),
               maxLines: 4,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите описание';
+                  return 'Сипаттаманы енгізіңіз';
                 }
                 return null;
               },
@@ -271,7 +271,7 @@ class _AddInstrumentScreenState extends State<AddInstrumentScreen> {
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('Добавить инструмент', style: TextStyle(fontSize: 16)),
+                    : const Text('Аспапты қосу', style: TextStyle(fontSize: 16)),
               ),
             ),
           ],

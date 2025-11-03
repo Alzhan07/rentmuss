@@ -83,17 +83,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 children: [
                   Icon(Icons.check_circle, color: Colors.green, size: 32),
                   SizedBox(width: 12),
-                  Text('Успешно!', style: TextStyle(color: Colors.white)),
+                  Text('Сәтті!', style: TextStyle(color: Colors.white)),
                 ],
               ),
               content: const Text(
-                'Ваш пароль успешно изменен. Теперь вы можете войти с новым паролем.',
+                'Сіздің құпия сөзіңіз сәтті өзгертілді. Енді сіз жаңа құпия сөзіңізбен кіре аласыз.',
                 style: TextStyle(color: Colors.white70),
               ),
               actions: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Закрыть диалог
+                    Navigator.of(context).pop();
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (context) => const LoginScreen(),
@@ -104,7 +104,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE94560),
                   ),
-                  child: const Text('Войти'),
+                  child: const Text('Кіру'),
                 ),
               ],
             ),
@@ -112,7 +112,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message'] ?? 'Ошибка сброса пароля'),
+          content: Text(result['message'] ?? 'Құпия сөзді қалпына келтіру қатесі'),
           backgroundColor: Colors.red,
         ),
       );
@@ -143,7 +143,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Сброс пароля',
+                    'Құпия сөзді қалпына келтіру',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -152,7 +152,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Мы отправили код на ${widget.email}',
+                    'Біз кодты ${widget.email} поштасына жібердік.',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white.withOpacity(0.7),
@@ -175,7 +175,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           textAlign: TextAlign.center,
                           maxLength: 6,
                           decoration: InputDecoration(
-                            labelText: 'Код из email',
+                            labelText: 'email коды',
                             labelStyle: TextStyle(
                               color: Colors.white.withOpacity(0.7),
                             ),
@@ -206,10 +206,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Введите код из email';
+                              return 'email-дағы кодты енгізіңіз';
                             }
                             if (value.length != 6) {
-                              return 'Код должен содержать 6 цифр';
+                              return 'Код 6 цифрдан тұруы тиіс';
                             }
                             return null;
                           },
@@ -220,7 +220,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           obscureText: _obscurePassword,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            labelText: 'Новый пароль',
+                            labelText: 'Жаңа құпия сөз',
                             labelStyle: TextStyle(
                               color: Colors.white.withOpacity(0.7),
                             ),
@@ -263,14 +263,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Введите пароль';
+                              return 'Құпия сөзді енгізіңіз';
                             }
                             if (!_hasMinLength ||
                                 !_hasUpperCase ||
                                 !_hasLowerCase ||
                                 !_hasDigit ||
                                 !_hasSpecialChar) {
-                              return 'Пароль не соответствует требованиям';
+                              return 'Құпия сөз талаптарға сәйкес келмейді';
                             }
                             return null;
                           },
@@ -283,7 +283,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           obscureText: _obscureConfirmPassword,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            labelText: 'Подтвердите пароль',
+                            labelText: 'Құпия сөзді растаңыз',
                             labelStyle: TextStyle(
                               color: Colors.white.withOpacity(0.7),
                             ),
@@ -327,10 +327,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Подтвердите пароль';
+                              return 'Құпия сөзді растаңыз';
                             }
                             if (value != _passwordController.text) {
-                              return 'Пароли не совпадают';
+                              return 'Құпия сөздер сәйкес келмейді';
                             }
                             return null;
                           },
@@ -359,7 +359,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       ),
                                     )
                                     : const Text(
-                                      'Сбросить пароль',
+                                      'Құпия сөзді қалпына келтіру',
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -391,7 +391,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Требования к паролю:',
+            'Құпия сөз талаптары:',
             style: TextStyle(
               color: Colors.white.withOpacity(0.7),
               fontSize: 12,
@@ -399,11 +399,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          _buildRequirementRow('Минимум 8 символов', _hasMinLength),
-          _buildRequirementRow('Заглавная буква (A-Z)', _hasUpperCase),
-          _buildRequirementRow('Строчная буква (a-z)', _hasLowerCase),
+          _buildRequirementRow('Кем дегенде 8 таңба', _hasMinLength),
+          _buildRequirementRow('Бас әріп (A-Z)', _hasUpperCase),
+          _buildRequirementRow('Кіші әріп (a-z)', _hasLowerCase),
           _buildRequirementRow('Цифра (0-9)', _hasDigit),
-          _buildRequirementRow('Спецсимвол (!@#\$%^&*)', _hasSpecialChar),
+          _buildRequirementRow('Арнайы таңба (!@#\$%^&*)', _hasSpecialChar),
         ],
       ),
     );

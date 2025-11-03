@@ -54,7 +54,7 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
       setState(() => _isLoadingInstruments = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка загрузки инструментов: $e')),
+          SnackBar(content: Text('Аспаптарды жүктеу қатесі: $e')),
         );
       }
     }
@@ -74,7 +74,7 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
       setState(() => _isLoadingStages = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка загрузки сцен: $e')),
+          SnackBar(content: Text('Сахналарды жүктеу қатесі: $e')),
         );
       }
     }
@@ -94,7 +94,7 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
       setState(() => _isLoadingStudios = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка загрузки студий: $e')),
+          SnackBar(content: Text('Студияларды жүктеу қатесі: $e')),
         );
       }
     }
@@ -104,16 +104,16 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Подтверждение'),
-        content: const Text('Вы уверены, что хотите удалить этот инструмент?'),
+        title: const Text('Растау'),
+        content: const Text('Сіз осы аспапты жоюға сенімдісіз бе?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Отмена'),
+            child: const Text('Бас тарту'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Удалить', style: TextStyle(color: Colors.red)),
+            child: const Text('Жою', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -124,13 +124,13 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
         final response = await ApiService.deleteInstrument(id);
         if (response['success']) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Инструмент удален')),
+            const SnackBar(content: Text('Аспап жойылды')),
           );
           _loadInstruments();
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка удаления: $e')),
+          SnackBar(content: Text('Аспапты жою қатесі: $e')),
         );
       }
     }
@@ -140,16 +140,16 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Подтверждение'),
-        content: const Text('Вы уверены, что хотите удалить эту сцену?'),
+        title: const Text('Растау'),
+        content: const Text('Сіз осы сахнаны жоюға сенімдісіз бе?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Отмена'),
+            child: const Text('Бас тарту'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Удалить', style: TextStyle(color: Colors.red)),
+            child: const Text('Жою', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -160,13 +160,13 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
         final response = await ApiService.deleteStage(id);
         if (response['success']) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Сцена удалена')),
+            const SnackBar(content: Text('Сахна жойылды')),
           );
           _loadStages();
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка удаления: $e')),
+          SnackBar(content: Text('Сахнаны жою қатесі: $e')),
         );
       }
     }
@@ -176,16 +176,16 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Подтверждение'),
-        content: const Text('Вы уверены, что хотите удалить эту студию?'),
+        title: const Text('Растау'),
+        content: const Text('Сіз осы студияны жоюға сенімдісіз бе?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Отмена'),
+            child: const Text('Бас тарту'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Удалить', style: TextStyle(color: Colors.red)),
+            child: const Text('Жою', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -196,13 +196,13 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
         final response = await ApiService.deleteStudio(id);
         if (response['success']) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Студия удалена')),
+            const SnackBar(content: Text('Студия жойылды')),
           );
           _loadStudios();
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка удаления: $e')),
+          SnackBar(content: Text('Студияны жою қатесі: $e')),
         );
       }
     }
@@ -212,13 +212,13 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Мои объявления'),
+        title: const Text('Менің хабарландыруларым'),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
-            Tab(text: 'Инструменты'),
-            Tab(text: 'Сцены'),
-            Tab(text: 'Студии'),
+            Tab(text: 'Инструменттер'),
+            Tab(text: 'Сахналар'),
+            Tab(text: 'Студиялар'),
           ],
         ),
       ),
@@ -270,12 +270,12 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
             Icon(Icons.music_note, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              'У вас пока нет инструментов',
+              'Сізде әзірге аспаптар жоқ',
               style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
             Text(
-              'Нажмите + чтобы добавить',
+              'Қосу үшін "+" батырмасын басыңыз ',
               style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             ),
           ],
@@ -300,13 +300,13 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
               leading: CircleAvatar(
                 child: Icon(Icons.music_note),
               ),
-              title: Text(instrument['name'] ?? 'Без названия'),
+              title: Text(instrument['name'] ?? 'Атаусы жоқ'),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('${instrument['brand']} ${instrument['model']}'),
                   Text(
-                    '${instrument['pricePerHour']} ₸/час, ${instrument['pricePerDay']} ₸/день',
+                    '${instrument['pricePerHour']} ₸/сағат, ${instrument['pricePerDay']} ₸/күн',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -336,12 +336,12 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
             Icon(Icons.theater_comedy, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              'У вас пока нет сцен',
+              'Сізде әзірге сахналар жоқ',
               style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
             Text(
-              'Нажмите + чтобы добавить',
+              'Қосу үшін "+" батырмасын басыңыз',
               style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             ),
           ],
@@ -366,14 +366,14 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
               leading: CircleAvatar(
                 child: Icon(Icons.theater_comedy),
               ),
-              title: Text(stage['name'] ?? 'Без названия'),
+              title: Text(stage['name'] ?? 'Атауы жоқ'),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('${stage['location']}'),
-                  Text('Вместимость: ${stage['capacity']} человек'),
+                  Text('Сыйымдылығы: ${stage['capacity']} адам'),
                   Text(
-                    '${stage['pricePerHour']} ₸/час, ${stage['pricePerDay']} ₸/день',
+                    '${stage['pricePerHour']} ₸/сағат, ${stage['pricePerDay']} ₸/күн',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -403,12 +403,12 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
             Icon(Icons.home_work, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              'У вас пока нет студий',
+              'Сізде әзірге студиялар жоқ',
               style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
             Text(
-              'Нажмите + чтобы добавить',
+              'Қосу үшін "+" батырмасын басыңыз',
               style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             ),
           ],
@@ -433,14 +433,14 @@ class _SellerScreenState extends State<SellerScreen> with SingleTickerProviderSt
               leading: CircleAvatar(
                 child: Icon(Icons.home_work),
               ),
-              title: Text(studio['name'] ?? 'Без названия'),
+              title: Text(studio['name'] ?? 'Атауы жоқ'),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('${studio['location']}'),
                   Text('${studio['size']} м²'),
                   Text(
-                    '${studio['pricePerHour']} ₸/час, ${studio['pricePerDay']} ₸/день',
+                    '${studio['pricePerHour']} ₸/сағат, ${studio['pricePerDay']} ₸/күн',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

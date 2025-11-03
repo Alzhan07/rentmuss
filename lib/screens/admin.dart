@@ -542,12 +542,12 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   String _formatDate(DateTime? date) {
-    if (date == null) return 'Дата не указана';
+    if (date == null) return 'Уақыт берілмеген';
 
     try {
       return DateFormat('dd.MM.yyyy HH:mm').format(date);
     } catch (_) {
-      return 'Неверная дата';
+      return 'Қате уақыт';
     }
   }
 }

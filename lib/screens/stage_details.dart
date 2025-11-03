@@ -49,7 +49,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message'] ?? 'Удалено из избранного'),
+          content: Text(result['message'] ?? 'Таңдаулылардан жойылды'),
           backgroundColor: result['success'] ? Colors.green : Colors.red,
           duration: const Duration(seconds: 2),
         ),
@@ -76,7 +76,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message'] ?? 'Добавлено в избранное'),
+          content: Text(result['message'] ?? 'Таңдаулыларға қосылды'),
           backgroundColor: result['success'] ? Colors.green : Colors.red,
           duration: const Duration(seconds: 2),
         ),
@@ -284,7 +284,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               ),
               const SizedBox(width: 8),
               Text(
-                '(${widget.stage.reviewsCount} отзывов)',
+                '(${widget.stage.reviewsCount} пікір)',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.6),
                   fontSize: 14,
@@ -323,7 +323,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Цена аренды',
+                'Жалға алу бағасы',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -342,7 +342,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                     ),
                   ),
                   const Text(
-                    ' /час',
+                    ' /сағат',
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 16,
@@ -356,7 +356,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const Text(
-                'За день',
+                'Бір тәулікте',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -416,7 +416,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'Вместимость',
+                    'Сыйымдылығы',
                     style: TextStyle(
                       color: Colors.white54,
                       fontSize: 12,
@@ -460,7 +460,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'м² площадь',
+                    'м² алаңы',
                     style: TextStyle(
                       color: Colors.white54,
                       fontSize: 12,
@@ -488,7 +488,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Калькулятор аренды',
+            'Жалға алу калькуляторы',
             style: TextStyle(
               color: Colors.white,
               fontSize: 18,
@@ -499,7 +499,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
           Row(
             children: [
               const Text(
-                'Количество часов:',
+                'Сағат саны:',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -560,7 +560,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Итого к оплате:',
+                  'Төлеу құны:',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -590,7 +590,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Оснащение',
+            'Жабдықтау',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -603,7 +603,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               Expanded(
                 child: _buildFacilityCard(
                   Icons.volume_up,
-                  'Звук',
+                  'Дыбыс',
                   widget.stage.hasSound,
                 ),
               ),
@@ -611,7 +611,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               Expanded(
                 child: _buildFacilityCard(
                   Icons.lightbulb,
-                  'Свет',
+                  'Жарық',
                   widget.stage.hasLighting,
                 ),
               ),
@@ -623,7 +623,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               Expanded(
                 child: _buildFacilityCard(
                   Icons.weekend,
-                  'Гримерки',
+                  'Гримеркалар',
                   widget.stage.hasBackstage,
                 ),
               ),
@@ -631,7 +631,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               Expanded(
                 child: _buildFacilityCard(
                   Icons.local_parking,
-                  'Парковка',
+                  'Тұрақ',
                   widget.stage.hasParking,
                 ),
               ),
@@ -693,7 +693,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Дополнительно',
+            'Қосымша',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -745,7 +745,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Описание',
+            'Сиппатама',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -796,7 +796,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Местоположение',
+                      'Орналасу орны',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -833,7 +833,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               },
               icon: const Icon(Icons.map, color: Color(0xFFE94560)),
               label: const Text(
-                'Показать на карте',
+                'Картаны көрсету',
                 style: TextStyle(
                   color: Color(0xFFE94560),
                   fontWeight: FontWeight.w600,
@@ -881,7 +881,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Организатор',
+                  'Ұйымдастырушы',
                   style: TextStyle(
                     color: Colors.white54,
                     fontSize: 12,
@@ -925,7 +925,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Отзывы',
+                'Пікірлер',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -935,7 +935,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               TextButton(
                 onPressed: () {},
                 child: const Text(
-                  'Все отзывы',
+                  'Барлық пікірлер',
                   style: TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 14,
@@ -946,17 +946,17 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
           ),
           const SizedBox(height: 16),
           _buildReviewCard(
-            'Александр Иванов',
+            'Ардақ Назар',
             5.0,
-            'Отличная площадка! Профессиональное оборудование, отзывчивый персонал.',
-            '3 дня назад',
+            'Керемет алаң! Профессионалды жабдық, жауапты персонал.',
+            '3 күн бұрын',
           ),
           const SizedBox(height: 12),
           _buildReviewCard(
-            'Екатерина Смирнова',
+            'Аша Матай',
             4.5,
-            'Хорошая сцена, но парковка маловата для крупного мероприятия.',
-            '1 неделю назад',
+            'Жақсы алаң, бірақ үлкен іс-шаралар үшін тұрақ аз.',
+            '1 апта бұрын',
           ),
         ],
       ),
@@ -1067,7 +1067,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'От ${widget.stage.pricePerHour.toInt()} ₸/час',
+                  '${widget.stage.pricePerHour.toInt()} ₸/сағатынан басталады',
                   style: const TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 20,
@@ -1075,7 +1075,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                   ),
                 ),
                 Text(
-                  'или ${widget.stage.pricePerDay.toInt()} ₸/день',
+                  'немесе ${widget.stage.pricePerDay.toInt()} ₸/күніне',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 12,
@@ -1096,7 +1096,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                   elevation: 0,
                 ),
                 child: const Text(
-                  'Забронировать',
+                  'Брондау',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -1126,7 +1126,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Бронирование сцены',
+                'Сахна брондау',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -1143,7 +1143,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
               ),
               const SizedBox(height: 24),
               const Text(
-                'Выберите дату и время мероприятия',
+                'Күн мен уақытты таңдаңыз',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -1163,7 +1163,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                     const Icon(Icons.calendar_today, color: Color(0xFFE94560)),
                     const SizedBox(width: 12),
                     Text(
-                      'Выбрать дату',
+                      'Күнді таңдаңыз',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                         fontSize: 14,
@@ -1180,7 +1180,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Заявка на бронирование отправлена!'),
+                        content: Text('Брондау өтінімі жіберілді!'),
                         backgroundColor: Color(0xFF00D9A5),
                       ),
                     );
@@ -1193,7 +1193,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
                     ),
                   ),
                   child: const Text(
-                    'Отправить заявку',
+                    'Брондау өтінімін жіберу',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,

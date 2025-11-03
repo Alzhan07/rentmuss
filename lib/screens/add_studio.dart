@@ -19,13 +19,11 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
 
   bool _isSubmitting = false;
 
-  // Equipment
   bool _hasMicrophones = false;
   bool _hasMixingConsole = false;
   bool _hasMonitors = false;
   bool _hasInstruments = false;
 
-  // Amenities
   bool _hasSoundproofing = false;
   bool _hasAirConditioning = false;
   bool _hasWiFi = false;
@@ -52,17 +50,17 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
 
     try {
       final equipment = <String>[];
-      if (_hasMicrophones) equipment.add('Микрофоны');
-      if (_hasMixingConsole) equipment.add('Микшерный пульт');
-      if (_hasMonitors) equipment.add('Мониторы');
-      if (_hasInstruments) equipment.add('Музыкальные инструменты');
+      if (_hasMicrophones) equipment.add('Микрофондар');
+      if (_hasMixingConsole) equipment.add('Микшер пульті');
+      if (_hasMonitors) equipment.add('Мониторлар');
+      if (_hasInstruments) equipment.add('Музыкалық аспаптар');
 
       final amenities = <String>[];
-      if (_hasSoundproofing) amenities.add('Звукоизоляция');
+      if (_hasSoundproofing) amenities.add('Дыбыс изоляциясы');
       if (_hasAirConditioning) amenities.add('Кондиционер');
       if (_hasWiFi) amenities.add('WiFi');
-      if (_hasParking) amenities.add('Парковка');
-      if (_hasKitchen) amenities.add('Кухня');
+      if (_hasParking) amenities.add('Тұрақ');
+      if (_hasKitchen) amenities.add('Асхана');
 
       final data = {
         'name': _nameController.text.trim(),
@@ -80,21 +78,21 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
       if (response['success']) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Студия добавлена!')),
+            const SnackBar(content: Text('Студия қосылды!')),
           );
           Navigator.pop(context, true);
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response['message'] ?? 'Ошибка добавления')),
+            SnackBar(content: Text(response['message'] ?? 'Қосуда қате орын алды!')),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка: $e')),
+          SnackBar(content: Text('Қате: $e')),
         );
       }
     } finally {
@@ -106,7 +104,7 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Добавить студию'),
+        title: const Text('Студияны қосу'),
       ),
       body: Form(
         key: _formKey,
@@ -116,13 +114,13 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                labelText: 'Название',
-                hintText: 'Например: Студия звукозаписи "Мелодия"',
+                labelText: 'Атауы',
+                hintText: 'Мысалы: дыбыс жазатын студия "Әуен"',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите название';
+                  return 'Атауын енгізіңіз';
                 }
                 return null;
               },
@@ -131,13 +129,13 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
             TextFormField(
               controller: _locationController,
               decoration: const InputDecoration(
-                labelText: 'Местоположение',
-                hintText: 'Например: г. Алматы, ул. Толе би 123',
+                labelText: 'Орналасқан жері',
+                hintText: 'Мысалы: Алматы қаласы, Толе би көшесі, 123',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите местоположение';
+                  return 'Орналасқан жерін енгізіңіз';
                 }
                 return null;
               },
@@ -146,17 +144,17 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
             TextFormField(
               controller: _sizeController,
               decoration: const InputDecoration(
-                labelText: 'Площадь (м²)',
+                labelText: 'Көлемі (м²)',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите площадь';
+                  return 'Көлемін енгізіңіз';
                 }
                 final size = double.tryParse(value);
                 if (size == null || size <= 0) {
-                  return 'Введите корректное значение';
+                  return 'Дұрыс мәнді енгізіңіз';
                 }
                 return null;
               },
@@ -165,18 +163,18 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
             TextFormField(
               controller: _pricePerHourController,
               decoration: const InputDecoration(
-                labelText: 'Цена за час (₸)',
+                labelText: 'Сағаттық баға (₸)',
                 border: OutlineInputBorder(),
                 prefixText: '₸ ',
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите цену за час';
+                  return 'Сағаттық бағаны енгізіңіз';
                 }
                 final price = double.tryParse(value);
                 if (price == null || price <= 0) {
-                  return 'Введите корректную цену';
+                  return 'Дұрыс бағаны енгізіңіз';
                 }
                 return null;
               },
@@ -185,18 +183,18 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
             TextFormField(
               controller: _pricePerDayController,
               decoration: const InputDecoration(
-                labelText: 'Цена за день (₸)',
+                labelText: 'Күндік баға (₸)',
                 border: OutlineInputBorder(),
                 prefixText: '₸ ',
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите цену за день';
+                  return 'Күндік бағаны енгізіңіз';
                 }
                 final price = double.tryParse(value);
                 if (price == null || price <= 0) {
-                  return 'Введите корректную цену';
+                  return 'Дұрыс бағаны енгізіңіз';
                 }
                 return null;
               },
@@ -205,46 +203,46 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
             TextFormField(
               controller: _descriptionController,
               decoration: const InputDecoration(
-                labelText: 'Описание',
-                hintText: 'Опишите студию подробнее',
+                labelText: 'Сипаттама',
+                hintText: 'Студияның толық сипаттамасын енгізіңіз',
                 border: OutlineInputBorder(),
               ),
               maxLines: 4,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите описание';
+                  return 'Сипаттаманы енгізіңіз';
                 }
                 return null;
               },
             ),
             const SizedBox(height: 16),
             const Text(
-              'Оборудование:',
+              'Жабдықтар:',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             CheckboxListTile(
-              title: const Text('Микрофоны'),
+              title: const Text('Микрофондар'),
               value: _hasMicrophones,
               onChanged: (value) {
                 setState(() => _hasMicrophones = value ?? false);
               },
             ),
             CheckboxListTile(
-              title: const Text('Микшерный пульт'),
+              title: const Text('Микшер пульті'),
               value: _hasMixingConsole,
               onChanged: (value) {
                 setState(() => _hasMixingConsole = value ?? false);
               },
             ),
             CheckboxListTile(
-              title: const Text('Мониторы'),
+              title: const Text('Мониторлар'),
               value: _hasMonitors,
               onChanged: (value) {
                 setState(() => _hasMonitors = value ?? false);
               },
             ),
             CheckboxListTile(
-              title: const Text('Музыкальные инструменты'),
+              title: const Text('Музыкалық құралдар'),
               value: _hasInstruments,
               onChanged: (value) {
                 setState(() => _hasInstruments = value ?? false);
@@ -252,11 +250,11 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
             ),
             const SizedBox(height: 16),
             const Text(
-              'Удобства:',
+              'Ыңғайлылықтар:',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             CheckboxListTile(
-              title: const Text('Звукоизоляция'),
+              title: const Text('Дыбыс изоляциясы'),
               value: _hasSoundproofing,
               onChanged: (value) {
                 setState(() => _hasSoundproofing = value ?? false);
@@ -277,14 +275,14 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
               },
             ),
             CheckboxListTile(
-              title: const Text('Парковка'),
+              title: const Text('Тұрақ'),
               value: _hasParking,
               onChanged: (value) {
                 setState(() => _hasParking = value ?? false);
               },
             ),
             CheckboxListTile(
-              title: const Text('Кухня'),
+              title: const Text('Асхана'),
               value: _hasKitchen,
               onChanged: (value) {
                 setState(() => _hasKitchen = value ?? false);
@@ -301,7 +299,7 @@ class _AddStudioScreenState extends State<AddStudioScreen> {
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('Добавить студию', style: TextStyle(fontSize: 16)),
+                    : const Text('Студияны қосу', style: TextStyle(fontSize: 16)),
               ),
             ),
           ],

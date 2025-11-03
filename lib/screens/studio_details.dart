@@ -49,7 +49,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message'] ?? 'Удалено из избранного'),
+          content: Text(result['message'] ?? 'Таңдаулылардан жойылды'),
           backgroundColor: result['success'] ? Colors.green : Colors.red,
           duration: const Duration(seconds: 2),
         ),
@@ -76,7 +76,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message'] ?? 'Добавлено в избранное'),
+          content: Text(result['message'] ?? 'Таңдаулыларға қосылды'),
           backgroundColor: result['success'] ? Colors.green : Colors.red,
           duration: const Duration(seconds: 2),
         ),
@@ -284,7 +284,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               ),
               const SizedBox(width: 8),
               Text(
-                '(${widget.studio.reviewsCount} отзывов)',
+                '(${widget.studio.reviewsCount} пікір)',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.6),
                   fontSize: 14,
@@ -345,7 +345,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Цена аренды',
+                'Жалға алу бағасы',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -364,7 +364,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                     ),
                   ),
                   const Text(
-                    ' /час',
+                    ' /сағат',
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 16,
@@ -378,7 +378,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const Text(
-                'За день',
+                'Бір тәулікте',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -413,7 +413,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Калькулятор аренды',
+            'Жалға алу калькуляторы',
             style: TextStyle(
               color: Colors.white,
               fontSize: 18,
@@ -424,7 +424,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
           Row(
             children: [
               const Text(
-                'Количество часов:',
+                'Сағат саны:',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -485,7 +485,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Итого к оплате:',
+                  'Төлеу құны:',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -515,7 +515,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Особенности',
+            'Ерекшеліктері',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -536,7 +536,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               Expanded(
                 child: _buildFacilityCard(
                   Icons.music_note,
-                  'Инструменты',
+                  'Аспаптар',
                   widget.studio.hasInstruments,
                 ),
               ),
@@ -637,7 +637,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               ),
               const SizedBox(width: 12),
               const Text(
-                'Оборудование',
+                'Жабдықтар',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -669,7 +669,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Дополнительно',
+            'Қосымша',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -721,7 +721,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Описание',
+            'Сипаттама',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -772,7 +772,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Местоположение',
+                      'Орналасқан жері',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -807,7 +807,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               onPressed: () {},
               icon: const Icon(Icons.map, color: Color(0xFFE94560)),
               label: const Text(
-                'Показать на карте',
+                'Картаны көрсету',
                 style: TextStyle(
                   color: Color(0xFFE94560),
                   fontWeight: FontWeight.w600,
@@ -855,7 +855,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Владелец студии',
+                  'Студия иесі',
                   style: TextStyle(
                     color: Colors.white54,
                     fontSize: 12,
@@ -899,7 +899,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Отзывы',
+                'Пікірлер',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -909,7 +909,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               TextButton(
                 onPressed: () {},
                 child: const Text(
-                  'Все отзывы',
+                  'Барлық пікірлер',
                   style: TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 14,
@@ -1041,7 +1041,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'От ${widget.studio.pricePerHour.toInt()} ₸/час',
+                  '${widget.studio.pricePerHour.toInt()} ₸/сағатынан басталады',
                   style: const TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 20,
@@ -1049,7 +1049,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                   ),
                 ),
                 Text(
-                  'или ${widget.studio.pricePerDay.toInt()} ₸/день',
+                  'немесе ${widget.studio.pricePerDay.toInt()} ₸/күніне',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 12,
@@ -1070,7 +1070,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                   elevation: 0,
                 ),
                 child: const Text(
-                  'Забронировать',
+                  'Брондау',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -1100,7 +1100,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Бронирование студии',
+                'Студияны брондау',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -1117,7 +1117,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
               ),
               const SizedBox(height: 24),
               const Text(
-                'Выберите дату и время сессии',
+                'Сессияның күнін және уақытын таңдаңыз',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -1137,7 +1137,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                     const Icon(Icons.calendar_today, color: Color(0xFFE94560)),
                     const SizedBox(width: 12),
                     Text(
-                      'Выбрать дату и время',
+                      'Күн мен уақытты таңдаңыз',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                         fontSize: 14,
@@ -1154,7 +1154,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Заявка на бронирование отправлена!'),
+                        content: Text('Брондау өтінімі жіберілді!'),
                         backgroundColor: Color(0xFF00D9A5),
                       ),
                     );
@@ -1167,7 +1167,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
                     ),
                   ),
                   child: const Text(
-                    'Отправить заявку',
+                    'Заявка жіберу',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,

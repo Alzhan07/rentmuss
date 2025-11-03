@@ -71,7 +71,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(result['message'] ?? 'Удалено из избранного'),
+        content: Text(result['message'] ?? 'Таңдаулылардан жойылды'),
         backgroundColor: result['success'] ? Colors.green : Colors.red,
         duration: const Duration(seconds: 2),
       ),
@@ -113,10 +113,10 @@ class _FavoritesScreenState extends State<FavoritesScreen>
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white.withOpacity(0.6),
           tabs: const [
-            Tab(text: 'Все'),
-            Tab(text: 'Инструменты'),
-            Tab(text: 'Сцены'),
-            Tab(text: 'Студии'),
+            Tab(text: 'Барлығы'),
+            Tab(text: 'Аспаптар'),
+            Tab(text: 'Сахналар'),
+            Tab(text: 'Студиялар'),
           ],
         ),
       ),
@@ -169,7 +169,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     final itemData = favorite['itemData'] as Map<String, dynamic>? ?? {};
     final itemType = favorite['itemType'] as String? ?? '';
 
-    final name = itemData['name'] as String? ?? 'Без названия';
+    final name = itemData['name'] as String? ?? 'Атауы жоқ';
     final description = itemData['description'] as String? ?? '';
     final images = (itemData['images'] as List?)?.cast<String>() ?? [];
     final imageUrl = images.isNotEmpty ? images[0] : '';
@@ -373,7 +373,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                         children: [
                           if (pricePerHour > 0)
                             Text(
-                              '${pricePerHour.toInt()} ₸/час',
+                              '${pricePerHour.toInt()} ₸/сағат',
                               style: const TextStyle(
                                 color: Color(0xFFE94560),
                                 fontSize: 18,
@@ -382,7 +382,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                             ),
                           if (pricePerDay != null && pricePerDay > 0)
                             Text(
-                              '${pricePerDay.toInt()} ₸/день',
+                              '${pricePerDay.toInt()} ₸/күн',
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.7),
                                 fontSize: 14,
@@ -429,7 +429,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
   String _getTypeLabel(String type) {
     switch (type) {
       case 'stage':
-        return 'Сахна';
+        return 'Сахналар';
       case 'instrument':
         return 'Аспаптар';
       case 'studio':
@@ -442,11 +442,11 @@ class _FavoritesScreenState extends State<FavoritesScreen>
   String _getCategoryText(String category) {
  
     final categoryMap = {
-      'Гитары': 'Гитары',
-      'Клавишные': 'Клавишные',
-      'Ударные': 'Ударные',
-      'Духовые': 'Духовые',
-      'Струнные': 'Струнные',
+      'Гитары': 'Гитаралар',
+      'Клавишные': 'Пернетақталы',
+      'Ударные': 'Ұрмалы',
+      'Духовые': 'Үрмелі',
+      'Струнные': 'Шекті',
       'Бас': 'Бас',
     };
     return categoryMap[category] ?? category;

@@ -45,10 +45,10 @@ class _AddStageScreenState extends State<AddStageScreen> {
 
     try {
       final facilities = <String>[];
-      if (_hasLightingSystem) facilities.add('Система освещения');
-      if (_hasSoundSystem) facilities.add('Звуковая система');
+      if (_hasLightingSystem) facilities.add('Жарықтандыру жүйесі');
+      if (_hasSoundSystem) facilities.add('Дыбыс жүйесі');
       if (_hasBackstage) facilities.add('Бэкстейдж');
-      if (_hasParking) facilities.add('Парковка');
+      if (_hasParking) facilities.add('Тұрақ');
 
       final data = {
         'name': _nameController.text.trim(),
@@ -66,21 +66,21 @@ class _AddStageScreenState extends State<AddStageScreen> {
       if (response['success']) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Сцена добавлена!')),
+            const SnackBar(content: Text('Сахна қосылды!')),
           );
           Navigator.pop(context, true);
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response['message'] ?? 'Ошибка добавления')),
+            SnackBar(content: Text(response['message'] ?? 'Қосуда қате орын алды!')),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка: $e')),
+          SnackBar(content: Text('Қате: $e')),
         );
       }
     } finally {
@@ -92,7 +92,7 @@ class _AddStageScreenState extends State<AddStageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Добавить сцену'),
+        title: const Text('Сахнаны қосу'),
       ),
       body: Form(
         key: _formKey,
@@ -102,13 +102,13 @@ class _AddStageScreenState extends State<AddStageScreen> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                labelText: 'Название',
-                hintText: 'Например: Открытая сцена в парке',
+                labelText: 'Атауы',
+                hintText: 'Мысалы: Саябақ ішідегі ашық сахна',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите название';
+                  return 'Атауын енгізіңіз';
                 }
                 return null;
               },
@@ -117,13 +117,13 @@ class _AddStageScreenState extends State<AddStageScreen> {
             TextFormField(
               controller: _locationController,
               decoration: const InputDecoration(
-                labelText: 'Местоположение',
-                hintText: 'Например: г. Алматы, Центральный парк',
+                labelText: 'Орналасқан жері',
+                hintText: 'Мысалы: Алматы қаласы, Орталық саябағы',
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите местоположение';
+                  return 'Орналасқан жерін енгізіңіз';
                 }
                 return null;
               },
@@ -132,17 +132,17 @@ class _AddStageScreenState extends State<AddStageScreen> {
             TextFormField(
               controller: _capacityController,
               decoration: const InputDecoration(
-                labelText: 'Вместимость (человек)',
+                labelText: 'Сыйымдылығы (адам)',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите вместимость';
+                  return 'Сыйымдылығын енгізіңіз';
                 }
                 final capacity = int.tryParse(value);
                 if (capacity == null || capacity <= 0) {
-                  return 'Введите корректное значение';
+                  return 'Дұрыс мәнді енгізіңіз';
                 }
                 return null;
               },
@@ -151,17 +151,17 @@ class _AddStageScreenState extends State<AddStageScreen> {
             TextFormField(
               controller: _sizeController,
               decoration: const InputDecoration(
-                labelText: 'Размер сцены (м²)',
+                labelText: 'Сахна көлемі (м²)',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите размер';
+                  return 'Көлемін енгізіңіз';
                 }
                 final size = double.tryParse(value);
                 if (size == null || size <= 0) {
-                  return 'Введите корректное значение';
+                  return 'Дұрыс мәнді енгізіңіз';
                 }
                 return null;
               },
@@ -170,18 +170,18 @@ class _AddStageScreenState extends State<AddStageScreen> {
             TextFormField(
               controller: _pricePerHourController,
               decoration: const InputDecoration(
-                labelText: 'Цена за час (₸)',
+                labelText: 'Сағаттық баға (₸)',
                 border: OutlineInputBorder(),
                 prefixText: '₸ ',
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите цену за час';
+                  return 'Сағаттық бағаны енгізіңіз';
                 }
                 final price = double.tryParse(value);
                 if (price == null || price <= 0) {
-                  return 'Введите корректную цену';
+                  return 'Дұрыс бағаны енгізіңіз';
                 }
                 return null;
               },
@@ -190,18 +190,18 @@ class _AddStageScreenState extends State<AddStageScreen> {
             TextFormField(
               controller: _pricePerDayController,
               decoration: const InputDecoration(
-                labelText: 'Цена за день (₸)',
+                labelText: 'Күндік баға (₸)',
                 border: OutlineInputBorder(),
                 prefixText: '₸ ',
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите цену за день';
+                  return 'Күндік бағаны енгізіңіз';
                 }
                 final price = double.tryParse(value);
                 if (price == null || price <= 0) {
-                  return 'Введите корректную цену';
+                  return 'Дұрыс бағаны енгізіңіз';
                 }
                 return null;
               },
@@ -210,32 +210,32 @@ class _AddStageScreenState extends State<AddStageScreen> {
             TextFormField(
               controller: _descriptionController,
               decoration: const InputDecoration(
-                labelText: 'Описание',
-                hintText: 'Опишите сцену подробнее',
+                labelText: 'Сипаттама',
+                hintText: 'Сахнаның толық сипаттамасын енгізіңіз',
                 border: OutlineInputBorder(),
               ),
               maxLines: 4,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Введите описание';
+                  return 'Сипаттаманы енгізіңіз';
                 }
                 return null;
               },
             ),
             const SizedBox(height: 16),
             const Text(
-              'Доступные удобства:',
+              'Қол жетімді ыңғайлылықтар:',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             CheckboxListTile(
-              title: const Text('Система освещения'),
+              title: const Text('Жарықтандыру жүйесі'),
               value: _hasLightingSystem,
               onChanged: (value) {
                 setState(() => _hasLightingSystem = value ?? false);
               },
             ),
             CheckboxListTile(
-              title: const Text('Звуковая система'),
+              title: const Text('Дыбыс жүйесі'),
               value: _hasSoundSystem,
               onChanged: (value) {
                 setState(() => _hasSoundSystem = value ?? false);
@@ -249,7 +249,7 @@ class _AddStageScreenState extends State<AddStageScreen> {
               },
             ),
             CheckboxListTile(
-              title: const Text('Парковка'),
+              title: const Text('Тұрақ'),
               value: _hasParking,
               onChanged: (value) {
                 setState(() => _hasParking = value ?? false);
@@ -266,7 +266,7 @@ class _AddStageScreenState extends State<AddStageScreen> {
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('Добавить сцену', style: TextStyle(fontSize: 16)),
+                    : const Text('Сахнаны қосу', style: TextStyle(fontSize: 16)),
               ),
             ),
           ],

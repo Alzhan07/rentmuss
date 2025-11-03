@@ -26,13 +26,13 @@ class _StagesScreenState extends State<StagesScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   final List<Map<String, dynamic>> _types = [
-    {'name': 'Все', 'icon': Icons.apps},
-    {'name': 'Концертные', 'icon': Icons.music_note},
-    {'name': 'Театральные', 'icon': Icons.theater_comedy},
-    {'name': 'Клубные', 'icon': Icons.nightlife},
-    {'name': 'Открытые', 'icon': Icons.wb_sunny},
-    {'name': 'Малые', 'icon': Icons.people_outline},
-    {'name': 'Большие', 'icon': Icons.groups},
+    {'name': 'Барлығы', 'icon': Icons.apps},
+    {'name': 'Концерттік', 'icon': Icons.music_note},
+    {'name': 'Театралды', 'icon': Icons.theater_comedy},
+    {'name': 'Клубтық', 'icon': Icons.nightlife},
+    {'name': 'Ашық', 'icon': Icons.wb_sunny},
+    {'name': 'Кіші', 'icon': Icons.people_outline},
+    {'name': 'Үлкен', 'icon': Icons.groups},
   ];
 
   @override
@@ -50,23 +50,22 @@ class _StagesScreenState extends State<StagesScreen> {
   Future<void> _loadStages() async {
     setState(() => _isLoading = true);
 
-    // Сначала загружаем тестовые данные
     await Future.delayed(const Duration(milliseconds: 500));
 
     final sampleStages = [
       Stage(
         id: '1',
-        name: 'Большая Арена "Олимп"',
-        type: 'Концертные',
+        name: 'Үлкен Арена "Олимп"',
+        type: 'Концерттік',
         description:
-            'Профессиональная концертная площадка с современным оборудованием и отличной акустикой. Идеально подходит для крупных концертов и мероприятий.',
+            'Қазіргі заманғы жабдықтар мен тамаша акустикасы бар кәсіби концерт алаңы. Үлкен концерттер мен іс-шараларға өте қолайлы.',
         pricePerHour: 15000,
         pricePerDay: 100000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.9,
         reviewsCount: 156,
-        location: 'Москва, Центр',
-        address: 'ул. Тверская, д. 10',
+        location: 'Мәскеу, Орталық',
+        address: 'Тверская көш., 10 үй',
         capacity: 2000,
         areaSquareMeters: 500,
         hasSound: true,
@@ -74,30 +73,30 @@ class _StagesScreenState extends State<StagesScreen> {
         hasBackstage: true,
         hasParking: true,
         amenities: [
-          'Профессиональный звук',
-          'Световое шоу',
-          '5 гримерных',
-          'Подземная парковка',
-          'Кейтеринг',
-          'VIP-зоны',
+          'Кәсіби дыбыс жүйесі',
+          'Жарық шоулары',
+          '5 грим бөлмесі',
+          'Жерасты автотұрағы',
+          'Кейтеринг қызметі',
+          'VIP-аймақтар',
         ],
         ownerId: 'owner1',
-        ownerName: 'Концертный холл "Олимп"',
+        ownerName: 'Концерт залы "Олимп"',
         createdAt: DateTime.now(),
       ),
       Stage(
         id: '2',
-        name: 'Театральная сцена "Золотая маска"',
-        type: 'Театральные',
+        name: 'Театр сахнасы "Алтын маска"',
+        type: 'Театрлық',
         description:
-            'Классическая театральная сцена с богатой историей. Прекрасная акустика и атмосфера для театральных постановок.',
+            'Бай тарихы бар классикалық театр сахнасы. Театр қойылымдарына арналған тамаша акустика мен атмосфера.',
         pricePerHour: 8000,
         pricePerDay: 50000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.8,
         reviewsCount: 89,
-        location: 'Москва, Арбат',
-        address: 'Арбат, д. 25',
+        location: 'Мәскеу, Арбат',
+        address: 'Арбат, 25 үй',
         capacity: 500,
         areaSquareMeters: 200,
         hasSound: true,
@@ -105,29 +104,29 @@ class _StagesScreenState extends State<StagesScreen> {
         hasBackstage: true,
         hasParking: false,
         amenities: [
-          'Театральный звук',
-          'Классическое освещение',
-          '3 гримерные',
-          'Оркестровая яма',
-          'Реквизит',
+          'Театрлық дыбыс жүйесі',
+          'Классикалық жарықтандыру',
+          '3 грим бөлмесі',
+          'Оркестр шұңқыры',
+          'Реквизиттер',
         ],
         ownerId: 'owner2',
-        ownerName: 'Театр "Золотая маска"',
+        ownerName: 'Театр "Алтын маска"',
         createdAt: DateTime.now(),
       ),
       Stage(
         id: '3',
         name: 'Клуб "Neon Nights"',
-        type: 'Клубные',
+        type: 'Клубтық',
         description:
-            'Современный клубный зал с профессиональным звуком и световым оборудованием. Идеально для концертов и вечеринок.',
+            'Кәсіби дыбыс және жарық жабдықтары бар заманауи клуб залы. Концерттер мен кештер өткізуге өте ыңғайлы.',
         pricePerHour: 12000,
         pricePerDay: 70000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.7,
         reviewsCount: 234,
-        location: 'Москва, Таганка',
-        address: 'ул. Народная, д. 5',
+        location: 'Мәскеу, Таганка',
+        address: 'Народная көш., 5 үй',
         capacity: 800,
         areaSquareMeters: 300,
         hasSound: true,
@@ -135,12 +134,12 @@ class _StagesScreenState extends State<StagesScreen> {
         hasBackstage: true,
         hasParking: true,
         amenities: [
-          'DJ-оборудование',
-          'LED-экраны',
-          'Дым-машина',
-          '2 гримерные',
+          'DJ-жабдық',
+          'LED-экрандар',
+          'Түтін машинасы',
+          '2 грим бөлмесі',
           'Бар',
-          'Танцпол',
+          'Би алаңы',
         ],
         ownerId: 'owner3',
         ownerName: 'Neon Entertainment',
@@ -148,17 +147,17 @@ class _StagesScreenState extends State<StagesScreen> {
       ),
       Stage(
         id: '4',
-        name: 'Открытая сцена "Парк Горького"',
-        type: 'Открытые',
+        name: 'Ашық сахна "Горький саябағы"',
+        type: 'Ашық',
         description:
-            'Открытая площадка в парке для летних концертов и фестивалей. Живописная локация с видом на набережную.',
+            'Жазғы концерттер мен фестивальдерге арналған саябақтағы ашық алаң. Өзен жағалауына көрінісі бар әдемі орын.',
         pricePerHour: 10000,
         pricePerDay: 60000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.6,
         reviewsCount: 112,
-        location: 'Москва, Парк Горького',
-        address: 'ул. Крымский Вал, д. 9',
+        location: 'Мәскеу, Горький саябағы',
+        address: 'Крымский Вал көш., 9 үй',
         capacity: 1500,
         areaSquareMeters: 400,
         hasSound: true,
@@ -166,29 +165,29 @@ class _StagesScreenState extends State<StagesScreen> {
         hasBackstage: false,
         hasParking: true,
         amenities: [
-          'Открытое небо',
-          'Звук на улице',
-          'Световые мачты',
-          'Парковка для артистов',
-          'Мобильные гримерные',
+          'Ашық аспан астында',
+          'Сыртқы дыбыс жүйесі',
+          'Жарық мачталары',
+          'Артистерге арналған автотұрақ',
+          'Жылжымалы грим бөлмелер',
         ],
         ownerId: 'owner4',
-        ownerName: 'Парк Горького',
+        ownerName: 'Горький саябағы',
         createdAt: DateTime.now(),
       ),
       Stage(
         id: '5',
-        name: 'Малая сцена "Камерный зал"',
-        type: 'Малые',
+        name: 'Кіші сахна "Камерлік зал"',
+        type: 'Кіші',
         description:
-            'Уютный камерный зал для небольших концертов и мероприятий. Отличная акустика и интимная атмосфера.',
+            'Шағын концерттер мен іс-шараларға арналған жайлы камерлік зал. Тамаша акустика және жылы атмосфера.',
         pricePerHour: 5000,
         pricePerDay: 30000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.8,
         reviewsCount: 67,
-        location: 'Москва, Кузнецкий Мост',
-        address: 'Кузнецкий Мост, д. 12',
+        location: 'Мәскеу, Кузнецкий Мост',
+        address: 'Кузнецкий Мост, 12 үй',
         capacity: 150,
         areaSquareMeters: 80,
         hasSound: true,
@@ -196,29 +195,29 @@ class _StagesScreenState extends State<StagesScreen> {
         hasBackstage: true,
         hasParking: false,
         amenities: [
-          'Камерный звук',
-          'Уютное освещение',
-          '1 гримерная',
-          'Рояль Steinway',
+          'Камерлік дыбыс жүйесі',
+          'Жайлы жарықтандыру',
+          '1 грим бөлмесі',
+          'Steinway роялі',
           'Кафе',
         ],
         ownerId: 'owner5',
-        ownerName: 'Культурный центр',
+        ownerName: 'Мәдениет орталығы',
         createdAt: DateTime.now(),
       ),
       Stage(
         id: '6',
         name: 'Мега Арена "Стадион"',
-        type: 'Большие',
+        type: 'Үлкен',
         description:
-            'Огромная концертная площадка для масштабных шоу и фестивалей. Вместимость до 10000 зрителей.',
+            'Ауқымды шоулар мен фестивальдер өткізуге арналған үлкен концерт алаңы. 10000 көрерменге дейін сыйымдылығы бар.',
         pricePerHour: 25000,
         pricePerDay: 150000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 5.0,
         reviewsCount: 298,
-        location: 'Москва, Лужники',
-        address: 'Лужнецкая наб., д. 24',
+        location: 'Мәскеу, Лужники',
+        address: 'Лужники жағалауы, 24 үй',
         capacity: 10000,
         areaSquareMeters: 1000,
         hasSound: true,
@@ -226,26 +225,26 @@ class _StagesScreenState extends State<StagesScreen> {
         hasBackstage: true,
         hasParking: true,
         amenities: [
-          'Стадионный звук',
-          'Гигантские LED-экраны',
-          '10 гримерных',
-          'Огромная парковка',
+          'Стадиондық дыбыс жүйесі',
+          'Алып LED-экрандар',
+          '10 грим бөлмесі',
+          'Үлкен автотұрақ',
           'Медпункт',
-          'Охрана',
+          'Қауіпсіздік қызметі',
           'Кейтеринг',
         ],
         ownerId: 'owner6',
-        ownerName: 'Спорткомплекс Лужники',
+        ownerName: 'Спорт кешені "Лужники"',
         createdAt: DateTime.now(),
       ),
     ];
+
 
     setState(() {
       _allStages = sampleStages;
       _filteredStages = sampleStages;
     });
 
-    // Теперь пробуем загрузить данные с сервера и добавить к тестовым
     try {
       final response = await ApiService.getAllStages(
         search: _searchQuery.isNotEmpty ? _searchQuery : null,
@@ -257,7 +256,7 @@ class _StagesScreenState extends State<StagesScreen> {
           return Stage(
             id: data['_id'] is String ? data['_id'] : data['_id']['\$oid'],
             name: data['name'] ?? '',
-            type: 'Концертные',
+            type: 'Концерттік',
             description: data['description'] ?? '',
             pricePerHour: (data['pricePerHour'] ?? 0).toDouble(),
             pricePerDay: (data['pricePerDay'] ?? 0).toDouble(),
@@ -268,10 +267,10 @@ class _StagesScreenState extends State<StagesScreen> {
             address: data['location'] ?? '',
             capacity: data['capacity'] ?? 0,
             areaSquareMeters: (data['size'] ?? 0).toDouble(),
-            hasSound: (data['facilities'] as List?)?.contains('Звуковая система') ?? false,
-            hasLighting: (data['facilities'] as List?)?.contains('Система освещения') ?? false,
+            hasSound: (data['facilities'] as List?)?.contains('Дыбыстық жүйе') ?? false,
+            hasLighting: (data['facilities'] as List?)?.contains('Жарықтандыру жүйесі') ?? false,
             hasBackstage: (data['facilities'] as List?)?.contains('Бэкстейдж') ?? false,
-            hasParking: (data['facilities'] as List?)?.contains('Парковка') ?? false,
+            hasParking: (data['facilities'] as List?)?.contains('Тұрақ') ?? false,
             amenities: (data['facilities'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
             ownerId: data['ownerId'] ?? '',
             ownerName: data['ownerName'] ?? '',
@@ -294,7 +293,7 @@ class _StagesScreenState extends State<StagesScreen> {
   void _applyFilters() {
     setState(() {
       _filteredStages = _allStages.where((stage) {
-        bool matchesType = _selectedType == 'Все' || stage.type == _selectedType;
+        bool matchesType = _selectedType == 'Барлығы' || stage.type == _selectedType;
         bool matchesSearch = _searchQuery.isEmpty ||
             stage.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
             stage.description.toLowerCase().contains(_searchQuery.toLowerCase()) ||
@@ -369,7 +368,7 @@ class _StagesScreenState extends State<StagesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Сцены',
+                'Сахналар',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -378,7 +377,7 @@ class _StagesScreenState extends State<StagesScreen> {
               ),
               SizedBox(height: 4),
               Text(
-                'Найдите идеальную площадку',
+                'Мінсіз алаңды табыңыз',
                 style: TextStyle(
                   color: Color(0xFFE94560),
                   fontSize: 14,
@@ -434,7 +433,7 @@ class _StagesScreenState extends State<StagesScreen> {
             _applyFilters();
           },
           decoration: InputDecoration(
-            hintText: 'Поиск сцен...',
+            hintText: 'Сахналарды іздеу...',
             hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
             prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.5)),
             suffixIcon: _searchQuery.isNotEmpty
@@ -516,7 +515,7 @@ class _StagesScreenState extends State<StagesScreen> {
           Row(
             children: [
               Text(
-                'Найдено: ${_filteredStages.length}',
+                'Табылды: ${_filteredStages.length}',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.7),
                   fontSize: 14,
@@ -551,23 +550,23 @@ class _StagesScreenState extends State<StagesScreen> {
                 itemBuilder: (context) => [
                   const PopupMenuItem(
                     value: 'popular',
-                    child: Text('Популярные', style: TextStyle(color: Colors.white)),
+                    child: Text('Танымал', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'price_low',
-                    child: Text('Цена: низкая', style: TextStyle(color: Colors.white)),
+                    child: Text('Бағасы: төмен', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'price_high',
-                    child: Text('Цена: высокая', style: TextStyle(color: Colors.white)),
+                    child: Text('Бағасы: жоғары', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'capacity_low',
-                    child: Text('Вместимость: малая', style: TextStyle(color: Colors.white)),
+                    child: Text('Сыйымдылығы: төмен', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'capacity_high',
-                    child: Text('Вместимость: большая', style: TextStyle(color: Colors.white)),
+                    child: Text('Сыйымдылығы: жоғары', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'rating',
@@ -603,18 +602,18 @@ class _StagesScreenState extends State<StagesScreen> {
   String _getSortLabel() {
     switch (_sortBy) {
       case 'price_low':
-        return 'Цена ↑';
+        return 'Бағасы: төмен ↑';
       case 'price_high':
-        return 'Цена ↓';
+        return 'Бағасы: жоғары ↓';
       case 'capacity_low':
-        return 'Вместимость ↑';
+        return 'Сыйымдылығы: төмен ↑';
       case 'capacity_high':
-        return 'Вместимость ↓';
+        return 'Сыйымдылығы: жоғары ↓';
       case 'rating':
         return 'Рейтинг';
       case 'popular':
       default:
-        return 'Популярные';
+        return 'Танымал';
     }
   }
 
@@ -776,7 +775,7 @@ class _StagesScreenState extends State<StagesScreen> {
                           ),
                         ),
                         const Text(
-                          '/час',
+                          '/сағат',
                           style: TextStyle(color: Colors.white54, fontSize: 12),
                         ),
                       ],
@@ -909,7 +908,7 @@ class _StagesScreenState extends State<StagesScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          '${stage.pricePerHour.toInt()} ₸/час',
+                          '${stage.pricePerHour.toInt()} ₸/сағат',
                           style: const TextStyle(
                             color: Color(0xFFE94560),
                             fontSize: 13,
@@ -941,7 +940,7 @@ class _StagesScreenState extends State<StagesScreen> {
           Icon(Icons.search_off, size: 80, color: Colors.white.withOpacity(0.3)),
           const SizedBox(height: 16),
           Text(
-            'Сцены не найдены',
+            'Сахналар табылмады',
             style: TextStyle(
               color: Colors.white.withOpacity(0.7),
               fontSize: 18,
@@ -950,7 +949,7 @@ class _StagesScreenState extends State<StagesScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Попробуйте изменить фильтры',
+            'Фильтрлерді өзгертіп көріңіз немесе басқа іздеу сөзін қолданыңыз.',
             style: TextStyle(
               color: Colors.white.withOpacity(0.5),
               fontSize: 14,
@@ -978,7 +977,7 @@ class _StagesScreenState extends State<StagesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Фильтры',
+                    'Фильтрлер',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -987,7 +986,7 @@ class _StagesScreenState extends State<StagesScreen> {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Вместимость зала',
+                    'Алаңның сыйымдылығы',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -1020,14 +1019,14 @@ class _StagesScreenState extends State<StagesScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'От $_minCapacity чел.',
+                        '$_minCapacity адамнан',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.7),
                           fontSize: 14,
                         ),
                       ),
                       Text(
-                        'До $_maxCapacity чел.',
+                        '$_maxCapacity адамға дейін',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.7),
                           fontSize: 14,
@@ -1051,7 +1050,7 @@ class _StagesScreenState extends State<StagesScreen> {
                         ),
                       ),
                       child: const Text(
-                        'Применить фильтры',
+                        'Фильтрлерді қолдану',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,

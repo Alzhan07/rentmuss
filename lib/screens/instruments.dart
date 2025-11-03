@@ -19,7 +19,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
   bool _isGridView = false;
 
   String _searchQuery = '';
-  String _selectedCategory = 'Все';
+  String _selectedCategory = 'Барлығы';
   String _sortBy = 'popular'; 
 
   final TextEditingController _searchController = TextEditingController();
@@ -49,105 +49,105 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
   Future<void> _loadInstruments() async {
     setState(() => _isLoading = true);
 
-    // Сначала загружаем тестовые данные
+
     await Future.delayed(const Duration(milliseconds: 500));
 
     final sampleInstruments = [
       Instrument(
         id: '1',
         name: 'Fender Stratocaster',
-        category: 'Гитары',
+        category: 'Гитарлар',
         brand: 'Fender',
         model: 'American Professional II',
         description:
-            'Легендарная электрогитара с классическим звучанием. Идеальна для рока, блюза и поп-музыки.',
+            'Классикалық дыбысы бар тарихи Fender гитарасы.',
         pricePerHour: 800,
         pricePerDay: 3500,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.9,
         reviewsCount: 127,
-        location: 'Москва, Тверская',
-        condition: 'excellent',
+        location: 'Мәскеу, Тверская',
+        condition: 'өте жақсы',
         features: [
-          '3 сингл датчика',
-          'Кленовый гриф',
-          'Кейс в комплекте',
-          'Усилитель',
+          '3 сингл датчигі',
+          'Клен мойын',
+          'Қапшық (кейс) жинақта бар',
+          'Күшейткіш (усилитель)',
         ],
         ownerId: 'owner1',
-        ownerName: 'Музыкальный Центр "Гармония"',
+        ownerName: 'Музыка орталығы "Гармония"',
         createdAt: DateTime.now(),
       ),
       Instrument(
         id: '2',
         name: 'Yamaha P-125',
-        category: 'Клавишные',
+        category: 'Клавишалар',
         brand: 'Yamaha',
         model: 'P-125',
         description:
-            'Цифровое пианино с взвешенной клавиатурой и реалистичным звучанием.',
+            'Салмақталған пернетақтасы және шынайы дыбысы бар сандық пианино.',
         pricePerHour: 600,
         pricePerDay: 2500,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.8,
         reviewsCount: 89,
-        location: 'Москва, Арбат',
-        condition: 'excellent',
+        location: 'Мәскеу, Арбат',
+        condition: 'өте жақсы',
         features: [
-          '88 клавиш',
-          'Педали в комплекте',
-          'Наушники',
-          'Подставка',
+          '88 перне',
+          'Педальдар жинақта бар',
+          'Құлаққаптар',
+          'Тұғыр (подставка)',
         ],
         ownerId: 'owner2',
-        ownerName: 'Студия "Звук"',
+        ownerName: 'Студия "Дыбыс"',
         createdAt: DateTime.now(),
       ),
       Instrument(
         id: '3',
         name: 'Pearl Export Series',
-        category: 'Ударные',
+        category: 'Ұрмалы аспаптар',
         brand: 'Pearl',
         model: 'Export EXX725S',
         description:
-            'Профессиональная ударная установка из 5 барабанов с тарелками.',
+            '5 барабаннан және тарелкалардан тұратын кәсіби барабан жинағы.',
         pricePerHour: 1200,
         pricePerDay: 5000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.7,
         reviewsCount: 56,
-        location: 'Москва, Сокол',
-        condition: 'good',
+        location: 'Мәскеу, Сокол',
+        condition: 'жақсы',
         features: [
-          '5 барабанов',
-          'Тарелки Zildjian',
-          'Стойки и педали',
-          'Барабанные палочки',
+          '5 барабан',
+          'Zildjian тарелкалары',
+          'Тіреулер мен педальдар',
+          'Барабан таяқшалары',
         ],
         ownerId: 'owner3',
-        ownerName: 'Репетиционная база "Рокот"',
+        ownerName: 'Репетиция базасы "Рокот"',
         createdAt: DateTime.now(),
       ),
       Instrument(
         id: '4',
         name: 'Gibson Les Paul',
-        category: 'Гитары',
+        category: 'Гитарлар',
         brand: 'Gibson',
         model: 'Les Paul Standard',
         description:
-            'Классическая рок-гитара с мощным звучанием и премиальной отделкой.',
+            'Күшті дыбысы және премиум әрлеуі бар классикалық рок-гитара.',
         pricePerHour: 1500,
         pricePerDay: 6000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 5.0,
         reviewsCount: 234,
-        location: 'Москва, Центр',
-        condition: 'new',
+        location: 'Мәскеу, Орталық',
+        condition: 'жаңа',
         features: [
-          '2 хамбакера',
-          'Красное дерево',
-          'Усилитель Marshall',
-          'Премиум кейс',
+          '2 хамбакер',
+          'Қызыл ағаш корпусы',
+          'Marshall күшейткіші',
+          'Премиум қапшық',
         ],
         ownerId: 'owner4',
         ownerName: 'RockStore',
@@ -156,60 +156,61 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
       Instrument(
         id: '5',
         name: 'Yamaha YAS-280',
-        category: 'Духовые',
+        category: 'Үрмелі аспаптар',
         brand: 'Yamaha',
         model: 'YAS-280',
         description:
-            'Альт-саксофон начального уровня с отличным звучанием.',
+            'Керемет дыбысы бар бастапқы деңгейдегі альт-саксофон.',
         pricePerHour: 700,
         pricePerDay: 3000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.6,
         reviewsCount: 43,
-        location: 'Москва, Парк Культуры',
-        condition: 'good',
+        location: 'Мәскеу, Мәдениет саябағы',
+        condition: 'жақсы',
         features: [
-          'Золотистое покрытие',
-          'Кейс в комплекте',
-          'Трости',
+          'Алтын түсті қаптама',
+          'Қапшық жинақта бар',
+          'Тростар',
           'Мундштук',
         ],
         ownerId: 'owner5',
-        ownerName: 'Джаз-клуб "Blue Note"',
+        ownerName: 'Джаз клубы "Blue Note"',
         createdAt: DateTime.now(),
       ),
       Instrument(
         id: '6',
         name: 'Fender Precision Bass',
-        category: 'Бас',
+        category: 'Бас-гитарлар',
         brand: 'Fender',
         model: 'Player Series',
-        description: 'Классическая бас-гитара с глубоким и чистым звуком.',
+        description: 'Терең әрі таза дыбысы бар классикалық бас-гитара.',
         pricePerHour: 900,
         pricePerDay: 4000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.8,
         reviewsCount: 92,
-        location: 'Москва, Курская',
-        condition: 'excellent',
+        location: 'Мәскеу, Курская',
+        condition: 'өте жақсы',
         features: [
           'Сплит-звукосниматель',
-          'Кленовый гриф',
-          'Бас-усилитель',
+          'Клен мойын',
+          'Бас күшейткіші',
           'Кабель',
         ],
         ownerId: 'owner6',
-        ownerName: 'Басс Хаус',
+        ownerName: 'Bass House',
         createdAt: DateTime.now(),
       ),
     ];
+
 
     setState(() {
       _allInstruments = sampleInstruments;
       _filteredInstruments = sampleInstruments;
     });
 
-    // Теперь пробуем загрузить данные с сервера и добавить к тестовым
+ 
     try {
       final response = await ApiService.getAllInstruments(
         category: _selectedCategory != 'Все' ? _selectedCategory : null,
@@ -222,7 +223,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
           return Instrument(
             id: data['_id'] is String ? data['_id'] : data['_id']['\$oid'],
             name: data['name'] ?? '',
-            category: data['category'] ?? 'Другое',
+            category: data['category'] ?? 'Басқа',
             brand: data['brand'] ?? '',
             model: data['model'] ?? '',
             description: data['description'] ?? '',
@@ -241,14 +242,14 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
         }).toList();
 
         setState(() {
-          // Добавляем данные с сервера к тестовым
+      
           _allInstruments = [...sampleInstruments, ...serverInstruments];
           _applyFilters();
         });
       }
     } catch (e) {
       print('Error loading instruments from server: $e');
-      // Продолжаем работать с тестовыми данными
+    
     }
 
     setState(() => _isLoading = false);
@@ -331,7 +332,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Инструменты',
+                'Аспаптар',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -340,7 +341,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
               ),
               SizedBox(height: 4),
               Text(
-                'Найдите идеальный инструмент',
+                'Мінсіз аспапты табыңыз',
                 style: TextStyle(
                   color: Color(0xFFE94560),
                   fontSize: 14,
@@ -385,7 +386,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
             _applyFilters();
           },
           decoration: InputDecoration(
-            hintText: 'Поиск инструментов...',
+            hintText: 'Аспаптарды іздеу...',
             hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
             prefixIcon: Icon(
               Icons.search,
@@ -486,7 +487,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
           Row(
             children: [
               Text(
-                'Найдено: ${_filteredInstruments.length}',
+                'Табылды: ${_filteredInstruments.length}',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.7),
                   fontSize: 14,
@@ -526,15 +527,15 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                 itemBuilder: (context) => [
                   const PopupMenuItem(
                     value: 'popular',
-                    child: Text('Популярные', style: TextStyle(color: Colors.white)),
+                    child: Text('Танымал', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'price_low',
-                    child: Text('Цена: низкая', style: TextStyle(color: Colors.white)),
+                    child: Text('Баға: төмен', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'price_high',
-                    child: Text('Цена: высокая', style: TextStyle(color: Colors.white)),
+                    child: Text('Баға: жоғары', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'rating',
@@ -578,14 +579,14 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
   String _getSortLabel() {
     switch (_sortBy) {
       case 'price_low':
-        return 'Цена ↑';
+        return 'Баға ↑';
       case 'price_high':
-        return 'Цена ↓';
+        return 'Баға ↓';
       case 'rating':
         return 'Рейтинг';
       case 'popular':
       default:
-        return 'Популярные';
+        return 'Танымал';
     }
   }
 
@@ -940,7 +941,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Инструменты не найдены',
+            'Аспаптар табылмады',
             style: TextStyle(
               color: Colors.white.withOpacity(0.7),
               fontSize: 18,
@@ -949,7 +950,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            'Попробуйте изменить фильтры',
+            'Фильтрлерді өзгертуге тырысыңыз',
             style: TextStyle(
               color: Colors.white.withOpacity(0.5),
               fontSize: 14,
@@ -978,13 +979,13 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
   String _getConditionLabel(String condition) {
     switch (condition) {
       case 'new':
-        return 'НОВЫЙ';
+        return 'ЖАҢА';
       case 'excellent':
-        return 'ОТЛИЧНЫЙ';
+        return 'КЕРЕМЕТ';
       case 'good':
-        return 'ХОРОШИЙ';
+        return 'ЖАҚСЫ';
       case 'fair':
-        return 'СРЕДНИЙ';
+        return 'ОРТАША';
       default:
         return condition.toUpperCase();
     }

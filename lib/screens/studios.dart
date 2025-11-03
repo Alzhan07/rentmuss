@@ -24,12 +24,12 @@ class _StudiosScreenState extends State<StudiosScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   final List<Map<String, dynamic>> _types = [
-    {'name': 'Все', 'icon': Icons.apps},
-    {'name': 'Звукозапись', 'icon': Icons.mic},
+    {'name': 'Барлығы', 'icon': Icons.apps},
+    {'name': 'Дыбыс жазу', 'icon': Icons.mic},
     {'name': 'Репетиция', 'icon': Icons.music_note},
-    {'name': 'Подкасты', 'icon': Icons.podcasts},
+    {'name': 'Подкасттар', 'icon': Icons.podcasts},
     {'name': 'Стриминг', 'icon': Icons.live_tv},
-    {'name': 'Сведение', 'icon': Icons.equalizer},
+    {'name': 'Мәлімет', 'icon': Icons.equalizer},
   ];
 
   @override
@@ -47,23 +47,22 @@ class _StudiosScreenState extends State<StudiosScreen> {
   Future<void> _loadStudios() async {
     setState(() => _isLoading = true);
 
-    // Сначала загружаем тестовые данные
     await Future.delayed(const Duration(milliseconds: 500));
 
     final sampleStudios = [
       Studio(
         id: '1',
         name: 'Pro Sound Studio',
-        type: 'Звукозапись',
+        type: 'Дыбыс жазу',
         description:
-            'Профессиональная студия звукозаписи с лучшим оборудованием. Опытные звукорежиссеры помогут создать идеальный звук.',
+            'Ең үздік жабдықтары бар кәсіби дыбыс жазу студиясы. Тәжірибелі дыбыс режиссерлері тамаша сапалы жазба жасауға көмектеседі.',
         pricePerHour: 3000,
         pricePerDay: 20000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.9,
         reviewsCount: 187,
-        location: 'Москва, Центр',
-        address: 'ул. Маросейка, д. 7',
+        location: 'Қызылорда қаласы',
+        address: 'Маросейка көшесі, 7 үй',
         areaSquareMeters: 50,
         hasEngineer: true,
         hasInstruments: true,
@@ -71,13 +70,13 @@ class _StudiosScreenState extends State<StudiosScreen> {
         hasAirConditioning: true,
         equipment: 'SSL Console, Neumann U87, Pro Tools',
         amenities: [
-          'Звукорежиссер',
-          'Микрофоны Neumann',
+          'Дыбыс режиссері',
+          'Neumann микрофоны',
           'Pro Tools HD',
-          'Мониторы Genelec',
+          'Genelec мониторлары',
           'Пианино',
-          'Гитарные усилители',
-          'Кухня',
+          'Гитара күшейткіштері',
+          'Ас үй',
         ],
         ownerId: 'owner1',
         ownerName: 'Pro Sound Records',
@@ -88,27 +87,27 @@ class _StudiosScreenState extends State<StudiosScreen> {
         name: 'Rock Rehearsal Space',
         type: 'Репетиция',
         description:
-            'Просторная репетиционная база с полным комплектом оборудования для рок-групп.',
+            'Рок-топтарға арналған толық жабдықталған кең репетиция базасы.',
         pricePerHour: 800,
         pricePerDay: 5000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.7,
         reviewsCount: 143,
-        location: 'Москва, Сокол',
-        address: 'Ленинградский проспект, д. 45',
+        location: 'Мәскеу, Сокол',
+        address: 'Ленинград даңғылы, 45 үй',
         areaSquareMeters: 60,
         hasEngineer: false,
         hasInstruments: true,
         hasSoundproofing: true,
         hasAirConditioning: false,
-        equipment: 'Барабаны Pearl, Усилители Marshall, PA система',
+        equipment: 'Pearl барабандары, Marshall күшейткіштері, PA жүйесі',
         amenities: [
-          'Ударная установка',
-          'Гитарные усилители',
-          'Бас-усилитель',
-          'PA система',
-          'Микрофоны',
-          'Кабели',
+          'Ұрмалы аспаптар жинағы',
+          'Гитара күшейткіштері',
+          'Бас күшейткіш',
+          'PA жүйесі',
+          'Микрофондар',
+          'Кабельдер',
         ],
         ownerId: 'owner2',
         ownerName: 'RockBase',
@@ -117,16 +116,16 @@ class _StudiosScreenState extends State<StudiosScreen> {
       Studio(
         id: '3',
         name: 'Podcast Hub',
-        type: 'Подкасты',
+        type: 'Подкасттар',
         description:
-            'Современная студия для записи подкастов с видео-оборудованием и профессиональным звуком.',
+            'Бейнежазу және кәсіби дыбыс жүйесі бар заманауи подкаст студиясы.',
         pricePerHour: 2000,
         pricePerDay: 12000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.8,
         reviewsCount: 92,
-        location: 'Москва, Красные Ворота',
-        address: 'ул. Мясницкая, д. 15',
+        location: 'Мәскеу, Қызыл Қақпалар',
+        address: 'Мясницкая көшесі, 15 үй',
         areaSquareMeters: 35,
         hasEngineer: true,
         hasInstruments: false,
@@ -134,12 +133,12 @@ class _StudiosScreenState extends State<StudiosScreen> {
         hasAirConditioning: true,
         equipment: 'Rode Podcaster, Zoom H6, Sony A7S III',
         amenities: [
-          '3 камеры',
-          'Подкаст-микрофоны',
-          'Зеленый фон',
-          'Освещение',
-          'Звукорежиссер',
-          'Монтаж включен',
+          '3 камера',
+          'Подкаст микрофондары',
+          'Жасыл фон',
+          'Жарықтандыру',
+          'Дыбыс режиссері',
+          'Монтаж қызметі',
         ],
         ownerId: 'owner3',
         ownerName: 'Media Production',
@@ -148,16 +147,16 @@ class _StudiosScreenState extends State<StudiosScreen> {
       Studio(
         id: '4',
         name: 'Live Stream Studio',
-        type: 'Стриминг',
+        type: 'Тікелей эфир',
         description:
-            'Студия для живых трансляций с профессиональным видео и звуковым оборудованием.',
+            'Кәсіби бейне және дыбыс жабдықтары бар тікелей эфир студиясы.',
         pricePerHour: 2500,
         pricePerDay: 15000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.6,
         reviewsCount: 78,
-        location: 'Москва, Тверская',
-        address: 'ул. Тверская, д. 20',
+        location: 'Мәскеу, Тверская',
+        address: 'Тверская көшесі, 20 үй',
         areaSquareMeters: 45,
         hasEngineer: true,
         hasInstruments: false,
@@ -165,12 +164,12 @@ class _StudiosScreenState extends State<StudiosScreen> {
         hasAirConditioning: true,
         equipment: 'BlackMagic ATEM, OBS, Stream Deck',
         amenities: [
-          'Прямой эфир',
-          '4 камеры',
-          'Трансляция на YouTube/Twitch',
+          'Тікелей трансляция',
+          '4 камера',
+          'YouTube/Twitch трансляциясы',
           'Оператор',
-          'Зеленый экран',
-          'RGB освещение',
+          'Жасыл экран',
+          'RGB жарықтандыру',
         ],
         ownerId: 'owner4',
         ownerName: 'StreamPro',
@@ -179,16 +178,16 @@ class _StudiosScreenState extends State<StudiosScreen> {
       Studio(
         id: '5',
         name: 'Mix & Master Lab',
-        type: 'Сведение',
+        type: 'Араласу және мастеринг',
         description:
-            'Студия сведения и мастеринга с акустической обработкой премиум-класса.',
+            'Премиум акустикалық өңдеуі бар араласу және мастеринг студиясы.',
         pricePerHour: 4000,
         pricePerDay: 25000,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 5.0,
         reviewsCount: 156,
-        location: 'Москва, Парк Культуры',
-        address: 'Зубовский бульвар, д. 4',
+        location: 'Мәскеу, Мәдениет саябағы',
+        address: 'Зубов бульвары, 4 үй',
         areaSquareMeters: 40,
         hasEngineer: true,
         hasInstruments: false,
@@ -196,11 +195,11 @@ class _StudiosScreenState extends State<StudiosScreen> {
         hasAirConditioning: true,
         equipment: 'Neve Console, UAD Apollo, Focal Twin6',
         amenities: [
-          'Опытный звукорежиссер',
-          'Аналоговое оборудование',
-          'Плагины UAD',
-          'Референсные мониторы',
-          'Акустическая обработка',
+          'Тәжірибелі дыбыс режиссері',
+          'Аналогтық жабдықтар',
+          'UAD плагиндері',
+          'Референстік мониторлар',
+          'Акустикалық өңдеу',
         ],
         ownerId: 'owner5',
         ownerName: 'MasterSound',
@@ -211,25 +210,25 @@ class _StudiosScreenState extends State<StudiosScreen> {
         name: 'Jam Session Room',
         type: 'Репетиция',
         description:
-            'Уютная репетиционная комната для малых составов и акустических сессий.',
+            'Шағын топтар мен акустикалық сессияларға арналған жайлы репетиция бөлмесі.',
         pricePerHour: 600,
         pricePerDay: 3500,
         imageUrls: ['https://via.placeholder.com/400x300'],
         rating: 4.5,
         reviewsCount: 64,
-        location: 'Москва, Чистые Пруды',
-        address: 'Чистопрудный бульвар, д. 12',
+        location: 'Мәскеу, Таза Көлдер',
+        address: 'Чистопрудный бульвары, 12 үй',
         areaSquareMeters: 25,
         hasEngineer: false,
         hasInstruments: true,
         hasSoundproofing: true,
         hasAirConditioning: false,
-        equipment: 'Комбо-усилители, Микрофоны, Миксер',
+        equipment: 'Комбо күшейткіштер, Микрофондар, Микшер',
         amenities: [
-          'Гитарный усилитель',
-          'Комбо для клавиш',
-          'Микрофоны Shure',
-          'Аудиоинтерфейс',
+          'Гитара күшейткіші',
+          'Клавиштерге арналған комбо',
+          'Shure микрофондары',
+          'Аудио интерфейс',
           'Wi-Fi',
         ],
         ownerId: 'owner6',
@@ -238,12 +237,12 @@ class _StudiosScreenState extends State<StudiosScreen> {
       ),
     ];
 
+
     setState(() {
       _allStudios = sampleStudios;
       _filteredStudios = sampleStudios;
     });
 
-    // Теперь пробуем загрузить данные с сервера и добавить к тестовым
     try {
       final response = await ApiService.getAllStudios(
         search: _searchQuery.isNotEmpty ? _searchQuery : null,
@@ -255,7 +254,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
           return Studio(
             id: data['_id'] is String ? data['_id'] : data['_id']['\$oid'],
             name: data['name'] ?? '',
-            type: 'Звукозапись',
+            type: 'Дыбыс жазу',
             description: data['description'] ?? '',
             pricePerHour: (data['pricePerHour'] ?? 0).toDouble(),
             pricePerDay: (data['pricePerDay'] ?? 0).toDouble(),
@@ -266,8 +265,8 @@ class _StudiosScreenState extends State<StudiosScreen> {
             address: data['location'] ?? '',
             areaSquareMeters: (data['size'] ?? 0).toDouble(),
             hasEngineer: false,
-            hasInstruments: (data['equipment'] as List?)?.contains('Музыкальные инструменты') ?? false,
-            hasSoundproofing: (data['amenities'] as List?)?.contains('Звукоизоляция') ?? false,
+            hasInstruments: (data['equipment'] as List?)?.contains('Музыкалды аспаптар') ?? false,
+            hasSoundproofing: (data['amenities'] as List?)?.contains('Дыбыс жазу') ?? false,
             hasAirConditioning: (data['amenities'] as List?)?.contains('Кондиционер') ?? false,
             equipment: (data['equipment'] as List<dynamic>?)?.join(', ') ?? '',
             amenities: [
@@ -295,7 +294,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
   void _applyFilters() {
     setState(() {
       _filteredStudios = _allStudios.where((studio) {
-        bool matchesType = _selectedType == 'Все' || studio.type == _selectedType;
+        bool matchesType = _selectedType == 'Барлығы' || studio.type == _selectedType;
         bool matchesSearch = _searchQuery.isEmpty ||
             studio.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
             studio.description.toLowerCase().contains(_searchQuery.toLowerCase()) ||
@@ -362,7 +361,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Студии',
+                'Студиялар',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -371,7 +370,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
               ),
               SizedBox(height: 4),
               Text(
-                'Запись, репетиция, производство',
+                'Жазу, репетиция, өндіріс',
                 style: TextStyle(
                   color: Color(0xFFE94560),
                   fontSize: 14,
@@ -414,7 +413,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
             _applyFilters();
           },
           decoration: InputDecoration(
-            hintText: 'Поиск студий...',
+            hintText: 'Студияларды іздеу...',
             hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
             prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.5)),
             suffixIcon: _searchQuery.isNotEmpty
@@ -496,7 +495,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
           Row(
             children: [
               Text(
-                'Найдено: ${_filteredStudios.length}',
+                'Табылды: ${_filteredStudios.length}',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.7),
                   fontSize: 14,
@@ -531,15 +530,15 @@ class _StudiosScreenState extends State<StudiosScreen> {
                 itemBuilder: (context) => [
                   const PopupMenuItem(
                     value: 'popular',
-                    child: Text('Популярные', style: TextStyle(color: Colors.white)),
+                    child: Text('Танымал', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'price_low',
-                    child: Text('Цена: низкая', style: TextStyle(color: Colors.white)),
+                    child: Text('Баға: төмен', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'price_high',
-                    child: Text('Цена: высокая', style: TextStyle(color: Colors.white)),
+                    child: Text('Баға: жоғары', style: TextStyle(color: Colors.white)),
                   ),
                   const PopupMenuItem(
                     value: 'rating',
@@ -575,14 +574,14 @@ class _StudiosScreenState extends State<StudiosScreen> {
   String _getSortLabel() {
     switch (_sortBy) {
       case 'price_low':
-        return 'Цена ↑';
+        return 'Баға ↑';
       case 'price_high':
-        return 'Цена ↓';
+        return 'Баға ↓';
       case 'rating':
         return 'Рейтинг';
       case 'popular':
       default:
-        return 'Популярные';
+        return 'Танымал';
     }
   }
 
@@ -745,7 +744,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
                           ),
                         ),
                         const Text(
-                          '/час',
+                          '/сағат',
                           style: TextStyle(color: Colors.white54, fontSize: 12),
                         ),
                       ],
@@ -879,7 +878,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          '${studio.pricePerHour.toInt()} ₸/час',
+                          '${studio.pricePerHour.toInt()} ₸/сағат',
                           style: const TextStyle(
                             color: Color(0xFFE94560),
                             fontSize: 13,
@@ -911,7 +910,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
           Icon(Icons.search_off, size: 80, color: Colors.white.withOpacity(0.3)),
           const SizedBox(height: 16),
           Text(
-            'Студии не найдены',
+            'Студиялар табылмады',
             style: TextStyle(
               color: Colors.white.withOpacity(0.7),
               fontSize: 18,
@@ -920,7 +919,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Попробуйте изменить фильтры',
+            'Фильтрлерді өзгертуге тырысыңыз',
             style: TextStyle(
               color: Colors.white.withOpacity(0.5),
               fontSize: 14,

@@ -53,7 +53,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message'] ?? 'Удалено из избранного'),
+          content: Text(result['message'] ?? 'Таңдаулылардан жойылды'),
           backgroundColor: result['success'] ? Colors.green : Colors.red,
           duration: const Duration(seconds: 2),
         ),
@@ -83,7 +83,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message'] ?? 'Добавлено в избранное'),
+          content: Text(result['message'] ?? 'Таңдаулыларға қосылды'),
           backgroundColor: result['success'] ? Colors.green : Colors.red,
           duration: const Duration(seconds: 2),
         ),
@@ -314,7 +314,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
               ),
               const SizedBox(width: 8),
               Text(
-                '(${widget.instrument.reviewsCount} отзывов)',
+                '(${widget.instrument.reviewsCount} пікір)',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.6),
                   fontSize: 14,
@@ -367,7 +367,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Цена аренды',
+                'Жалға алу бағасы',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -386,7 +386,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
                     ),
                   ),
                   const Text(
-                    ' /час',
+                    ' /сағат',
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 16,
@@ -400,7 +400,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const Text(
-                'За день',
+                'Бір тәулікте',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -435,7 +435,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Калькулятор аренды',
+            'Жалға алу калькуляторы',
             style: TextStyle(
               color: Colors.white,
               fontSize: 18,
@@ -446,7 +446,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
           Row(
             children: [
               const Text(
-                'Количество часов:',
+                'Сағат саны:',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -507,7 +507,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Итого к оплате:',
+                  'Төлем құны:',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -539,7 +539,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Что входит',
+            'Не кіреді',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -591,7 +591,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Описание',
+            'Сипаттама',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -640,7 +640,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Арендодатель',
+                  'Жалға беруші',
                   style: TextStyle(
                     color: Colors.white54,
                     fontSize: 12,
@@ -686,7 +686,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Отзывы',
+                'Пікірлер',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -696,7 +696,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
               TextButton(
                 onPressed: () {},
                 child: const Text(
-                  'Все отзывы',
+                  'Барлық пікірлер',
                   style: TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 14,
@@ -707,17 +707,17 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
           ),
           const SizedBox(height: 16),
           _buildReviewCard(
-            'Иван Петров',
+            'Абай Бегей',
             5.0,
-            'Отличный инструмент! Звучание превосходное, состояние идеальное.',
-            '2 дня назад',
+            'Керемет аспап! Дыбысы өте терең әрі тұңғиық, өте жақсы күйде сақталған.',
+            '2 күн бұрын',
           ),
           const SizedBox(height: 12),
           _buildReviewCard(
-            'Мария Сидорова',
+            'Айша Бибі',
             4.5,
-            'Хорошая гитара, владелец очень отзывчивый.',
-            '1 неделю назад',
+            'Жақсы гитара, иесі өте жауапты.',
+            '1 апта бұрын',
           ),
         ],
       ),
@@ -828,7 +828,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'От ${widget.instrument.pricePerHour.toInt()} ₸/час',
+                  'От ${widget.instrument.pricePerHour.toInt()} ₸/сағат',
                   style: const TextStyle(
                     color: Color(0xFFE94560),
                     fontSize: 20,
@@ -836,7 +836,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
                   ),
                 ),
                 Text(
-                  'или ${widget.instrument.pricePerDay.toInt()} ₸/день',
+                  'или ${widget.instrument.pricePerDay.toInt()} ₸/күн',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 12,
@@ -860,7 +860,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
                   elevation: 0,
                 ),
                 child: const Text(
-                  'Забронировать',
+                  'Брондау',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -890,7 +890,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Бронирование',
+                'Брондау',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -907,7 +907,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
               ),
               const SizedBox(height: 24),
               const Text(
-                'Выберите дату и время',
+                'Уақытты таңдау',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -927,7 +927,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
                     const Icon(Icons.calendar_today, color: Color(0xFFE94560)),
                     const SizedBox(width: 12),
                     Text(
-                      'Выбрать дату',
+                      'Күнді таңдау',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                         fontSize: 14,
@@ -944,7 +944,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Бронирование оформлено!'),
+                        content: Text('Брондау расталды!'),
                         backgroundColor: Color(0xFF00D9A5),
                       ),
                     );
@@ -957,7 +957,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
                     ),
                   ),
                   child: const Text(
-                    'Подтвердить бронирование',
+                    'Брондауды растау',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -991,13 +991,13 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
   String _getConditionLabel(String condition) {
     switch (condition) {
       case 'new':
-        return 'НОВЫЙ';
+        return 'ЖАҢА';
       case 'excellent':
-        return 'ОТЛИЧНЫЙ';
+        return 'КЕРЕМЕТ';
       case 'good':
-        return 'ХОРОШИЙ';
+        return 'ЖАҚСЫ';
       case 'fair':
-        return 'СРЕДНИЙ';
+        return 'ОРТАША';
       default:
         return condition.toUpperCase();
     }

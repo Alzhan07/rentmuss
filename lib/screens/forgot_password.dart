@@ -45,7 +45,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message'] ?? 'Ошибка отправки кода'),
+          content: Text(result['message'] ?? 'Кодты жіберу қатесі'),
           backgroundColor: Colors.red,
         ),
       );
@@ -76,7 +76,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Забыли пароль?',
+                    'Құпия сөзді ұмыттыңыз ба?',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -85,7 +85,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Введите ваш email, и мы отправим вам код для восстановления пароля',
+                    'Электрондық поштаңызды теріңіз, біз сізге құпия сөзді қалпына келтіру коды бар хат жібереміз',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white.withOpacity(0.7),
@@ -131,12 +131,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Введите email';
+                              return 'email теріңіз';
                             }
                             if (!RegExp(
                               r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                             ).hasMatch(value)) {
-                              return 'Введите корректный email';
+                              return 'Дұрыс email енгізіңіз';
                             }
                             return null;
                           },
@@ -165,7 +165,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                       ),
                                     )
                                     : const Text(
-                                      'Отправить код',
+                                      'Кодты жіберу',
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -181,7 +181,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     child: TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
-                        'Вернуться к входу',
+                        'Кіру бетіне оралу',
                         style: TextStyle(
                           color: const Color(0xFFE94560),
                           fontSize: 16,

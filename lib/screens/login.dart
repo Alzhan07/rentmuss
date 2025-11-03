@@ -284,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                         child: Text(
-                          'Забыли пароль?',
+                          'Құпия сөзді ұмыттыңыз ба?',
                           style: TextStyle(
                             color: const Color(0xFFE94560),
                             fontSize: 14,
