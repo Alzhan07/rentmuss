@@ -20,7 +20,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
 
   String _searchQuery = '';
   String _selectedCategory = 'Все';
-  String _sortBy = 'popular'; // popular, price_low, price_high, rating
+  String _sortBy = 'popular'; 
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -49,7 +49,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
   Future<void> _loadInstruments() async {
     setState(() => _isLoading = true);
 
-    // Временные данные для демонстрации
+    
     await Future.delayed(const Duration(milliseconds: 500));
 
     final sampleInstruments = [
@@ -214,11 +214,11 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
   void _applyFilters() {
     setState(() {
       _filteredInstruments = _allInstruments.where((instrument) {
-        // Фильтр по категории
+
         bool matchesCategory =
             _selectedCategory == 'Все' || instrument.category == _selectedCategory;
 
-        // Фильтр по поиску
+
         bool matchesSearch = _searchQuery.isEmpty ||
             instrument.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
             instrument.brand.toLowerCase().contains(_searchQuery.toLowerCase()) ||
@@ -227,7 +227,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
         return matchesCategory && matchesSearch;
       }).toList();
 
-      // Сортировка
+
       switch (_sortBy) {
         case 'price_low':
           _filteredInstruments.sort((a, b) => a.pricePerHour.compareTo(b.pricePerHour));
@@ -591,7 +591,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
         ),
         child: Row(
           children: [
-            // Изображение
+          
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -620,7 +620,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                 ),
               ),
             ),
-            // Информация
+        
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(16),

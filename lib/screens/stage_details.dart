@@ -829,7 +829,7 @@ class _StageDetailsScreenState extends State<StageDetailsScreen> {
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () {
-                // Открыть карту
+              
               },
               icon: const Icon(Icons.map, color: Color(0xFFE94560)),
               label: const Text(

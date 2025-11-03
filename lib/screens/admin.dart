@@ -281,7 +281,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
     final status = sellerApp?['status'] ?? 'none';
 
-    // Правильная обработка даты из MongoDB
+ 
     DateTime? appliedAt;
     try {
       final dateValue = sellerApp?['appliedAt'];

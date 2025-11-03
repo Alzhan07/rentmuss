@@ -82,7 +82,7 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        // Сохраняем токен
+
         if (data['token'] != null) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('auth_token', data['token']);
@@ -108,20 +108,17 @@ class ApiService {
     }
   }
 
-  // Выход
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
     await prefs.remove('user_data');
   }
 
-  // Проверка авторизации
   static Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token') != null;
   }
 
-  // Получить сохраненного пользователя
   static Future<User?> getSavedUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userData = prefs.getString('user_data');
@@ -135,7 +132,6 @@ class ApiService {
     return null;
   }
 
-  // Получить профиль пользователя
   static Future<Map<String, dynamic>> getUserProfile() async {
     try {
       final headers = await _getHeaders();
@@ -146,7 +142,6 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        // Обновляем локальные данные
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_data', jsonEncode(data['user']));
         return {
@@ -166,7 +161,6 @@ class ApiService {
     }
   }
 
-  // Подать заявку на продавца
   static Future<Map<String, dynamic>> applyForSeller({
     required String shopName,
     String? shopDescription,
@@ -185,7 +179,6 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        // Обновляем профиль пользователя
         await getUserProfile();
         return {
           'success': true,
@@ -205,7 +198,6 @@ class ApiService {
     }
   }
 
-  // Получить все заявки на продавца (только для админа)
   static Future<Map<String, dynamic>> getSellerApplications() async {
     try {
       final headers = await _getHeaders();
@@ -234,7 +226,6 @@ class ApiService {
     }
   }
 
-  // Одобрить/Отклонить заявку на продавца (только для админа)
   static Future<Map<String, dynamic>> reviewSellerApplication({
     required String userId,
     required bool approved,
@@ -272,7 +263,6 @@ class ApiService {
     }
   }
 
-  // Проверить доступность имени
   static Future<bool> checkNameAvailability(String name) async {
     try {
       final response = await http.get(
@@ -290,9 +280,8 @@ class ApiService {
     }
   }
 
-  // ========== СТАРЫЕ МЕТОДЫ (для совместимости) ==========
 
-  // Загрузить аватар
+
   static Future<Map<String, dynamic>> uploadAvatar(File imageFile) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -325,7 +314,6 @@ class ApiService {
     }
   }
 
-  // Сменить пароль
   static Future<Map<String, dynamic>> changePassword({
     required String oldPassword,
     required String newPassword,
@@ -352,7 +340,6 @@ class ApiService {
     }
   }
 
-  // Получить список площадок
   static Future<List<Map<String, dynamic>>> getVenues({
     String? type,
     String? search,
@@ -384,9 +371,6 @@ class ApiService {
     }
   }
 
-  // ========== МЕТОДЫ ИЗБРАННОГО ==========
-
-  // Получить все избранные (с опциональной фильтрацией по типу)
   static Future<Map<String, dynamic>> getFavorites({String? type}) async {
     try {
       final headers = await _getHeaders();
@@ -421,7 +405,6 @@ class ApiService {
     }
   }
 
-  // Добавить в избранное
   static Future<Map<String, dynamic>> addToFavorites({
     required String itemType,
     required String itemId,
@@ -454,7 +437,6 @@ class ApiService {
     }
   }
 
-  // Удалить из избранного
   static Future<Map<String, dynamic>> removeFromFavorites({
     required String itemType,
     required String itemId,
@@ -484,7 +466,6 @@ class ApiService {
     }
   }
 
-  // Проверить, в избранном ли элемент
   static Future<Map<String, dynamic>> checkIsFavorite({
     required String itemType,
     required String itemId,
@@ -519,7 +500,6 @@ class ApiService {
     }
   }
 
-  // Обновить профиль
   static Future<Map<String, dynamic>> updateProfile({
     String? username,
     String? email,
@@ -538,7 +518,6 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        // Обновить локальные данные
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_data', jsonEncode(data['user']));
       }
@@ -553,9 +532,6 @@ class ApiService {
     }
   }
 
-  // ========== ВОССТАНОВЛЕНИЕ ПАРОЛЯ ==========
-
-  // Запросить код восстановления пароля
   static Future<Map<String, dynamic>> forgotPassword({
     required String email,
   }) async {
@@ -580,7 +556,6 @@ class ApiService {
     }
   }
 
-  // Проверить код восстановления
   static Future<Map<String, dynamic>> verifyResetCode({
     required String email,
     required String code,
@@ -609,7 +584,6 @@ class ApiService {
     }
   }
 
-  // Сбросить пароль
   static Future<Map<String, dynamic>> resetPassword({
     required String email,
     required String code,

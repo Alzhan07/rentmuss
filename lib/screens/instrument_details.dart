@@ -43,7 +43,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
 
   Future<void> _toggleFavorite() async {
     if (_isFavorite) {
-      // Remove from favorites
+      
       final result = await ApiService.removeFromFavorites(
         itemType: 'instrument',
         itemId: widget.instrument.id,
@@ -63,7 +63,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
         setState(() => _isFavorite = false);
       }
     } else {
-      // Add to favorites
+      
       final result = await ApiService.addToFavorites(
         itemType: 'instrument',
         itemId: widget.instrument.id,
@@ -668,7 +668,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
               child: const Icon(Icons.message, color: Color(0xFFE94560), size: 20),
             ),
             onPressed: () {
-              // Открыть чат
+            
             },
           ),
         ],
@@ -848,7 +848,7 @@ class _InstrumentDetailsScreenState extends State<InstrumentDetailsScreen> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  // Открыть форму бронирования
+                  
                   _showBookingDialog();
                 },
                 style: ElevatedButton.styleFrom(

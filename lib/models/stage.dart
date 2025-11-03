@@ -1,7 +1,7 @@
 class Stage {
   final String id;
   final String name;
-  final String type; // concert, theater, club, outdoor, small, medium, large
+  final String type; 
   final String description;
   final double pricePerHour;
   final double pricePerDay;
@@ -10,12 +10,12 @@ class Stage {
   final int reviewsCount;
   final String location;
   final String address;
-  final int capacity; // вместимость зрителей
-  final double areaSquareMeters; // площадь сцены
-  final bool hasSound; // звуковое оборудование
-  final bool hasLighting; // световое оборудование
-  final bool hasBackstage; // гримерные
-  final bool hasParking; // парковка
+  final int capacity;
+  final double areaSquareMeters; 
+  final bool hasSound; 
+  final bool hasLighting; 
+  final bool hasBackstage; 
+  final bool hasParking; 
   final List<String> amenities;
   final bool isAvailable;
   final String ownerId;

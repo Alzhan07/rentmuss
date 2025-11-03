@@ -20,7 +20,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  // Индикаторы требований к паролю
+  
   bool _hasMinLength = false;
   bool _hasUpperCase = false;
   bool _hasLowerCase = false;

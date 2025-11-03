@@ -392,7 +392,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          // TODO: Navigate to detail page
+                         
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFE94560),
@@ -440,7 +440,7 @@ class _FavoritesScreenState extends State<FavoritesScreen>
   }
 
   String _getCategoryText(String category) {
-    // Translate category names
+ 
     final categoryMap = {
       'Гитары': 'Гитары',
       'Клавишные': 'Клавишные',

@@ -68,7 +68,7 @@ class _StudioDetailsScreenState extends State<StudioDetailsScreen> {
           'pricePerDay': widget.studio.pricePerDay,
           'rating': widget.studio.rating,
           'location': widget.studio.location,
-          'equipment': [widget.studio.equipment], // convert to list
+          'equipment': [widget.studio.equipment], 
         },
       );
 

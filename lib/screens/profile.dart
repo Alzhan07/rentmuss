@@ -59,10 +59,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       });
 
-      // Для веба нужно использовать XFile напрямую
+    
       if (kIsWeb) {
-        // Пока что просто сохраним изображение локально
-        // TODO: Реализовать загрузку на сервер для веба
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Загрузка аватара на веб пока не поддерживается'),

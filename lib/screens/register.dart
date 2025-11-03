@@ -19,7 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  // Требования к паролю
+  
   bool _hasMinLength = false;
   bool _hasUpperCase = false;
   bool _hasLowerCase = false;
@@ -268,7 +268,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             validator: (value) {
-                              // Email теперь необязательный
+                           
                               if (value != null && value.isNotEmpty) {
                                 if (!value.contains('@')) {
                                   return 'Дұрыс email енгізіңіз';
@@ -370,7 +370,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           const SizedBox(height: 12),
 
-                          // Индикаторы требований к паролю
+                         
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(

@@ -271,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 16),
 
-                    // Кнопка "Забыли пароль?"
+                    
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(

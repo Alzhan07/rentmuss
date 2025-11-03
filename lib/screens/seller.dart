@@ -48,7 +48,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
 
         Navigator.pop(context, true);
       } else {
-        // Показываем ошибку
+      
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message'] ?? 'Өтінімді жіберу кезінде қате пайда болды'),

@@ -1,7 +1,7 @@
 class Studio {
   final String id;
   final String name;
-  final String type; // recording, rehearsal, podcast, live_streaming, mixing
+  final String type; 
   final String description;
   final double pricePerHour;
   final double pricePerDay;
@@ -11,11 +11,11 @@ class Studio {
   final String location;
   final String address;
   final double areaSquareMeters;
-  final bool hasEngineer; // звукорежиссер в комплекте
-  final bool hasInstruments; // инструменты в комплекте
-  final bool hasSoundproofing; // звукоизоляция
-  final bool hasAirConditioning; // кондиционер
-  final String equipment; // основное оборудование
+  final bool hasEngineer; 
+  final bool hasInstruments; 
+  final bool hasSoundproofing; 
+  final bool hasAirConditioning; 
+  final String equipment; 
   final List<String> amenities;
   final bool isAvailable;
   final String ownerId;
