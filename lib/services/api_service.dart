@@ -18,6 +18,23 @@ class ApiService {
     };
   }
 
+  // Преобразовать относительный URL в абсолютный
+  static String _toAbsoluteUrl(String? relativeUrl) {
+    if (relativeUrl == null || relativeUrl.isEmpty) return '';
+    if (relativeUrl.startsWith('http')) return relativeUrl;
+
+    final uri = Uri.parse(baseUrl);
+    return '${uri.scheme}://${uri.host}:${uri.port}$relativeUrl';
+  }
+
+  // Преобразовать user data, конвертируя avatar URL
+  static Map<String, dynamic> _processUserData(Map<String, dynamic> userData) {
+    if (userData['avatar'] != null) {
+      userData['avatar'] = _toAbsoluteUrl(userData['avatar']);
+    }
+    return userData;
+  }
+
   // Регистрация пользователя
   static Future<Map<String, dynamic>> register({
     required String username,
@@ -42,12 +59,13 @@ class ApiService {
         if (data['token'] != null) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('auth_token', data['token']);
-          await prefs.setString('user_data', jsonEncode(data['user']));
+          final processedUser = _processUserData(Map<String, dynamic>.from(data['user']));
+          await prefs.setString('user_data', jsonEncode(processedUser));
         }
         return {
           'success': true,
           'message': data['message'] ?? 'Регистрация успешна',
-          'user': data['user'],
+          'user': _processUserData(Map<String, dynamic>.from(data['user'])),
           'token': data['token'],
         };
       } else {
@@ -86,12 +104,13 @@ class ApiService {
         if (data['token'] != null) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('auth_token', data['token']);
-          await prefs.setString('user_data', jsonEncode(data['user']));
+          final processedUser = _processUserData(Map<String, dynamic>.from(data['user']));
+          await prefs.setString('user_data', jsonEncode(processedUser));
         }
         return {
           'success': true,
           'message': data['message'] ?? 'Вход выполнен',
-          'user': data['user'],
+          'user': _processUserData(Map<String, dynamic>.from(data['user'])),
           'token': data['token'],
         };
       } else {
@@ -143,10 +162,11 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('user_data', jsonEncode(data['user']));
+        final processedUser = _processUserData(Map<String, dynamic>.from(data['user']));
+        await prefs.setString('user_data', jsonEncode(processedUser));
         return {
           'success': true,
-          'user': data['user'],
+          'user': processedUser,
         };
       }
       return {
@@ -304,10 +324,25 @@ class ApiService {
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
 
+      if (response.statusCode == 200) {
+        // Преобразуем относительный URL в абсолютный
+        String avatarUrl = data['avatarUrl'] ?? '';
+        if (avatarUrl.isNotEmpty && !avatarUrl.startsWith('http')) {
+          // Извлекаем базовый URL без /api
+          final uri = Uri.parse(baseUrl);
+          avatarUrl = '${uri.scheme}://${uri.host}:${uri.port}$avatarUrl';
+        }
+
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Аватар обновлен',
+          'avatarUrl': avatarUrl,
+        };
+      }
+
       return {
-        'success': response.statusCode == 200,
-        'message': data['message'] ?? 'Аватар обновлен',
-        'avatarUrl': data['avatarUrl'],
+        'success': false,
+        'message': data['message'] ?? 'Ошибка загрузки аватара',
       };
     } catch (e) {
       return {'success': false, 'message': 'Ошибка загрузки аватара: $e'};
@@ -337,6 +372,61 @@ class ApiService {
       };
     } catch (e) {
       return {'success': false, 'message': 'Ошибка смены пароля: $e'};
+    }
+  }
+
+  // Загрузка изображений для инструментов, сцен и студий
+  // type может быть: 'instruments', 'stages', 'studios'
+  static Future<Map<String, dynamic>> uploadImages({
+    required String type,
+    required List<File> images,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$baseUrl/listings/upload/$type'),
+      );
+
+      if (token != null) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+
+      // Добавляем все изображения
+      for (var image in images) {
+        request.files.add(
+          await http.MultipartFile.fromPath('images', image.path),
+        );
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        // Преобразуем относительные URL в абсолютные
+        List<String> imageUrls = [];
+        if (data['imageUrls'] != null) {
+          for (var url in data['imageUrls']) {
+            imageUrls.add(_toAbsoluteUrl(url));
+          }
+        }
+
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Изображения загружены',
+          'imageUrls': imageUrls,
+        };
+      }
+
+      return {
+        'success': false,
+        'message': data['message'] ?? 'Ошибка загрузки изображений',
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка загрузки изображений: $e'};
     }
   }
 

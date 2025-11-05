@@ -243,21 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                               child: ClipOval(
-                                child: kIsWeb
-                                    ? (_webImage != null
-                                        ? Image.network(
-                                            _webImage!.path,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) =>
-                                                _buildDefaultAvatar(),
-                                          )
-                                        : _buildDefaultAvatar())
-                                    : (_imageFile != null
-                                        ? Image.file(
-                                            _imageFile!,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : _buildDefaultAvatar()),
+                                child: _buildAvatarImage(),
                               ),
                             ),
                             Positioned(
@@ -485,6 +471,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
       color: const Color(0xFF0F3460),
       child: const Icon(Icons.person, size: 60, color: Color(0xFFE94560)),
     );
+  }
+
+  Widget _buildAvatarImage() {
+    // Priority: local file > web image > server avatar > default
+    if (kIsWeb && _webImage != null) {
+      return Image.network(
+        _webImage!.path,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildServerOrDefaultAvatar(),
+      );
+    } else if (!kIsWeb && _imageFile != null) {
+      return Image.file(
+        _imageFile!,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return _buildServerOrDefaultAvatar();
+    }
+  }
+
+  Widget _buildServerOrDefaultAvatar() {
+    if (_user?.avatar != null && _user!.avatar!.isNotEmpty) {
+      return Image.network(
+        _user!.avatar!,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildDefaultAvatar(),
+      );
+    } else {
+      return _buildDefaultAvatar();
+    }
   }
 
   Widget _buildMenuCard({

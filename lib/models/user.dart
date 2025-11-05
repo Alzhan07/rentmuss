@@ -100,6 +100,7 @@ class User {
   final String username;
   final String? email;
   final UserRole role;
+  final String? avatar;
   final SellerInfo? sellerInfo;
   final SellerApplication? sellerApplication;
   final DateTime? createdAt;
@@ -110,6 +111,7 @@ class User {
     required this.username,
     this.email,
     this.role = UserRole.user,
+    this.avatar,
     this.sellerInfo,
     this.sellerApplication,
     this.createdAt,
@@ -122,6 +124,7 @@ class User {
       username: json['username'] ?? '',
       email: json['email'],
       role: _parseRole(json['role']),
+      avatar: json['avatar'],
       sellerInfo:
           json['sellerInfo'] != null
               ? SellerInfo.fromJson(json['sellerInfo'])
@@ -154,6 +157,7 @@ class User {
       'username': username,
       'email': email,
       'role': role.name,
+      'avatar': avatar,
       'sellerInfo': sellerInfo?.toJson(),
       'sellerApplication': sellerApplication?.toJson(),
       'createdAt': createdAt?.toIso8601String(),
@@ -165,6 +169,7 @@ class User {
     String? username,
     String? email,
     UserRole? role,
+    String? avatar,
     SellerInfo? sellerInfo,
     SellerApplication? sellerApplication,
   }) {
@@ -173,6 +178,7 @@ class User {
       username: username ?? this.username,
       email: email ?? this.email,
       role: role ?? this.role,
+      avatar: avatar ?? this.avatar,
       sellerInfo: sellerInfo ?? this.sellerInfo,
       sellerApplication: sellerApplication ?? this.sellerApplication,
       createdAt: createdAt,

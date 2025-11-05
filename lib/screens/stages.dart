@@ -18,7 +18,7 @@ class _StagesScreenState extends State<StagesScreen> {
   bool _isGridView = false;
 
   String _searchQuery = '';
-  String _selectedType = 'Все';
+  String _selectedType = 'Барлығы';
   String _sortBy = 'popular';
   int _minCapacity = 0;
   int _maxCapacity = 10000;
@@ -50,9 +50,116 @@ class _StagesScreenState extends State<StagesScreen> {
   Future<void> _loadStages() async {
     setState(() => _isLoading = true);
 
-    await Future.delayed(const Duration(milliseconds: 500));
-
+    // Тестовые данные с изображениями
     final sampleStages = [
+      Stage(
+        id: 'sample1',
+        name: 'Үлкен Арена "Олимп"',
+        type: 'Концерттік',
+        description: 'Қазіргі заманғы жабдықтар мен тамаша акустикасы бар кәсіби концерт алаңы.',
+        pricePerHour: 15000,
+        pricePerDay: 100000,
+        imageUrls: ['https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800'],
+        rating: 4.9,
+        reviewsCount: 156,
+        location: 'Алматы, Орталық',
+        address: 'Достық даңғылы, 100',
+        capacity: 2000,
+        areaSquareMeters: 500,
+        hasSound: true,
+        hasLighting: true,
+        hasBackstage: true,
+        hasParking: true,
+        amenities: ['Кәсіби дыбыс жүйесі', 'Жарық шоулары', '5 грим бөлмесі', 'Автотұрақ', 'Кейтеринг', 'VIP-аймақтар'],
+        ownerId: 'sample_owner1',
+        ownerName: 'Концерт залы "Олимп"',
+        createdAt: DateTime.now(),
+      ),
+      Stage(
+        id: 'sample2',
+        name: 'Театр сахнасы "Алтын маска"',
+        type: 'Театрлық',
+        description: 'Бай тарихы бар классикалық театр сахнасы. Театр қойылымдарына арналған тамаша акустика.',
+        pricePerHour: 8000,
+        pricePerDay: 50000,
+        imageUrls: ['https://images.unsplash.com/photo-1503095396549-807759245b35?w=800'],
+        rating: 4.8,
+        reviewsCount: 89,
+        location: 'Алматы, Абай',
+        address: 'Абай даңғылы, 45',
+        capacity: 500,
+        areaSquareMeters: 200,
+        hasSound: true,
+        hasLighting: true,
+        hasBackstage: true,
+        hasParking: true,
+        amenities: ['Театрлық акустика', 'Классикалық интерьер', '3 грим бөлмесі', 'Гардероб'],
+        ownerId: 'sample_owner2',
+        ownerName: 'Театр "Алтын маска"',
+        createdAt: DateTime.now(),
+      ),
+      Stage(
+        id: 'sample3',
+        name: 'Ашық сахна "Жазғы бақ"',
+        type: 'Ашық алаң',
+        description: 'Табиғат аясындағы романтикалық ашық сахна. Жаз фестивальдері мен концерттерге өте қолайлы.',
+        pricePerHour: 5000,
+        pricePerDay: 30000,
+        imageUrls: ['https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800'],
+        rating: 4.6,
+        reviewsCount: 67,
+        location: 'Алматы, Медеу',
+        address: 'Медеу ауданы, Көктөбе',
+        capacity: 1000,
+        areaSquareMeters: 300,
+        hasSound: true,
+        hasLighting: true,
+        hasBackstage: false,
+        hasParking: true,
+        amenities: ['Табиғи декорация', 'Дыбыс жүйесі', 'Жарық', 'Автотұрақ'],
+        ownerId: 'sample_owner3',
+        ownerName: 'Саябақ басқармасы',
+        createdAt: DateTime.now(),
+      ),
+    ];
+
+    try {
+      final response = await ApiService.getAllStages(
+        search: _searchQuery.isNotEmpty ? _searchQuery : null,
+      );
+
+      if (response['success']) {
+        final stagesData = response['stages'] as List;
+        if (stagesData.isNotEmpty) {
+          final serverStages = stagesData.map((data) {
+            return Stage.fromJson(data);
+          }).toList();
+
+          setState(() {
+            _allStages = [...sampleStages, ...serverStages];
+            _filteredStages = [...sampleStages, ...serverStages];
+            _isLoading = false;
+          });
+
+          _applyFilters();
+          return;
+        }
+      }
+    } catch (e) {
+      print('Error loading stages: $e');
+    }
+
+    // Если не удалось загрузить с сервера или нет данных, показываем тестовые
+    setState(() {
+      _allStages = sampleStages;
+      _filteredStages = sampleStages;
+      _isLoading = false;
+    });
+    _applyFilters();
+
+    // Старые закомментированные тестовые данные
+    /*
+    final oldSampleStages = [
       Stage(
         id: '1',
         name: 'Үлкен Арена "Олимп"',
@@ -238,56 +345,7 @@ class _StagesScreenState extends State<StagesScreen> {
         createdAt: DateTime.now(),
       ),
     ];
-
-
-    setState(() {
-      _allStages = sampleStages;
-      _filteredStages = sampleStages;
-    });
-
-    try {
-      final response = await ApiService.getAllStages(
-        search: _searchQuery.isNotEmpty ? _searchQuery : null,
-      );
-
-      if (response['success']) {
-        final stagesData = response['stages'] as List;
-        final serverStages = stagesData.map((data) {
-          return Stage(
-            id: data['_id'] is String ? data['_id'] : data['_id']['\$oid'],
-            name: data['name'] ?? '',
-            type: 'Концерттік',
-            description: data['description'] ?? '',
-            pricePerHour: (data['pricePerHour'] ?? 0).toDouble(),
-            pricePerDay: (data['pricePerDay'] ?? 0).toDouble(),
-            imageUrls: (data['imageUrls'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-            rating: (data['rating'] ?? 0).toDouble(),
-            reviewsCount: data['reviewsCount'] ?? 0,
-            location: data['location'] ?? '',
-            address: data['location'] ?? '',
-            capacity: data['capacity'] ?? 0,
-            areaSquareMeters: (data['size'] ?? 0).toDouble(),
-            hasSound: (data['facilities'] as List?)?.contains('Дыбыстық жүйе') ?? false,
-            hasLighting: (data['facilities'] as List?)?.contains('Жарықтандыру жүйесі') ?? false,
-            hasBackstage: (data['facilities'] as List?)?.contains('Бэкстейдж') ?? false,
-            hasParking: (data['facilities'] as List?)?.contains('Тұрақ') ?? false,
-            amenities: (data['facilities'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-            ownerId: data['ownerId'] ?? '',
-            ownerName: data['ownerName'] ?? '',
-            createdAt: DateTime.tryParse(data['createdAt'] ?? '') ?? DateTime.now(),
-          );
-        }).toList();
-
-        setState(() {
-          _allStages = [...sampleStages, ...serverStages];
-          _applyFilters();
-        });
-      }
-    } catch (e) {
-      print('Error loading stages from server: $e');
-    }
-
-    setState(() => _isLoading = false);
+    */
   }
 
   void _applyFilters() {

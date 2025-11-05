@@ -19,7 +19,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  
   bool _hasMinLength = false;
   bool _hasUpperCase = false;
   bool _hasLowerCase = false;
@@ -39,7 +38,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _hasUpperCase = RegExp(r'[A-Z]').hasMatch(password);
       _hasLowerCase = RegExp(r'[a-z]').hasMatch(password);
       _hasDigit = RegExp(r'[0-9]').hasMatch(password);
-      _hasSpecialChar = RegExp(r'[!@#$%^&*()_+=\[\]{};:",.<>?|`~\-\\/]').hasMatch(password);
+      _hasSpecialChar = RegExp(
+        r'[!@#$%^&*()_+=\[\]{};:",.<>?|`~\-\\/]',
+      ).hasMatch(password);
     });
   }
 
@@ -222,11 +223,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             keyboardType: TextInputType.emailAddress,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Email (необязательно)',
+                              labelText: 'Email',
                               labelStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.7),
                               ),
-                              hintText: 'your@email.com (необязательно)',
+                              hintText: 'your@email.com',
                               hintStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.3),
                               ),
@@ -268,7 +269,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             validator: (value) {
-                           
                               if (value != null && value.isNotEmpty) {
                                 if (!value.contains('@')) {
                                   return 'Дұрыс email енгізіңіз';
@@ -370,7 +370,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           const SizedBox(height: 12),
 
-                         
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
@@ -586,13 +585,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Icon(
             isMet ? Icons.check_circle : Icons.circle_outlined,
             size: 18,
-            color: isMet ? const Color(0xFF00D9A5) : Colors.white.withOpacity(0.4),
+            color:
+                isMet ? const Color(0xFF00D9A5) : Colors.white.withOpacity(0.4),
           ),
           const SizedBox(width: 8),
           Text(
             text,
             style: TextStyle(
-              color: isMet ? const Color(0xFF00D9A5) : Colors.white.withOpacity(0.6),
+              color:
+                  isMet
+                      ? const Color(0xFF00D9A5)
+                      : Colors.white.withOpacity(0.6),
               fontSize: 12,
               fontWeight: isMet ? FontWeight.w600 : FontWeight.normal,
             ),

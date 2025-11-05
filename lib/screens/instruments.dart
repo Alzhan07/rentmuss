@@ -20,17 +20,17 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
 
   String _searchQuery = '';
   String _selectedCategory = 'Барлығы';
-  String _sortBy = 'popular'; 
+  String _sortBy = 'popular';
 
   final TextEditingController _searchController = TextEditingController();
 
   final List<Map<String, dynamic>> _categories = [
-    {'name': 'Все', 'icon': Icons.apps},
-    {'name': 'Гитары', 'icon': Icons.music_note},
-    {'name': 'Клавишные', 'icon': Icons.piano},
-    {'name': 'Ударные', 'icon': Icons.album},
-    {'name': 'Духовые', 'icon': Icons.graphic_eq},
-    {'name': 'Струнные', 'icon': Icons.music_note_outlined},
+    {'name': 'Барлығы', 'icon': Icons.apps},
+    {'name': 'Гитаралар', 'icon': Icons.music_note},
+    {'name': 'Пернетақталы', 'icon': Icons.piano},
+    {'name': 'Ұрмалы', 'icon': Icons.album},
+    {'name': 'Үрмелі', 'icon': Icons.graphic_eq},
+    {'name': 'Шекті', 'icon': Icons.music_note_outlined},
     {'name': 'Бас', 'icon': Icons.headphones},
   ];
 
@@ -49,10 +49,151 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
   Future<void> _loadInstruments() async {
     setState(() => _isLoading = true);
 
-
-    await Future.delayed(const Duration(milliseconds: 500));
-
+    // Тестовые данные с изображениями
     final sampleInstruments = [
+      Instrument(
+        id: 'sample1',
+        name: 'Fender Stratocaster',
+        category: 'Гитаралар',
+        brand: 'Fender',
+        model: 'American Professional II',
+        description: 'Классикалық дыбысы бар тарихи Fender гитарасы.',
+        pricePerHour: 800,
+        pricePerDay: 3500,
+        imageUrls: [
+          'https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=800',
+        ],
+        rating: 4.9,
+        reviewsCount: 127,
+        location: 'Алматы, Орталық',
+        condition: 'Керемет',
+        features: [
+          '3 сингл датчигі',
+          'Клен мойын',
+          'Қапшық жинақта бар',
+          'Күшейткіш',
+        ],
+        ownerId: 'sample_owner1',
+        ownerName: 'Музыка орталығы "Гармония"',
+        createdAt: DateTime.now(),
+      ),
+      Instrument(
+        id: 'sample2',
+        name: 'Yamaha P-125',
+        category: 'Пернетақталы',
+        brand: 'Yamaha',
+        model: 'P-125',
+        description:
+            'Салмақталған пернетақтасы және шынайы дыбысы бар сандық пианино.',
+        pricePerHour: 600,
+        pricePerDay: 2500,
+        imageUrls: [
+          'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=800',
+        ],
+        rating: 4.8,
+        reviewsCount: 89,
+        location: 'Алматы, Достық',
+        condition: 'Керемет',
+        features: ['88 перне', 'Педальдар жинақта бар', 'Құлаққаптар', 'Тұғыр'],
+        ownerId: 'sample_owner2',
+        ownerName: 'Студия "Дыбыс"',
+        createdAt: DateTime.now(),
+      ),
+      Instrument(
+        id: 'sample3',
+        name: 'Pearl Export Series',
+        category: 'Ұрмалы',
+        brand: 'Pearl',
+        model: 'Export EXX725S',
+        description:
+            '5 барабаннан және тарелкалардан тұратын кәсіби барабан жинағы.',
+        pricePerHour: 1200,
+        pricePerDay: 5000,
+        imageUrls: [
+          'https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=800',
+        ],
+        rating: 4.7,
+        reviewsCount: 56,
+        location: 'Алматы, Сайран',
+        condition: 'Жақсы',
+        features: [
+          '5 барабан',
+          'Zildjian тарелкалары',
+          'Тіреулер мен педальдар',
+          'Барабан таяқшалары',
+        ],
+        ownerId: 'sample_owner3',
+        ownerName: 'Репетиция базасы "Рокот"',
+        createdAt: DateTime.now(),
+      ),
+      Instrument(
+        id: 'sample4',
+        name: 'Gibson Les Paul',
+        category: 'Гитаралар',
+        brand: 'Gibson',
+        model: 'Les Paul Standard',
+        description:
+            'Күшті дыбысы және премиум әрлеуі бар классикалық рок-гитара.',
+        pricePerHour: 1500,
+        pricePerDay: 6000,
+        imageUrls: [
+          'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800',
+        ],
+        rating: 5.0,
+        reviewsCount: 234,
+        location: 'Алматы, Орталық',
+        condition: 'Керемет',
+        features: [
+          '2 хамбакер',
+          'Қызыл ағаш корпусы',
+          'Marshall күшейткіші',
+          'Премиум қапшық',
+        ],
+        ownerId: 'sample_owner4',
+        ownerName: 'RockStore',
+        createdAt: DateTime.now(),
+      ),
+    ];
+
+    try {
+      final response = await ApiService.getAllInstruments(
+        category: _selectedCategory != 'Барлығы' ? _selectedCategory : null,
+        search: _searchQuery.isNotEmpty ? _searchQuery : null,
+      );
+
+      if (response['success']) {
+        final instrumentsData = response['instruments'] as List;
+        if (instrumentsData.isNotEmpty) {
+          final serverInstruments =
+              instrumentsData.map((data) {
+                return Instrument.fromJson(data);
+              }).toList();
+
+          setState(() {
+            _allInstruments = [...sampleInstruments, ...serverInstruments];
+            _filteredInstruments = [...sampleInstruments, ...serverInstruments];
+            _isLoading = false;
+          });
+
+          _applyFilters();
+          return;
+        }
+      }
+    } catch (e) {
+      print('Error loading instruments: $e');
+    }
+
+    // Если не удалось загрузить с сервера или нет данных, показываем тестовые
+    setState(() {
+      _allInstruments = sampleInstruments;
+      _filteredInstruments = sampleInstruments;
+      _isLoading = false;
+    });
+    _applyFilters();
+
+    // Старые закомментированные тестовые данные
+    /*
+    final oldSampleInstruments = [
       Instrument(
         id: '1',
         name: 'Fender Stratocaster',
@@ -203,88 +344,51 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
         createdAt: DateTime.now(),
       ),
     ];
-
-
-    setState(() {
-      _allInstruments = sampleInstruments;
-      _filteredInstruments = sampleInstruments;
-    });
-
- 
-    try {
-      final response = await ApiService.getAllInstruments(
-        category: _selectedCategory != 'Все' ? _selectedCategory : null,
-        search: _searchQuery.isNotEmpty ? _searchQuery : null,
-      );
-
-      if (response['success']) {
-        final instrumentsData = response['instruments'] as List;
-        final serverInstruments = instrumentsData.map((data) {
-          return Instrument(
-            id: data['_id'] is String ? data['_id'] : data['_id']['\$oid'],
-            name: data['name'] ?? '',
-            category: data['category'] ?? 'Басқа',
-            brand: data['brand'] ?? '',
-            model: data['model'] ?? '',
-            description: data['description'] ?? '',
-            pricePerHour: (data['pricePerHour'] ?? 0).toDouble(),
-            pricePerDay: (data['pricePerDay'] ?? 0).toDouble(),
-            imageUrls: (data['imageUrls'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-            rating: (data['rating'] ?? 0).toDouble(),
-            reviewsCount: data['reviewsCount'] ?? 0,
-            location: data['location'] ?? '',
-            condition: data['condition'] ?? 'good',
-            features: (data['features'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-            ownerId: data['ownerId'] ?? '',
-            ownerName: data['ownerName'] ?? '',
-            createdAt: DateTime.tryParse(data['createdAt'] ?? '') ?? DateTime.now(),
-          );
-        }).toList();
-
-        setState(() {
-      
-          _allInstruments = [...sampleInstruments, ...serverInstruments];
-          _applyFilters();
-        });
-      }
-    } catch (e) {
-      print('Error loading instruments from server: $e');
-    
-    }
-
-    setState(() => _isLoading = false);
+    */
   }
 
   void _applyFilters() {
     setState(() {
-      _filteredInstruments = _allInstruments.where((instrument) {
+      _filteredInstruments =
+          _allInstruments.where((instrument) {
+            bool matchesCategory =
+                _selectedCategory == 'Барлығы' ||
+                instrument.category == _selectedCategory;
 
-        bool matchesCategory =
-            _selectedCategory == 'Все' || instrument.category == _selectedCategory;
+            bool matchesSearch =
+                _searchQuery.isEmpty ||
+                instrument.name.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ) ||
+                instrument.brand.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ) ||
+                instrument.description.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                );
 
-
-        bool matchesSearch = _searchQuery.isEmpty ||
-            instrument.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-            instrument.brand.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-            instrument.description.toLowerCase().contains(_searchQuery.toLowerCase());
-
-        return matchesCategory && matchesSearch;
-      }).toList();
-
+            return matchesCategory && matchesSearch;
+          }).toList();
 
       switch (_sortBy) {
         case 'price_low':
-          _filteredInstruments.sort((a, b) => a.pricePerHour.compareTo(b.pricePerHour));
+          _filteredInstruments.sort(
+            (a, b) => a.pricePerHour.compareTo(b.pricePerHour),
+          );
           break;
         case 'price_high':
-          _filteredInstruments.sort((a, b) => b.pricePerHour.compareTo(a.pricePerHour));
+          _filteredInstruments.sort(
+            (a, b) => b.pricePerHour.compareTo(a.pricePerHour),
+          );
           break;
         case 'rating':
           _filteredInstruments.sort((a, b) => b.rating.compareTo(a.rating));
           break;
         case 'popular':
         default:
-          _filteredInstruments.sort((a, b) => b.reviewsCount.compareTo(a.reviewsCount));
+          _filteredInstruments.sort(
+            (a, b) => b.reviewsCount.compareTo(a.reviewsCount),
+          );
       }
     });
   }
@@ -304,17 +408,18 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
             _buildSortAndViewToggle(),
             const SizedBox(height: 16),
             Expanded(
-              child: _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFFE94560),
-                      ),
-                    )
-                  : _filteredInstruments.isEmpty
+              child:
+                  _isLoading
+                      ? const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFFE94560),
+                        ),
+                      )
+                      : _filteredInstruments.isEmpty
                       ? _buildEmptyState()
                       : _isGridView
-                          ? _buildGridView()
-                          : _buildListView(),
+                      ? _buildGridView()
+                      : _buildListView(),
             ),
           ],
         ),
@@ -342,10 +447,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
               SizedBox(height: 4),
               Text(
                 'Мінсіз аспапты табыңыз',
-                style: TextStyle(
-                  color: Color(0xFFE94560),
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Color(0xFFE94560), fontSize: 14),
               ),
             ],
           ),
@@ -356,11 +458,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.white.withOpacity(0.1)),
             ),
-            child: const Icon(
-              Icons.filter_list,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: const Icon(Icons.filter_list, color: Colors.white, size: 24),
           ),
         ],
       ),
@@ -392,21 +490,22 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
               Icons.search,
               color: Colors.white.withOpacity(0.5),
             ),
-            suffixIcon: _searchQuery.isNotEmpty
-                ? IconButton(
-                    icon: Icon(
-                      Icons.clear,
-                      color: Colors.white.withOpacity(0.5),
-                    ),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() {
-                        _searchQuery = '';
-                      });
-                      _applyFilters();
-                    },
-                  )
-                : null,
+            suffixIcon:
+                _searchQuery.isNotEmpty
+                    ? IconButton(
+                      icon: Icon(
+                        Icons.clear,
+                        color: Colors.white.withOpacity(0.5),
+                      ),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() {
+                          _searchQuery = '';
+                        });
+                        _applyFilters();
+                      },
+                    )
+                    : null,
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 20,
@@ -440,17 +539,19 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
               margin: const EdgeInsets.only(right: 12),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
-                gradient: isSelected
-                    ? const LinearGradient(
-                        colors: [Color(0xFFE94560), Color(0xFFFF6B85)],
-                      )
-                    : null,
+                gradient:
+                    isSelected
+                        ? const LinearGradient(
+                          colors: [Color(0xFFE94560), Color(0xFFFF6B85)],
+                        )
+                        : null,
                 color: isSelected ? null : Colors.white.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(25),
                 border: Border.all(
-                  color: isSelected
-                      ? Colors.transparent
-                      : Colors.white.withOpacity(0.1),
+                  color:
+                      isSelected
+                          ? Colors.transparent
+                          : Colors.white.withOpacity(0.1),
                 ),
               ),
               child: Row(
@@ -504,7 +605,10 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                 },
                 color: const Color(0xFF16213E),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(12),
@@ -524,24 +628,37 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                     ],
                   ),
                 ),
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'popular',
-                    child: Text('Танымал', style: TextStyle(color: Colors.white)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'price_low',
-                    child: Text('Баға: төмен', style: TextStyle(color: Colors.white)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'price_high',
-                    child: Text('Баға: жоғары', style: TextStyle(color: Colors.white)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'rating',
-                    child: Text('Рейтинг', style: TextStyle(color: Colors.white)),
-                  ),
-                ],
+                itemBuilder:
+                    (context) => [
+                      const PopupMenuItem(
+                        value: 'popular',
+                        child: Text(
+                          'Танымал',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'price_low',
+                        child: Text(
+                          'Баға: төмен',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'price_high',
+                        child: Text(
+                          'Баға: жоғары',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'rating',
+                        child: Text(
+                          'Рейтинг',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
               ),
             ],
           ),
@@ -550,7 +667,8 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
               IconButton(
                 icon: Icon(
                   Icons.view_list,
-                  color: !_isGridView ? const Color(0xFFE94560) : Colors.white54,
+                  color:
+                      !_isGridView ? const Color(0xFFE94560) : Colors.white54,
                 ),
                 onPressed: () {
                   setState(() {
@@ -622,7 +740,8 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => InstrumentDetailsScreen(instrument: instrument),
+            builder:
+                (context) => InstrumentDetailsScreen(instrument: instrument),
           ),
         );
       },
@@ -635,36 +754,44 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
         ),
         child: Row(
           children: [
-          
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 bottomLeft: Radius.circular(20),
               ),
               child: CachedNetworkImage(
-                imageUrl: instrument.imageUrls.isNotEmpty
-                    ? instrument.imageUrls[0]
-                    : 'https://via.placeholder.com/150x150',
+                imageUrl:
+                    instrument.imageUrls.isNotEmpty
+                        ? instrument.imageUrls[0]
+                        : 'https://via.placeholder.com/150x150',
                 width: 120,
                 height: 140,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey.shade800,
-                  child: const Center(
-                    child: CircularProgressIndicator(color: Color(0xFFE94560)),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF0F3460), Color(0xFF16213E)],
+                placeholder:
+                    (context, url) => Container(
+                      color: Colors.grey.shade800,
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFFE94560),
+                        ),
+                      ),
                     ),
-                  ),
-                  child: const Icon(Icons.music_note, color: Colors.white54, size: 40),
-                ),
+                errorWidget:
+                    (context, url, error) => Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFF0F3460), Color(0xFF16213E)],
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.music_note,
+                        color: Colors.white54,
+                        size: 40,
+                      ),
+                    ),
               ),
             ),
-        
+
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -692,7 +819,11 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                           ),
                         ),
                         const Spacer(),
-                        const Icon(Icons.star, color: Color(0xFFFFD700), size: 14),
+                        const Icon(
+                          Icons.star,
+                          color: Color(0xFFFFD700),
+                          size: 14,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           instrument.rating.toStringAsFixed(1),
@@ -759,11 +890,8 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                           ),
                         ),
                         const Text(
-                          '/час',
-                          style: TextStyle(
-                            color: Colors.white54,
-                            fontSize: 12,
-                          ),
+                          '/сағат',
+                          style: TextStyle(color: Colors.white54, fontSize: 12),
                         ),
                       ],
                     ),
@@ -783,7 +911,8 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => InstrumentDetailsScreen(instrument: instrument),
+            builder:
+                (context) => InstrumentDetailsScreen(instrument: instrument),
           ),
         );
       },
@@ -804,26 +933,35 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                     topRight: Radius.circular(20),
                   ),
                   child: CachedNetworkImage(
-                    imageUrl: instrument.imageUrls.isNotEmpty
-                        ? instrument.imageUrls[0]
-                        : 'https://via.placeholder.com/200x150',
+                    imageUrl:
+                        instrument.imageUrls.isNotEmpty
+                            ? instrument.imageUrls[0]
+                            : 'https://via.placeholder.com/200x150',
                     height: 140,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: Colors.grey.shade800,
-                      child: const Center(
-                        child: CircularProgressIndicator(color: Color(0xFFE94560)),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xFF0F3460), Color(0xFF16213E)],
+                    placeholder:
+                        (context, url) => Container(
+                          color: Colors.grey.shade800,
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xFFE94560),
+                            ),
+                          ),
                         ),
-                      ),
-                      child: const Icon(Icons.music_note, color: Colors.white54, size: 40),
-                    ),
+                    errorWidget:
+                        (context, url, error) => Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF0F3460), Color(0xFF16213E)],
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.music_note,
+                            color: Colors.white54,
+                            size: 40,
+                          ),
+                        ),
                   ),
                 ),
                 Positioned(
@@ -846,7 +984,10 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                   top: 8,
                   left: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE94560),
                       borderRadius: BorderRadius.circular(8),
@@ -903,7 +1044,7 @@ class _InstrumentsScreenState extends State<InstrumentsScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${instrument.pricePerHour.toInt()} ₸/час',
+                              '${instrument.pricePerHour.toInt()} ₸/сағат',
                               style: const TextStyle(
                                 color: Color(0xFFE94560),
                                 fontSize: 13,

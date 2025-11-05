@@ -18,7 +18,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
   bool _isGridView = false;
 
   String _searchQuery = '';
-  String _selectedType = 'Все';
+  String _selectedType = 'Барлығы';
   String _sortBy = 'popular';
 
   final TextEditingController _searchController = TextEditingController();
@@ -47,9 +47,116 @@ class _StudiosScreenState extends State<StudiosScreen> {
   Future<void> _loadStudios() async {
     setState(() => _isLoading = true);
 
-    await Future.delayed(const Duration(milliseconds: 500));
-
+    // Тестовые данные с изображениями
     final sampleStudios = [
+      Studio(
+        id: 'sample1',
+        name: 'Pro Sound Studio',
+        type: 'Дыбыс жазу',
+        description: 'Ең үздік жабдықтары бар кәсіби дыбыс жазу студиясы. Тәжірибелі дыбыс режиссерлері көмектеседі.',
+        pricePerHour: 3000,
+        pricePerDay: 20000,
+        imageUrls: ['https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800'],
+        rating: 4.9,
+        reviewsCount: 187,
+        location: 'Алматы, Орталық',
+        address: 'Сейфуллин даңғылы, 50',
+        areaSquareMeters: 50,
+        hasEngineer: true,
+        hasInstruments: true,
+        hasSoundproofing: true,
+        hasAirConditioning: true,
+        equipment: 'SSL Console, Neumann U87, Pro Tools',
+        amenities: ['Дыбыс режиссері', 'Neumann микрофоны', 'Pro Tools HD', 'Genelec мониторлары', 'Пианино', 'Гитара күшейткіштері', 'Ас үй'],
+        ownerId: 'sample_owner1',
+        ownerName: 'Pro Sound Records',
+        createdAt: DateTime.now(),
+      ),
+      Studio(
+        id: 'sample2',
+        name: 'Rock Rehearsal Space',
+        type: 'Репетиция',
+        description: 'Рок-топтарға арналған толық жабдықталған кең репетиция базасы.',
+        pricePerHour: 800,
+        pricePerDay: 5000,
+        imageUrls: ['https://images.unsplash.com/photo-1519139270028-ab664cf42264?w=800'],
+        rating: 4.7,
+        reviewsCount: 93,
+        location: 'Алматы, Алмалы',
+        address: 'Толе би көшесі, 120',
+        areaSquareMeters: 60,
+        hasEngineer: false,
+        hasInstruments: true,
+        hasSoundproofing: true,
+        hasAirConditioning: true,
+        equipment: 'Marshall күшейткіштері, Барабан жинағы, Бас күшейткіші',
+        amenities: ['Барабан жинағы', 'Marshall күшейткіштері', 'Микрофондар', 'Тұрақ', 'WiFi'],
+        ownerId: 'sample_owner2',
+        ownerName: 'Rock Base',
+        createdAt: DateTime.now(),
+      ),
+      Studio(
+        id: 'sample3',
+        name: 'Indie Studio',
+        type: 'Дыбыс жазу',
+        description: 'Инди музыканттарға арналған жайлы және қолжетімді студия.',
+        pricePerHour: 1500,
+        pricePerDay: 10000,
+        imageUrls: ['https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=800'],
+        rating: 4.5,
+        reviewsCount: 64,
+        location: 'Алматы, Бостандық',
+        address: 'Сатпаев көшесі, 34',
+        areaSquareMeters: 35,
+        hasEngineer: true,
+        hasInstruments: true,
+        hasSoundproofing: true,
+        hasAirConditioning: false,
+        equipment: 'Focusrite Interface, Logic Pro X, Акустикалық гитара',
+        amenities: ['Logic Pro X', 'Focusrite жабдықтары', 'Акустикалық гитара', 'MIDI-пернетақта', 'Ас-су'],
+        ownerId: 'sample_owner3',
+        ownerName: 'Indie Collective',
+        createdAt: DateTime.now(),
+      ),
+    ];
+
+    try {
+      final response = await ApiService.getAllStudios(
+        search: _searchQuery.isNotEmpty ? _searchQuery : null,
+      );
+
+      if (response['success']) {
+        final studiosData = response['studios'] as List;
+        if (studiosData.isNotEmpty) {
+          final serverStudios = studiosData.map((data) {
+            return Studio.fromJson(data);
+          }).toList();
+
+          setState(() {
+            _allStudios = [...sampleStudios, ...serverStudios];
+            _filteredStudios = [...sampleStudios, ...serverStudios];
+            _isLoading = false;
+          });
+
+          _applyFilters();
+          return;
+        }
+      }
+    } catch (e) {
+      print('Error loading studios: $e');
+    }
+
+    // Если не удалось загрузить с сервера или нет данных, показываем тестовые
+    setState(() {
+      _allStudios = sampleStudios;
+      _filteredStudios = sampleStudios;
+      _isLoading = false;
+    });
+    _applyFilters();
+
+    // Старые закомментированные тестовые данные
+    /*
+    final oldSampleStudios = [
       Studio(
         id: '1',
         name: 'Pro Sound Studio',
@@ -236,59 +343,7 @@ class _StudiosScreenState extends State<StudiosScreen> {
         createdAt: DateTime.now(),
       ),
     ];
-
-
-    setState(() {
-      _allStudios = sampleStudios;
-      _filteredStudios = sampleStudios;
-    });
-
-    try {
-      final response = await ApiService.getAllStudios(
-        search: _searchQuery.isNotEmpty ? _searchQuery : null,
-      );
-
-      if (response['success']) {
-        final studiosData = response['studios'] as List;
-        final serverStudios = studiosData.map((data) {
-          return Studio(
-            id: data['_id'] is String ? data['_id'] : data['_id']['\$oid'],
-            name: data['name'] ?? '',
-            type: 'Дыбыс жазу',
-            description: data['description'] ?? '',
-            pricePerHour: (data['pricePerHour'] ?? 0).toDouble(),
-            pricePerDay: (data['pricePerDay'] ?? 0).toDouble(),
-            imageUrls: (data['imageUrls'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-            rating: (data['rating'] ?? 0).toDouble(),
-            reviewsCount: data['reviewsCount'] ?? 0,
-            location: data['location'] ?? '',
-            address: data['location'] ?? '',
-            areaSquareMeters: (data['size'] ?? 0).toDouble(),
-            hasEngineer: false,
-            hasInstruments: (data['equipment'] as List?)?.contains('Музыкалды аспаптар') ?? false,
-            hasSoundproofing: (data['amenities'] as List?)?.contains('Дыбыс жазу') ?? false,
-            hasAirConditioning: (data['amenities'] as List?)?.contains('Кондиционер') ?? false,
-            equipment: (data['equipment'] as List<dynamic>?)?.join(', ') ?? '',
-            amenities: [
-              ...(data['equipment'] as List<dynamic>?)?.map((e) => e.toString()) ?? [],
-              ...(data['amenities'] as List<dynamic>?)?.map((e) => e.toString()) ?? [],
-            ],
-            ownerId: data['ownerId'] ?? '',
-            ownerName: data['ownerName'] ?? '',
-            createdAt: DateTime.tryParse(data['createdAt'] ?? '') ?? DateTime.now(),
-          );
-        }).toList();
-
-        setState(() {
-          _allStudios = [...sampleStudios, ...serverStudios];
-          _applyFilters();
-        });
-      }
-    } catch (e) {
-      print('Error loading studios from server: $e');
-    }
-
-    setState(() => _isLoading = false);
+    */
   }
 
   void _applyFilters() {
