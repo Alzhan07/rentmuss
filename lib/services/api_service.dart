@@ -5,10 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 
 class ApiService {
-  // Замените на ваш реальный URL сервера
   static const String baseUrl = 'http://localhost:5000/api';
 
-  // Получить заголовки с авторизацией
   static Future<Map<String, String>> _getHeaders() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
@@ -55,11 +53,12 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 201) {
-        // Сохраняем токен
         if (data['token'] != null) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('auth_token', data['token']);
-          final processedUser = _processUserData(Map<String, dynamic>.from(data['user']));
+          final processedUser = _processUserData(
+            Map<String, dynamic>.from(data['user']),
+          );
           await prefs.setString('user_data', jsonEncode(processedUser));
         }
         return {
@@ -75,14 +74,10 @@ class ApiService {
         };
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка подключения к серверу: $e'
-      };
+      return {'success': false, 'message': 'Ошибка подключения к серверу: $e'};
     }
   }
 
-  // Вход пользователя
   static Future<Map<String, dynamic>> login({
     required String username,
     required String password,
@@ -91,20 +86,18 @@ class ApiService {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/login'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'username': username,
-          'password': password,
-        }),
+        body: jsonEncode({'username': username, 'password': password}),
       );
 
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-
         if (data['token'] != null) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('auth_token', data['token']);
-          final processedUser = _processUserData(Map<String, dynamic>.from(data['user']));
+          final processedUser = _processUserData(
+            Map<String, dynamic>.from(data['user']),
+          );
           await prefs.setString('user_data', jsonEncode(processedUser));
         }
         return {
@@ -114,16 +107,10 @@ class ApiService {
           'token': data['token'],
         };
       } else {
-        return {
-          'success': false,
-          'message': data['message'] ?? 'Ошибка входа',
-        };
+        return {'success': false, 'message': data['message'] ?? 'Ошибка входа'};
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка подключения к серверу: $e'
-      };
+      return {'success': false, 'message': 'Ошибка подключения к серверу: $e'};
     }
   }
 
@@ -162,22 +149,15 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final prefs = await SharedPreferences.getInstance();
-        final processedUser = _processUserData(Map<String, dynamic>.from(data['user']));
+        final processedUser = _processUserData(
+          Map<String, dynamic>.from(data['user']),
+        );
         await prefs.setString('user_data', jsonEncode(processedUser));
-        return {
-          'success': true,
-          'user': processedUser,
-        };
+        return {'success': true, 'user': processedUser};
       }
-      return {
-        'success': false,
-        'message': 'Не удалось получить профиль',
-      };
+      return {'success': false, 'message': 'Не удалось получить профиль'};
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка подключения: $e',
-      };
+      return {'success': false, 'message': 'Ошибка подключения: $e'};
     }
   }
 
@@ -211,10 +191,7 @@ class ApiService {
         'message': data['message'] ?? 'Ошибка отправки заявки',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка подключения: $e',
-      };
+      return {'success': false, 'message': 'Ошибка подключения: $e'};
     }
   }
 
@@ -229,20 +206,14 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        return {
-          'success': true,
-          'applications': data['applications'],
-        };
+        return {'success': true, 'applications': data['applications']};
       }
       return {
         'success': false,
         'message': data['message'] ?? 'Ошибка получения заявок',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка подключения: $e',
-      };
+      return {'success': false, 'message': 'Ошибка подключения: $e'};
     }
   }
 
@@ -276,10 +247,7 @@ class ApiService {
         'message': data['message'] ?? 'Ошибка обработки заявки',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка подключения: $e',
-      };
+      return {'success': false, 'message': 'Ошибка подключения: $e'};
     }
   }
 
@@ -299,8 +267,6 @@ class ApiService {
       return false;
     }
   }
-
-
 
   static Future<Map<String, dynamic>> uploadAvatar(File imageFile) async {
     try {
@@ -443,7 +409,8 @@ class ApiService {
       if (search != null) queryParams['search'] = search;
 
       if (queryParams.isNotEmpty) {
-        url += '?' +
+        url +=
+            '?' +
             queryParams.entries
                 .map((e) => '${e.key}=${Uri.encodeComponent(e.value)}')
                 .join('&');
@@ -469,10 +436,7 @@ class ApiService {
         url += '?type=$type';
       }
 
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      );
+      final response = await http.get(Uri.parse(url), headers: headers);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -520,10 +484,7 @@ class ApiService {
         'favorite': data['favorite'],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка добавления в избранное: $e',
-      };
+      return {'success': false, 'message': 'Ошибка добавления в избранное: $e'};
     }
   }
 
@@ -536,10 +497,7 @@ class ApiService {
       final response = await http.delete(
         Uri.parse('$baseUrl/favorites/remove'),
         headers: headers,
-        body: jsonEncode({
-          'itemType': itemType,
-          'itemId': itemId,
-        }),
+        body: jsonEncode({'itemType': itemType, 'itemId': itemId}),
       );
 
       final data = jsonDecode(response.body);
@@ -549,10 +507,7 @@ class ApiService {
         'message': data['message'] ?? 'Удалено из избранного',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка удаления из избранного: $e',
-      };
+      return {'success': false, 'message': 'Ошибка удаления из избранного: $e'};
     }
   }
 
@@ -565,28 +520,16 @@ class ApiService {
       final response = await http.post(
         Uri.parse('$baseUrl/favorites/check'),
         headers: headers,
-        body: jsonEncode({
-          'itemType': itemType,
-          'itemId': itemId,
-        }),
+        body: jsonEncode({'itemType': itemType, 'itemId': itemId}),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return {
-          'success': true,
-          'isFavorite': data['isFavorite'] ?? false,
-        };
+        return {'success': true, 'isFavorite': data['isFavorite'] ?? false};
       }
-      return {
-        'success': false,
-        'isFavorite': false,
-      };
+      return {'success': false, 'isFavorite': false};
     } catch (e) {
-      return {
-        'success': false,
-        'isFavorite': false,
-      };
+      return {'success': false, 'isFavorite': false};
     }
   }
 
@@ -639,10 +582,7 @@ class ApiService {
         'message': data['message'] ?? 'Ошибка отправки кода',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка подключения к серверу: $e',
-      };
+      return {'success': false, 'message': 'Ошибка подключения к серверу: $e'};
     }
   }
 
@@ -654,10 +594,7 @@ class ApiService {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/verify-reset-code'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'code': code,
-        }),
+        body: jsonEncode({'email': email, 'code': code}),
       );
 
       final data = jsonDecode(response.body);
@@ -667,10 +604,7 @@ class ApiService {
         'message': data['message'] ?? 'Ошибка проверки кода',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка подключения к серверу: $e',
-      };
+      return {'success': false, 'message': 'Ошибка подключения к серверу: $e'};
     }
   }
 
@@ -697,16 +631,10 @@ class ApiService {
         'message': data['message'] ?? 'Ошибка сброса пароля',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка подключения к серверу: $e',
-      };
+      return {'success': false, 'message': 'Ошибка подключения к серверу: $e'};
     }
   }
 
-  // ========== ЛИСТИНГИ (ИНСТРУМЕНТЫ/СЦЕНЫ/СТУДИИ) ==========
-
-  // Получить мои листинги (для продавца)
   static Future<Map<String, dynamic>> getMyInstruments() async {
     try {
       final headers = await _getHeaders();
@@ -721,11 +649,7 @@ class ApiService {
         'instruments': data['instruments'] ?? [],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-        'instruments': [],
-      };
+      return {'success': false, 'message': 'Ошибка: $e', 'instruments': []};
     }
   }
 
@@ -743,11 +667,7 @@ class ApiService {
         'stages': data['stages'] ?? [],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-        'stages': [],
-      };
+      return {'success': false, 'message': 'Ошибка: $e', 'stages': []};
     }
   }
 
@@ -765,16 +685,14 @@ class ApiService {
         'studios': data['studios'] ?? [],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-        'studios': [],
-      };
+      return {'success': false, 'message': 'Ошибка: $e', 'studios': []};
     }
   }
 
-  // Получить все инструменты (публичный)
-  static Future<Map<String, dynamic>> getAllInstruments({String? category, String? search}) async {
+  static Future<Map<String, dynamic>> getAllInstruments({
+    String? category,
+    String? search,
+  }) async {
     try {
       final headers = await _getHeaders();
       var url = '$baseUrl/listings/instruments';
@@ -791,10 +709,7 @@ class ApiService {
         url += '?${Uri(queryParameters: queryParams).query}';
       }
 
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      );
+      final response = await http.get(Uri.parse(url), headers: headers);
 
       final data = jsonDecode(response.body);
       return {
@@ -802,15 +717,10 @@ class ApiService {
         'instruments': data['instruments'] ?? [],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-        'instruments': [],
-      };
+      return {'success': false, 'message': 'Ошибка: $e', 'instruments': []};
     }
   }
 
-  // Получить все сцены (публичный)
   static Future<Map<String, dynamic>> getAllStages({String? search}) async {
     try {
       final headers = await _getHeaders();
@@ -820,10 +730,7 @@ class ApiService {
         url += '?search=$search';
       }
 
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      );
+      final response = await http.get(Uri.parse(url), headers: headers);
 
       final data = jsonDecode(response.body);
       return {
@@ -831,15 +738,10 @@ class ApiService {
         'stages': data['stages'] ?? [],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-        'stages': [],
-      };
+      return {'success': false, 'message': 'Ошибка: $e', 'stages': []};
     }
   }
 
-  // Получить все студии (публичный)
   static Future<Map<String, dynamic>> getAllStudios({String? search}) async {
     try {
       final headers = await _getHeaders();
@@ -849,10 +751,7 @@ class ApiService {
         url += '?search=$search';
       }
 
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      );
+      final response = await http.get(Uri.parse(url), headers: headers);
 
       final data = jsonDecode(response.body);
       return {
@@ -860,16 +759,13 @@ class ApiService {
         'studios': data['studios'] ?? [],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-        'studios': [],
-      };
+      return {'success': false, 'message': 'Ошибка: $e', 'studios': []};
     }
   }
 
-  // Создать листинг
-  static Future<Map<String, dynamic>> createInstrument(Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> createInstrument(
+    Map<String, dynamic> data,
+  ) async {
     try {
       final headers = await _getHeaders();
       final response = await http.post(
@@ -885,14 +781,13 @@ class ApiService {
         'instrument': responseData['instrument'],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-      };
+      return {'success': false, 'message': 'Ошибка: $e'};
     }
   }
 
-  static Future<Map<String, dynamic>> createStage(Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> createStage(
+    Map<String, dynamic> data,
+  ) async {
     try {
       final headers = await _getHeaders();
       final response = await http.post(
@@ -908,14 +803,13 @@ class ApiService {
         'stage': responseData['stage'],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-      };
+      return {'success': false, 'message': 'Ошибка: $e'};
     }
   }
 
-  static Future<Map<String, dynamic>> createStudio(Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> createStudio(
+    Map<String, dynamic> data,
+  ) async {
     try {
       final headers = await _getHeaders();
       final response = await http.post(
@@ -931,14 +825,10 @@ class ApiService {
         'studio': responseData['studio'],
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-      };
+      return {'success': false, 'message': 'Ошибка: $e'};
     }
   }
 
-  // Удалить листинг
   static Future<Map<String, dynamic>> deleteInstrument(String id) async {
     try {
       final headers = await _getHeaders();
@@ -953,10 +843,7 @@ class ApiService {
         'message': data['message'] ?? 'Удалено',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-      };
+      return {'success': false, 'message': 'Ошибка: $e'};
     }
   }
 
@@ -974,10 +861,7 @@ class ApiService {
         'message': data['message'] ?? 'Удалено',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-      };
+      return {'success': false, 'message': 'Ошибка: $e'};
     }
   }
 
@@ -995,10 +879,7 @@ class ApiService {
         'message': data['message'] ?? 'Удалено',
       };
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Ошибка: $e',
-      };
+      return {'success': false, 'message': 'Ошибка: $e'};
     }
   }
 }
