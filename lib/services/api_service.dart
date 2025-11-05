@@ -5,10 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 
 class ApiService {
-  // Замените на ваш реальный URL сервера
+  
   static const String baseUrl = 'http://localhost:5000/api';
 
-  // Получить заголовки с авторизацией
   static Future<Map<String, String>> _getHeaders() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
@@ -18,7 +17,7 @@ class ApiService {
     };
   }
 
-  // Регистрация пользователя
+ 
   static Future<Map<String, dynamic>> register({
     required String username,
     required String password,
@@ -38,7 +37,7 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 201) {
-        // Сохраняем токен
+        
         if (data['token'] != null) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('auth_token', data['token']);
@@ -64,7 +63,7 @@ class ApiService {
     }
   }
 
-  // Вход пользователя
+  
   static Future<Map<String, dynamic>> login({
     required String username,
     required String password,
@@ -614,9 +613,7 @@ class ApiService {
     }
   }
 
-  // ========== ЛИСТИНГИ (ИНСТРУМЕНТЫ/СЦЕНЫ/СТУДИИ) ==========
-
-  // Получить мои листинги (для продавца)
+  
   static Future<Map<String, dynamic>> getMyInstruments() async {
     try {
       final headers = await _getHeaders();
@@ -683,7 +680,7 @@ class ApiService {
     }
   }
 
-  // Получить все инструменты (публичный)
+
   static Future<Map<String, dynamic>> getAllInstruments({String? category, String? search}) async {
     try {
       final headers = await _getHeaders();
@@ -720,7 +717,7 @@ class ApiService {
     }
   }
 
-  // Получить все сцены (публичный)
+ 
   static Future<Map<String, dynamic>> getAllStages({String? search}) async {
     try {
       final headers = await _getHeaders();
@@ -749,7 +746,7 @@ class ApiService {
     }
   }
 
-  // Получить все студии (публичный)
+  
   static Future<Map<String, dynamic>> getAllStudios({String? search}) async {
     try {
       final headers = await _getHeaders();
@@ -778,7 +775,7 @@ class ApiService {
     }
   }
 
-  // Создать листинг
+
   static Future<Map<String, dynamic>> createInstrument(Map<String, dynamic> data) async {
     try {
       final headers = await _getHeaders();
@@ -848,7 +845,7 @@ class ApiService {
     }
   }
 
-  // Удалить листинг
+
   static Future<Map<String, dynamic>> deleteInstrument(String id) async {
     try {
       final headers = await _getHeaders();
