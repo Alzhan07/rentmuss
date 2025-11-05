@@ -60,9 +60,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       });
 
-    
-      if (kIsWeb) {
 
+      if (kIsWeb) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Загрузка аватара на веб пока не поддерживается'),
@@ -70,8 +69,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         );
       } else {
-        await ApiService.uploadAvatar(_imageFile!);
-        await _loadUserData();
+        // Show loading indicator
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Загрузка аватара...'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+
+        // Upload avatar
+        final result = await ApiService.uploadAvatar(_imageFile!);
+
+        if (result['success'] == true) {
+          // Clear local image and reload user data from server
+          setState(() {
+            _imageFile = null;
+            _webImage = null;
+          });
+
+          await _loadUserData();
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result['message'] ?? 'Аватар успешно обновлен'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result['message'] ?? 'Ошибка загрузки аватара'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
       }
     }
   }

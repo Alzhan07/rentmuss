@@ -16,7 +16,6 @@ class ApiService {
     };
   }
 
-  // Преобразовать относительный URL в абсолютный
   static String _toAbsoluteUrl(String? relativeUrl) {
     if (relativeUrl == null || relativeUrl.isEmpty) return '';
     if (relativeUrl.startsWith('http')) return relativeUrl;
@@ -25,7 +24,6 @@ class ApiService {
     return '${uri.scheme}://${uri.host}:${uri.port}$relativeUrl';
   }
 
-  // Преобразовать user data, конвертируя avatar URL
   static Map<String, dynamic> _processUserData(Map<String, dynamic> userData) {
     if (userData['avatar'] != null) {
       userData['avatar'] = _toAbsoluteUrl(userData['avatar']);
@@ -33,7 +31,6 @@ class ApiService {
     return userData;
   }
 
-  // Регистрация пользователя
   static Future<Map<String, dynamic>> register({
     required String username,
     required String password,
@@ -372,7 +369,6 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        // Преобразуем относительные URL в абсолютные
         List<String> imageUrls = [];
         if (data['imageUrls'] != null) {
           for (var url in data['imageUrls']) {

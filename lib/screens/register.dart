@@ -383,7 +383,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Требования к паролю:',
+                                  'Құпия сөзге қойылатын талаптар:',
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.9),
                                     fontSize: 13,
@@ -392,23 +392,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 _buildPasswordRequirement(
-                                  'Минимум 8 символов',
+                                  'Құпия сөз кем дегенде 8 символдан тұруы тиіс',
                                   _hasMinLength,
                                 ),
                                 _buildPasswordRequirement(
-                                  'Заглавная буква (A-Z)',
+                                  'Yлкен әріп (A-Z)',
                                   _hasUpperCase,
                                 ),
                                 _buildPasswordRequirement(
-                                  'Строчная буква (a-z)',
+                                  'Kіші әріп (a-z)',
                                   _hasLowerCase,
                                 ),
                                 _buildPasswordRequirement(
-                                  'Цифра (0-9)',
+                                  'Цифр (0-9)',
                                   _hasDigit,
                                 ),
                                 _buildPasswordRequirement(
-                                  'Спецсимвол (!@#\$%^&*)',
+                                  'Арнайы символ (!@#\$%^&*)',
                                   _hasSpecialChar,
                                 ),
                               ],
