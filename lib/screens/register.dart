@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
-import 'home.dart';
+import 'email_verification_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -24,6 +24,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _hasLowerCase = false;
   bool _hasDigit = false;
   bool _hasSpecialChar = false;
+  bool _isWeakPattern = false;
+
+  static const _weakSeqs = [
+    'qwer','wert','erty','rtyu','tyui','yuio','uiop',
+    'asdf','sdfg','dfgh','fghj','ghjk','hjkl',
+    'zxcv','xcvb','cvbn','vbnm',
+    '1234','2345','3456','4567','5678','6789','7890',
+    '0987','9876','8765','7654','6543','5432','4321',
+    'qaz','wsx','edc',
+  ];
+  static const _weakBases = [
+    'password','passw0rd','qwerty','asdfgh','zxcvbn',
+    'iloveyou','letmein','welcome','monkey','dragon',
+    'master','admin','login','superman','batman',
+    '1q2w3e','q1w2e3',
+  ];
+
+  bool _detectWeakPattern(String pw) {
+    if (pw.length < 4) return false;
+    final lower = pw.toLowerCase();
+    if (RegExp(r'(.)\1{2,}').hasMatch(pw)) return true;
+    for (final seq in _weakSeqs) {
+      if (lower.contains(seq)) return true;
+    }
+    final norm = lower
+        .replaceAll('0', 'o').replaceAll('1', 'i').replaceAll('3', 'e')
+        .replaceAll('4', 'a').replaceAll('5', 's').replaceAll('8', 'b')
+        .replaceAll('@', 'a').replaceAll(r'$', 's');
+    for (final base in _weakBases) {
+      if (norm.contains(base) || lower.contains(base)) return true;
+    }
+    return false;
+  }
 
   @override
   void initState() {
@@ -41,6 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _hasSpecialChar = RegExp(
         r'[!@#$%^&*()_+=\[\]{};:",.<>?|`~\-\\/]',
       ).hasMatch(password);
+      _isWeakPattern = password.isNotEmpty && _detectWeakPattern(password);
     });
   }
 
@@ -61,20 +95,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final result = await ApiService.register(
       username: _usernameController.text.trim(),
       password: _passwordController.text,
-      email:
-          _emailController.text.trim().isNotEmpty
-              ? _emailController.text.trim()
-              : null,
+      email: _emailController.text.trim(),
     );
 
     setState(() => _isLoading = false);
 
     if (!mounted) return;
 
-    if (result['success']) {
+    if (result['success'] == true) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(
+          builder: (context) => EmailVerificationScreen(
+            userId: result['userId'] ?? '',
+            email: result['email'] ?? _emailController.text.trim(),
+          ),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -101,12 +137,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        width: 38,
+                        height: 38,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withValues(alpha: 0.1),
+                          border: Border.all(
+                            color: const Color(0xFFE94560).withValues(alpha: 0.5),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
@@ -269,10 +324,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             validator: (value) {
-                              if (value != null && value.isNotEmpty) {
-                                if (!value.contains('@')) {
-                                  return 'Дұрыс email енгізіңіз';
-                                }
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Email міндетті';
+                              }
+                              if (!value.contains('@') || !value.contains('.')) {
+                                return 'Дұрыс email енгізіңіз';
                               }
                               return null;
                             },
@@ -414,6 +470,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ],
                             ),
                           ),
+
+                          if (_isWeakPattern)
+                            Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.orange.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.orange.withValues(alpha: 0.5),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.warning_amber_rounded,
+                                    color: Colors.orange,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Expanded(
+                                    child: Text(
+                                      'Құпия сөз сенімсіз! Жиі қолданылатын тіркестер анықталды.',
+                                      style: TextStyle(
+                                        color: Colors.orange,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
 
                           const SizedBox(height: 16),
 

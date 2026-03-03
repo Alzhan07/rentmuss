@@ -34,7 +34,7 @@ class ApiService {
   static Future<Map<String, dynamic>> register({
     required String username,
     required String password,
-    String? email,
+    required String email,
   }) async {
     try {
       final response = await http.post(
@@ -43,26 +43,19 @@ class ApiService {
         body: jsonEncode({
           'username': username,
           'password': password,
-          if (email != null && email.isNotEmpty) 'email': email,
+          'email': email,
         }),
       );
 
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 201) {
-        if (data['token'] != null) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('auth_token', data['token']);
-          final processedUser = _processUserData(
-            Map<String, dynamic>.from(data['user']),
-          );
-          await prefs.setString('user_data', jsonEncode(processedUser));
-        }
         return {
           'success': true,
-          'message': data['message'] ?? 'Регистрация успешна',
-          'user': _processUserData(Map<String, dynamic>.from(data['user'])),
-          'token': data['token'],
+          'requiresVerification': data['requiresVerification'] ?? false,
+          'userId': data['userId']?.toString() ?? '',
+          'email': data['email'] ?? email,
+          'message': data['message'] ?? 'Тіркелу сәтті',
         };
       } else {
         return {
@@ -72,6 +65,54 @@ class ApiService {
       }
     } catch (e) {
       return {'success': false, 'message': 'Ошибка подключения к серверу: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> verifyEmail({
+    required String userId,
+    required String code,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/verify-email'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'userId': userId, 'code': code}),
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        if (data['token'] != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('auth_token', data['token']);
+          final processedUser = _processUserData(
+            Map<String, dynamic>.from(data['user']),
+          );
+          await prefs.setString('user_data', jsonEncode(processedUser));
+        }
+        return {'success': true, 'message': data['message'], 'token': data['token']};
+      } else {
+        return {'success': false, 'message': data['message'] ?? 'Код дұрыс емес'};
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка подключения: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> resendVerificationCode({
+    required String userId,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/resend-verification'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'userId': userId}),
+      );
+      final data = jsonDecode(response.body);
+      return {
+        'success': response.statusCode == 200,
+        'message': data['message'] ?? '',
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка подключения: $e'};
     }
   }
 
@@ -288,10 +329,10 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        // Преобразуем относительный URL в абсолютный
+        
         String avatarUrl = data['avatarUrl'] ?? '';
         if (avatarUrl.isNotEmpty && !avatarUrl.startsWith('http')) {
-          // Извлекаем базовый URL без /api
+          
           final uri = Uri.parse(baseUrl);
           avatarUrl = '${uri.scheme}://${uri.host}:${uri.port}$avatarUrl';
         }
@@ -338,8 +379,7 @@ class ApiService {
     }
   }
 
-  // Загрузка изображений для инструментов, сцен и студий
-  // type может быть: 'instruments', 'stages', 'studios'
+ 
   static Future<Map<String, dynamic>> uploadImages({
     required String type,
     required List<File> images,
@@ -357,7 +397,7 @@ class ApiService {
         request.headers['Authorization'] = 'Bearer $token';
       }
 
-      // Добавляем все изображения
+     
       for (var image in images) {
         request.files.add(
           await http.MultipartFile.fromPath('images', image.path),
@@ -369,13 +409,8 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        List<String> imageUrls = [];
-        if (data['imageUrls'] != null) {
-          for (var url in data['imageUrls']) {
-            imageUrls.add(_toAbsoluteUrl(url));
-          }
-        }
-
+        
+        final imageUrls = List<String>.from(data['imageUrls'] ?? []);
         return {
           'success': true,
           'message': data['message'] ?? 'Изображения загружены',
@@ -535,20 +570,21 @@ class ApiService {
   }) async {
     try {
       final headers = await _getHeaders();
-      final response = await http.put(
+      final response = await http.patch(
         Uri.parse('$baseUrl/user/profile'),
         headers: headers,
         body: jsonEncode({
           if (username != null) 'username': username,
-          if (email != null) 'email': email,
+          'email': email,
         }),
       );
 
       final data = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && data['user'] != null) {
+        final processedUser = _processUserData(Map<String, dynamic>.from(data['user']));
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('user_data', jsonEncode(data['user']));
+        await prefs.setString('user_data', jsonEncode(processedUser));
       }
 
       return {
@@ -876,6 +912,565 @@ class ApiService {
       };
     } catch (e) {
       return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateInstrument(String id, Map<String, dynamic> data) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.put(
+        Uri.parse('$baseUrl/listings/instruments/$id'),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+      final d = jsonDecode(response.body);
+      return {'success': d['success'] ?? false, 'message': d['message'] ?? ''};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateStage(String id, Map<String, dynamic> data) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.put(
+        Uri.parse('$baseUrl/listings/stages/$id'),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+      final d = jsonDecode(response.body);
+      return {'success': d['success'] ?? false, 'message': d['message'] ?? ''};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateStudio(String id, Map<String, dynamic> data) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.put(
+        Uri.parse('$baseUrl/listings/studios/$id'),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+      final d = jsonDecode(response.body);
+      return {'success': d['success'] ?? false, 'message': d['message'] ?? ''};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+
+  static Future<Map<String, dynamic>> createBooking({
+    required String itemId,
+    required String itemType,
+    required DateTime startDate,
+    required DateTime endDate,
+    required int duration,
+    required String durationType,
+    required double pricePerUnit,
+    required double totalPrice,
+    String? notes,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/bookings'),
+        headers: headers,
+        body: jsonEncode({
+          'itemId': itemId,
+          'itemType': itemType,
+          'startDate': startDate.toIso8601String(),
+          'endDate': endDate.toIso8601String(),
+          'duration': duration,
+          'durationType': durationType,
+          'pricePerUnit': pricePerUnit,
+          'totalPrice': totalPrice,
+          if (notes != null && notes.isNotEmpty) 'notes': notes,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Қате',
+        'booking': data['booking'],
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getUserBookings({
+    String? status,
+    String? itemType,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      var url = '$baseUrl/bookings/user';
+      final queryParams = <String, String>{};
+
+      if (status != null && status.isNotEmpty) {
+        queryParams['status'] = status;
+      }
+      if (itemType != null && itemType.isNotEmpty) {
+        queryParams['itemType'] = itemType;
+      }
+
+      if (queryParams.isNotEmpty) {
+        url += '?${Uri(queryParameters: queryParams).query}';
+      }
+
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'bookings': data['bookings'] ?? [],
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e', 'bookings': []};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getSellerBookings({
+    String? status,
+    String? itemType,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      var url = '$baseUrl/bookings/sales';
+      final queryParams = <String, String>{};
+
+      if (status != null && status.isNotEmpty) {
+        queryParams['status'] = status;
+      }
+      if (itemType != null && itemType.isNotEmpty) {
+        queryParams['itemType'] = itemType;
+      }
+
+      if (queryParams.isNotEmpty) {
+        url += '?${Uri(queryParameters: queryParams).query}';
+      }
+
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'bookings': data['bookings'] ?? [],
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e', 'bookings': []};
+    }
+  }
+
+  static Future<Map<String, dynamic>> cancelBooking(String bookingId) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.patch(
+        Uri.parse('$baseUrl/bookings/$bookingId/cancel'),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Қате',
+        'booking': data['booking'],
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateBookingStatus(
+    String bookingId,
+    String status, {
+    String? rejectionReason,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      final body = <String, dynamic>{'status': status};
+      if (rejectionReason != null && rejectionReason.isNotEmpty) {
+        body['rejectionReason'] = rejectionReason;
+      }
+      final response = await http.patch(
+        Uri.parse('$baseUrl/bookings/$bookingId/status'),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Қате',
+        'booking': data['booking'],
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> checkAvailability({
+    required String itemId,
+    required String itemType,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    try {
+      final queryParams = {
+        'startDate': startDate.toIso8601String(),
+        'endDate': endDate.toIso8601String(),
+      };
+
+      final url =
+          '$baseUrl/bookings/availability/$itemType/$itemId?${Uri(queryParameters: queryParams).query}';
+
+      final response = await http.get(Uri.parse(url));
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'available': data['available'] ?? false,
+        'message': data['message'] ?? '',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'available': false,
+        'message': 'Ошибка: $e'
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> processPayment({
+    required String bookingId,
+    required String method,
+    String? cardLastFour,
+    String? cardHolder,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/payments/process'),
+        headers: headers,
+        body: jsonEncode({
+          'bookingId': bookingId,
+          'method': method,
+          if (cardLastFour != null) 'cardLastFour': cardLastFour,
+          if (cardHolder != null) 'cardHolder': cardHolder,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'] ?? 'Қате',
+        'payment': data['payment'],
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getPaymentHistory() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(
+        Uri.parse('$baseUrl/payments/history'),
+        headers: headers,
+      );
+
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'payments': data['payments'] ?? [],
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e', 'payments': []};
+    }
+  }
+
+  static Future<List<DateTime>> getBookedDates({
+    required String itemId,
+    required String itemType,
+  }) async {
+    try {
+      final url = '$baseUrl/bookings/booked-dates/$itemType/$itemId';
+      final response = await http.get(Uri.parse(url));
+      final data = jsonDecode(response.body);
+      if (data['success'] == true) {
+        return (data['bookedDates'] as List)
+            .map((d) => DateTime.parse(d as String))
+            .toList();
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+
+  static Future<Map<String, dynamic>> getReviews({
+    required String itemId,
+    required String itemType,
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    try {
+      final url = '$baseUrl/reviews/$itemType/$itemId?limit=$limit&offset=$offset';
+      final response = await http.get(Uri.parse(url));
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'reviews': data['reviews'] ?? [],
+        'total': data['total'] ?? 0,
+        'averageRating': (data['averageRating'] ?? 0).toDouble(),
+      };
+    } catch (e) {
+      return {'success': false, 'reviews': [], 'total': 0, 'averageRating': 0.0};
+    }
+  }
+
+  static Future<Map<String, dynamic>> createReview({
+    required String itemId,
+    required String itemType,
+    required int rating,
+    required String comment,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/reviews'),
+        headers: headers,
+        body: jsonEncode({'itemId': itemId, 'itemType': itemType, 'rating': rating, 'comment': comment}),
+      );
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'message': data['message'] ?? '', 'review': data['review']};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteReview(String reviewId) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.delete(Uri.parse('$baseUrl/reviews/$reviewId'), headers: headers);
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'message': data['message'] ?? ''};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> checkUserReview({
+    required String itemId,
+    required String itemType,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(Uri.parse('$baseUrl/reviews/check/$itemType/$itemId'), headers: headers);
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'hasReviewed': data['hasReviewed'] ?? false, 'review': data['review']};
+    } catch (e) {
+      return {'success': false, 'hasReviewed': false};
+    }
+  }
+
+  // ==================== MESSAGE METHODS ====================
+
+  static Future<Map<String, dynamic>> sendMessage({
+    required String receiverId,
+    required String content,
+    String? itemId,
+    String? itemType,
+    String? itemName,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/messages'),
+        headers: headers,
+        body: jsonEncode({
+          'receiverId': receiverId,
+          'content': content,
+          if (itemId != null) 'itemId': itemId,
+          if (itemType != null) 'itemType': itemType,
+          if (itemName != null) 'itemName': itemName,
+        }),
+      );
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'message': data['message'],
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getConversations() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(Uri.parse('$baseUrl/messages/conversations'), headers: headers);
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'conversations': data['conversations'] ?? [],
+      };
+    } catch (e) {
+      return {'success': false, 'conversations': [], 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getMessages(String userId, {String? itemId}) async {
+    try {
+      final headers = await _getHeaders();
+      var url = '$baseUrl/messages/$userId';
+      if (itemId != null && itemId.isNotEmpty) url += '?itemId=$itemId';
+      final response = await http.get(Uri.parse(url), headers: headers);
+      final data = jsonDecode(response.body);
+      return {
+        'success': data['success'] ?? false,
+        'messages': data['messages'] ?? [],
+      };
+    } catch (e) {
+      return {'success': false, 'messages': [], 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<int> getUnreadMessageCount() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(Uri.parse('$baseUrl/messages/unread/count'), headers: headers);
+      final data = jsonDecode(response.body);
+      return data['count'] ?? 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  // ─── Moderation ────────────────────────────────────────────────────────────
+
+  static Future<Map<String, dynamic>> assignRole(String userId, String role) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/assign-role/$userId'),
+        headers: headers,
+        body: jsonEncode({'role': role}),
+      );
+      final data = jsonDecode(response.body);
+      return {'success': response.statusCode == 200, 'message': data['message'] ?? ''};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getAllUsers() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(Uri.parse('$baseUrl/auth/users'), headers: headers);
+      final data = jsonDecode(response.body);
+      return {'success': response.statusCode == 200, 'users': data['users'] ?? []};
+    } catch (e) {
+      return {'success': false, 'users': []};
+    }
+  }
+
+  static Future<Map<String, dynamic>> moderationRemove(
+      String type, String id, String reason) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/moderation/remove/$type/$id'),
+        headers: headers,
+        body: jsonEncode({'reason': reason}),
+      );
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'message': data['message'] ?? ''};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> moderationRestore(String type, String id) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/moderation/restore/$type/$id'),
+        headers: headers,
+        body: jsonEncode({}),
+      );
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'message': data['message'] ?? ''};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> moderationGetRemoved() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(Uri.parse('$baseUrl/moderation/removed'), headers: headers);
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'removed': data['removed'] ?? []};
+    } catch (e) {
+      return {'success': false, 'removed': []};
+    }
+  }
+
+  static Future<Map<String, dynamic>> moderationGetAppeals() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(Uri.parse('$baseUrl/moderation/appeals'), headers: headers);
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'appeals': data['appeals'] ?? []};
+    } catch (e) {
+      return {'success': false, 'appeals': []};
+    }
+  }
+
+  static Future<Map<String, dynamic>> moderationResolveAppeal(
+      String type, String id, bool restore) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/moderation/resolve-appeal/$type/$id'),
+        headers: headers,
+        body: jsonEncode({'restore': restore}),
+      );
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'message': data['message'] ?? ''};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> submitAppeal(
+      String type, String id, String message) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/moderation/appeal/$type/$id'),
+        headers: headers,
+        body: jsonEncode({'message': message}),
+      );
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'message': data['message'] ?? ''};
+    } catch (e) {
+      return {'success': false, 'message': 'Ошибка: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getMyRemovedListings() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(Uri.parse('$baseUrl/moderation/my-removed'), headers: headers);
+      final data = jsonDecode(response.body);
+      return {'success': data['success'] ?? false, 'removed': data['removed'] ?? []};
+    } catch (e) {
+      return {'success': false, 'removed': []};
     }
   }
 }

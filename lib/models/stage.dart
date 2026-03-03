@@ -47,22 +47,28 @@ class Stage {
     required this.createdAt,
   });
 
+  bool get hourlyAvailable => pricePerHour > 0;
+
+  static const _base = 'http://localhost:5000';
+  static String _absUrl(String url) =>
+      (url.isEmpty || url.startsWith('http')) ? url : '$_base$url';
+
   factory Stage.fromJson(Map<String, dynamic> json) {
     return Stage(
-      id: json['_id'] ?? json['id'] ?? '',
-      name: json['name'] ?? '',
-      type: json['type'] ?? '',
-      description: json['description'] ?? '',
+      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      type: json['type']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
       pricePerHour: (json['pricePerHour'] ?? 0).toDouble(),
       pricePerDay: (json['pricePerDay'] ?? 0).toDouble(),
       imageUrls: json['imageUrls'] != null
-          ? List<String>.from(json['imageUrls'])
+          ? List<String>.from(json['imageUrls']).map(_absUrl).toList()
           : [],
       rating: (json['rating'] ?? 0).toDouble(),
-      reviewsCount: json['reviewsCount'] ?? 0,
-      location: json['location'] ?? '',
-      address: json['address'] ?? '',
-      capacity: json['capacity'] ?? 0,
+      reviewsCount: (json['reviewsCount'] ?? 0).toInt(),
+      location: json['location']?.toString() ?? '',
+      address: json['address']?.toString() ?? '',
+      capacity: (json['capacity'] ?? 0).toInt(),
       areaSquareMeters: (json['areaSquareMeters'] ?? 0).toDouble(),
       hasSound: json['hasSound'] ?? false,
       hasLighting: json['hasLighting'] ?? false,
@@ -72,10 +78,10 @@ class Stage {
           ? List<String>.from(json['amenities'])
           : [],
       isAvailable: json['isAvailable'] ?? true,
-      ownerId: json['ownerId'] ?? '',
-      ownerName: json['ownerName'] ?? '',
+      ownerId: json['ownerId']?.toString() ?? '',
+      ownerName: json['ownerName']?.toString() ?? '',
       createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
+          ? DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now()
           : DateTime.now(),
     );
   }

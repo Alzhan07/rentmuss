@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import '../widgets/custom_app_bar.dart';
 
 class SellerFormScreen extends StatefulWidget {
   const SellerFormScreen({Key? key}) : super(key: key);
@@ -71,10 +72,7 @@ class _SellerFormScreenState extends State<SellerFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Сатушы болу'),
-        backgroundColor: const Color(0xFF16213E),
-      ),
+      appBar: const CustomAppBar(title: 'Сатушы болу'),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

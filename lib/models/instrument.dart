@@ -39,6 +39,12 @@ class Instrument {
     required this.createdAt,
   });
 
+  bool get hourlyAvailable => pricePerHour > 0;
+
+  static const _base = 'http://localhost:5000';
+  static String _absUrl(String url) =>
+      (url.isEmpty || url.startsWith('http')) ? url : '$_base$url';
+
   factory Instrument.fromJson(Map<String, dynamic> json) {
     return Instrument(
       id: json['_id'] ?? json['id'] ?? '',
@@ -49,8 +55,9 @@ class Instrument {
       description: json['description'] ?? '',
       pricePerHour: (json['pricePerHour'] ?? 0).toDouble(),
       pricePerDay: (json['pricePerDay'] ?? 0).toDouble(),
-      imageUrls:
-          json['imageUrls'] != null ? List<String>.from(json['imageUrls']) : [],
+      imageUrls: json['imageUrls'] != null
+          ? List<String>.from(json['imageUrls']).map(_absUrl).toList()
+          : [],
       rating: (json['rating'] ?? 0).toDouble(),
       reviewsCount: json['reviewsCount'] ?? 0,
       location: json['location'] ?? '',

@@ -1,4 +1,4 @@
-enum UserRole { user, seller, admin }
+enum UserRole { user, seller, admin, moderator }
 
 enum SellerApplicationStatus { none, pending, approved, rejected }
 
@@ -142,12 +142,10 @@ class User {
 
   static UserRole _parseRole(String? role) {
     switch (role) {
-      case 'seller':
-        return UserRole.seller;
-      case 'admin':
-        return UserRole.admin;
-      default:
-        return UserRole.user;
+      case 'seller':    return UserRole.seller;
+      case 'admin':     return UserRole.admin;
+      case 'moderator': return UserRole.moderator;
+      default:          return UserRole.user;
     }
   }
 
@@ -187,8 +185,9 @@ class User {
   }
 
   String get fullName => '$username';
-  bool get isSeller => role == UserRole.seller;
-  bool get isAdmin => role == UserRole.admin;
+  bool get isSeller    => role == UserRole.seller;
+  bool get isAdmin     => role == UserRole.admin;
+  bool get isModerator => role == UserRole.moderator;
   bool get canApplyForSeller =>
       role == UserRole.user &&
       (sellerApplication?.status == SellerApplicationStatus.none ||

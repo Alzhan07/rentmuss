@@ -7,8 +7,12 @@ import '../models/user.dart';
 import 'login.dart';
 import 'favorites.dart';
 import 'admin.dart';
-import 'seller.dart';
 import 'seller_form.dart';
+import 'bookings_screen.dart';
+import 'seller_bookings_screen.dart';
+import 'edit_profile_screen.dart';
+import 'moderator_screen.dart';
+import 'faq_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -119,128 +123,261 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final newPasswordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
 
-    await showDialog(
+    await showModalBottomSheet(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            backgroundColor: const Color(0xFF1A1A2E),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            title: const Text(
-              'Құпия сөзді өзгерту',
-              style: TextStyle(color: Colors.white),
-            ),
-            content: Form(
-              key: formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: oldPasswordController,
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'Ескі құпия сөз',
-                      labelStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    validator:
-                        (value) =>
-                            value?.isEmpty ?? true
-                                ? 'Ескі құпия сөзді енгізіңіз'
-                                : null,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          bool oldVisible = false;
+          bool newVisible = false;
+          bool confirmVisible = false;
+          bool loading = false;
+
+          return StatefulBuilder(
+            builder: (context, setInner) {
+              InputDecoration fieldDecoration({
+                required String label,
+                required bool visible,
+                required VoidCallback onToggle,
+                String? hint,
+              }) {
+                return InputDecoration(
+                  labelText: label,
+                  labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                  hintText: hint,
+                  hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 12),
+                  filled: true,
+                  fillColor: Colors.white.withValues(alpha: 0.07),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
                   ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: newPasswordController,
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'Жаңа құпия сөз',
-                      labelStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    validator:
-                        (value) =>
-                            (value?.length ?? 0) < 6
-                                ? 'Кем дегенде 6 таңба болуы керек'
-                                : null,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
                   ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: confirmPasswordController,
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'Құпия сөзді растаңыз',
-                      labelStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    validator:
-                        (value) =>
-                            value != newPasswordController.text
-                                ? 'Құпия сөздер сәйкес келмейді'
-                                : null,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Color(0xFFE94560), width: 1.5),
                   ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Бас тарту',
-                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  if (formKey.currentState!.validate()) {
-                    final result = await ApiService.changePassword(
-                      oldPassword: oldPasswordController.text,
-                      newPassword: newPasswordController.text,
-                    );
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(result['message']),
-                          backgroundColor:
-                              result['success'] ? Colors.green : Colors.red,
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Colors.red, width: 1),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Colors.red, width: 1.5),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      visible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      color: Colors.white.withValues(alpha: 0.5),
+                      size: 20,
+                    ),
+                    onPressed: onToggle,
+                  ),
+                );
+              }
+
+              return Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
+                    ),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                  ),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Handle
+                        Center(
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 12),
+                            width: 40,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
                         ),
-                      );
-                    }
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFE94560),
+                        const SizedBox(height: 24),
+                        // Icon + Title
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFE94560), Color(0xFF9B1432)],
+                            ),
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: const Icon(Icons.lock_reset_rounded, color: Colors.white, size: 32),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Құпия сөзді өзгерту',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Жаңа құпия сөзіңізді енгізіңіз',
+                          style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
+                        ),
+                        const SizedBox(height: 28),
+                        // Fields
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: oldPasswordController,
+                                obscureText: !oldVisible,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: fieldDecoration(
+                                  label: 'Ескі құпия сөз',
+                                  visible: oldVisible,
+                                  onToggle: () => setInner(() => oldVisible = !oldVisible),
+                                ),
+                                validator: (v) => (v?.isEmpty ?? true) ? 'Ескі құпия сөзді енгізіңіз' : null,
+                              ),
+                              const SizedBox(height: 14),
+                              TextFormField(
+                                controller: newPasswordController,
+                                obscureText: !newVisible,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: fieldDecoration(
+                                  label: 'Жаңа құпия сөз',
+                                  visible: newVisible,
+                                  onToggle: () => setInner(() => newVisible = !newVisible),
+                                  hint: '8+ таңба, A-Z, a-z, 0-9, !@#\$',
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) return 'Жаңа құпия сөзді енгізіңіз';
+                                  if (value.length < 8) return 'Кем дегенде 8 таңба болуы керек';
+                                  if (!RegExp(r'[a-z]').hasMatch(value)) return 'Кіші әріп (a-z) болуы керек';
+                                  if (!RegExp(r'[A-Z]').hasMatch(value)) return 'Бас әріп (A-Z) болуы керек';
+                                  if (!RegExp(r'[0-9]').hasMatch(value)) return 'Сан (0-9) болуы керек';
+                                  if (!RegExp('[!@#\$%^&*()\\-_=+\\[\\]{};:\'",.<>\\/\\\\?|`~]').hasMatch(value)) {
+                                    return 'Арнайы таңба болуы керек (!@#\$%...)';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 14),
+                              TextFormField(
+                                controller: confirmPasswordController,
+                                obscureText: !confirmVisible,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: fieldDecoration(
+                                  label: 'Құпия сөзді растаңыз',
+                                  visible: confirmVisible,
+                                  onToggle: () => setInner(() => confirmVisible = !confirmVisible),
+                                ),
+                                validator: (v) => v != newPasswordController.text ? 'Құпия сөздер сәйкес келмейді' : null,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+                        // Buttons
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextButton(
+                                  onPressed: loading ? null : () => Navigator.pop(context),
+                                  style: TextButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Бас тарту',
+                                    style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                flex: 2,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    gradient: loading
+                                        ? null
+                                        : const LinearGradient(
+                                            colors: [Color(0xFFE94560), Color(0xFF9B1432)],
+                                          ),
+                                    color: loading ? Colors.grey : null,
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: ElevatedButton(
+                                    onPressed: loading
+                                        ? null
+                                        : () async {
+                                            if (!formKey.currentState!.validate()) return;
+                                            setInner(() => loading = true);
+                                            final result = await ApiService.changePassword(
+                                              oldPassword: oldPasswordController.text,
+                                              newPassword: newPasswordController.text,
+                                            );
+                                            if (context.mounted) {
+                                              Navigator.pop(context);
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(result['message'] ?? ''),
+                                                  backgroundColor: result['success'] == true ? Colors.green : Colors.red,
+                                                  behavior: SnackBarBehavior.floating,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      padding: const EdgeInsets.symmetric(vertical: 14),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                    ),
+                                    child: loading
+                                        ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                          )
+                                        : const Text(
+                                            'Сақтау',
+                                            style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                                          ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
                 ),
-                child: const Text('Сақтау'),
-              ),
-            ],
-          ),
+              );
+            },
+          );
+        },
+      ),
     );
 
     oldPasswordController.dispose();
@@ -341,34 +478,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ),
-                        const SizedBox(height: 40),
-                        _buildMenuCard(
-                          icon: Icons.favorite,
-                          title: 'Таңдаулылар',
-                          subtitle: 'Сіздің сақталған алаңдарыңыз',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const FavoritesScreen(),
-                              ),
-                            );
-                          },
-                        ),
+                        const SizedBox(height: 32),
+
+                        // ── Role hero cards (first in list) ─────────────────
                         if (_user?.isAdmin == true)
-                          _buildMenuCard(
-                            icon: Icons.admin_panel_settings,
+                          _buildRoleHeroCard(
+                            icon: Icons.admin_panel_settings_rounded,
                             title: 'Админ-панель',
-                            subtitle: 'Сатушылардың өтінімдерін басқару',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const AdminScreen(),
-                                ),
-                              );
-                            },
+                            subtitle: 'Сатушылар, пайдаланушылар және рөлдерді басқару',
+                            gradientColors: [const Color(0xFFE94560), const Color(0xFF9B1432)],
+                            onTap: () => Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => const AdminScreen())),
                           ),
+                        if (_user?.isModerator == true)
+                          _buildRoleHeroCard(
+                            icon: Icons.shield_rounded,
+                            title: 'Модератор панелі',
+                            subtitle: 'Жарнамалар мен апелляцияларды қарау',
+                            gradientColors: [const Color(0xFF5B4FE9), const Color(0xFF3730A3)],
+                            onTap: () => Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => const ModeratorScreen())),
+                          ),
+                        if (_user?.isSeller == true)
+                          _buildRoleHeroCard(
+                            icon: Icons.storefront_rounded,
+                            title: _user?.sellerInfo?.shopName ?? 'Менің дүкенім',
+                            subtitle: 'Тізімдерді, брондауларды және кірісті басқару',
+                            gradientColors: [const Color(0xFF533483), const Color(0xFF2D1B69)],
+                            onTap: () => Navigator.pushNamed(context, '/seller'),
+                          ),
+
+                        const SizedBox(height: 8),
+
+                        // ── Regular menu cards ───────────────────────────────
+                        if (_user?.isSeller != true) ...[
+                          _buildMenuCard(
+                            icon: Icons.calendar_month,
+                            title: 'Брондауларым',
+                            subtitle: 'Брондаулар тарихы',
+                            onTap: () => Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => const BookingsScreen())),
+                          ),
+                          _buildMenuCard(
+                            icon: Icons.favorite,
+                            title: 'Таңдаулылар',
+                            subtitle: 'Сіздің сақталған алаңдарыңыз',
+                            onTap: () => Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => const FavoritesScreen())),
+                          ),
+                        ],
                         if (_user?.canApplyForSeller == true)
                           _buildMenuCard(
                             icon: Icons.store,
@@ -386,14 +544,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         if (_user?.isSeller == true)
                           _buildMenuCard(
-                            icon: Icons.store,
-                            title: 'Менің дүкенім',
-                            subtitle:
-                                _user?.sellerInfo?.shopName ??
-                                'Дүкенді басқару',
-                            onTap: () {
-                              Navigator.pushNamed(context, '/seller');
-                            },
+                            icon: Icons.receipt_long_rounded,
+                            title: 'Брондаулар',
+                            subtitle: 'Клиент брондауларын басқару',
+                            onTap: () => Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => const SellerBookingsScreen())),
                           ),
                         _buildMenuCard(
                           icon: Icons.lock_outline,
@@ -405,19 +560,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           icon: Icons.edit,
                           title: 'Профильді өзгерту',
                           subtitle: 'Жеке ақпаратты өзгерту',
-                          onTap: () {},
-                        ),
-                        _buildMenuCard(
-                          icon: Icons.notifications_outlined,
-                          title: 'Хабарламалар',
-                          subtitle: 'Хабарламаларды реттеңіз',
-                          onTap: () {},
+                          onTap: () async {
+                            if (_user == null) return;
+                            final updated = await Navigator.push<bool>(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfileScreen(user: _user!),
+                              ),
+                            );
+                            if (updated == true) _loadUserData();
+                          },
                         ),
                         _buildMenuCard(
                           icon: Icons.help_outline,
                           title: 'Көмек',
                           subtitle: 'FAQ және қолдау',
-                          onTap: () {},
+                          onTap: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => const FaqScreen())),
                         ),
                         const SizedBox(height: 20),
                         Padding(
@@ -439,7 +598,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white.withOpacity(0.1),
+                                backgroundColor: Colors.white.withValues(alpha: 0.1),
                                 foregroundColor: const Color(0xFFE94560),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
@@ -483,10 +642,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     switch (role) {
       case UserRole.admin:
         return const Color(0xFFE94560);
+      case UserRole.moderator:
+        return const Color(0xFF5B4FE9);
       case UserRole.seller:
         return const Color(0xFF533483);
       case UserRole.user:
-      default:
         return const Color(0xFF0F3460);
     }
   }
@@ -495,10 +655,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     switch (role) {
       case UserRole.admin:
         return 'Администратор';
+      case UserRole.moderator:
+        return 'Модератор';
       case UserRole.seller:
         return 'Сатушы';
       case UserRole.user:
-      default:
         return 'Пайдаланушы';
     }
   }
@@ -540,6 +701,80 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Widget _buildRoleHeroCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required List<Color> gradientColors,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: gradientColors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: gradientColors[0].withValues(alpha: 0.4),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(icon, color: Colors.white, size: 30),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Colors.white.withValues(alpha: 0.8),
+                size: 18,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildMenuCard({
     required IconData icon,
     required String title,
@@ -549,9 +784,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: ListTile(
         onTap: onTap,
@@ -559,7 +794,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leading: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: const Color(0xFFE94560).withOpacity(0.2),
+            color: const Color(0xFFE94560).withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: const Color(0xFFE94560), size: 24),
@@ -574,11 +809,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         subtitle: Text(
           subtitle,
-          style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: Colors.white.withOpacity(0.5),
+          color: Colors.white.withValues(alpha: 0.5),
           size: 16,
         ),
       ),

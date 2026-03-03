@@ -47,35 +47,41 @@ class Studio {
     required this.createdAt,
   });
 
+  bool get hourlyAvailable => pricePerHour > 0;
+
+  static const _base = 'http://localhost:5000';
+  static String _absUrl(String url) =>
+      (url.isEmpty || url.startsWith('http')) ? url : '$_base$url';
+
   factory Studio.fromJson(Map<String, dynamic> json) {
     return Studio(
-      id: json['_id'] ?? json['id'] ?? '',
-      name: json['name'] ?? '',
-      type: json['type'] ?? '',
-      description: json['description'] ?? '',
+      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      type: json['type']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
       pricePerHour: (json['pricePerHour'] ?? 0).toDouble(),
       pricePerDay: (json['pricePerDay'] ?? 0).toDouble(),
       imageUrls: json['imageUrls'] != null
-          ? List<String>.from(json['imageUrls'])
+          ? List<String>.from(json['imageUrls']).map(_absUrl).toList()
           : [],
       rating: (json['rating'] ?? 0).toDouble(),
-      reviewsCount: json['reviewsCount'] ?? 0,
-      location: json['location'] ?? '',
-      address: json['address'] ?? '',
+      reviewsCount: (json['reviewsCount'] ?? 0).toInt(),
+      location: json['location']?.toString() ?? '',
+      address: json['address']?.toString() ?? '',
       areaSquareMeters: (json['areaSquareMeters'] ?? 0).toDouble(),
       hasEngineer: json['hasEngineer'] ?? false,
       hasInstruments: json['hasInstruments'] ?? false,
       hasSoundproofing: json['hasSoundproofing'] ?? true,
       hasAirConditioning: json['hasAirConditioning'] ?? false,
-      equipment: json['equipment'] ?? '',
+      equipment: json['equipment']?.toString() ?? '',
       amenities: json['amenities'] != null
           ? List<String>.from(json['amenities'])
           : [],
       isAvailable: json['isAvailable'] ?? true,
-      ownerId: json['ownerId'] ?? '',
-      ownerName: json['ownerName'] ?? '',
+      ownerId: json['ownerId']?.toString() ?? '',
+      ownerName: json['ownerName']?.toString() ?? '',
       createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
+          ? DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now()
           : DateTime.now(),
     );
   }

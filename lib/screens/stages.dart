@@ -11,7 +11,8 @@ class StagesScreen extends StatefulWidget {
   State<StagesScreen> createState() => _StagesScreenState();
 }
 
-class _StagesScreenState extends State<StagesScreen> {
+class _StagesScreenState extends State<StagesScreen>
+    with SingleTickerProviderStateMixin {
   List<Stage> _allStages = [];
   List<Stage> _filteredStages = [];
   bool _isLoading = false;
@@ -21,18 +22,44 @@ class _StagesScreenState extends State<StagesScreen> {
   String _selectedType = 'Барлығы';
   String _sortBy = 'popular';
   int _minCapacity = 0;
-  int _maxCapacity = 10000;
+  int _maxCapacity = 1000000;
 
   final TextEditingController _searchController = TextEditingController();
 
+  static const _bg     = Color(0xFF1A1A2E);
+  static const _card   = Color(0xFF16213E);
+  static const _accent = Color(0xFFE94560);
+  static const _surface = Color(0xFF0F3460);
+
+  // Map from UI Kazakh label → DB English value
+  static const _typeToDb = {
+    'Концерттік': 'concert',
+    'Театралды':  'theater',
+    'Клубтық':    'club',
+    'Ашық':       'outdoor',
+    'Кіші':       'small',
+    'Орта':       'medium',
+    'Үлкен':      'large',
+  };
+  // Reverse: DB value → Kazakh label for display
+  static const _dbToLabel = {
+    'concert': 'Концерттік',
+    'theater': 'Театралды',
+    'club':    'Клубтық',
+    'outdoor': 'Ашық',
+    'small':   'Кіші',
+    'medium':  'Орта',
+    'large':   'Үлкен',
+  };
+
   final List<Map<String, dynamic>> _types = [
-    {'name': 'Барлығы', 'icon': Icons.apps},
+    {'name': 'Барлығы',    'icon': Icons.apps},
     {'name': 'Концерттік', 'icon': Icons.music_note},
-    {'name': 'Театралды', 'icon': Icons.theater_comedy},
-    {'name': 'Клубтық', 'icon': Icons.nightlife},
-    {'name': 'Ашық', 'icon': Icons.wb_sunny},
-    {'name': 'Кіші', 'icon': Icons.people_outline},
-    {'name': 'Үлкен', 'icon': Icons.groups},
+    {'name': 'Театралды',  'icon': Icons.theater_comedy},
+    {'name': 'Клубтық',   'icon': Icons.nightlife},
+    {'name': 'Ашық',      'icon': Icons.wb_sunny},
+    {'name': 'Кіші',      'icon': Icons.people_outline},
+    {'name': 'Үлкен',     'icon': Icons.groups},
   ];
 
   @override
@@ -49,361 +76,88 @@ class _StagesScreenState extends State<StagesScreen> {
 
   Future<void> _loadStages() async {
     setState(() => _isLoading = true);
-
-    // Тестовые данные с изображениями
-    final sampleStages = [
-      Stage(
-        id: 'sample1',
-        name: 'Үлкен Арена "Олимп"',
-        type: 'Концерттік',
-        description: 'Қазіргі заманғы жабдықтар мен тамаша акустикасы бар кәсіби концерт алаңы.',
-        pricePerHour: 15000,
-        pricePerDay: 100000,
-        imageUrls: ['https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800'],
-        rating: 4.9,
-        reviewsCount: 156,
-        location: 'Алматы, Орталық',
-        address: 'Достық даңғылы, 100',
-        capacity: 2000,
-        areaSquareMeters: 500,
-        hasSound: true,
-        hasLighting: true,
-        hasBackstage: true,
-        hasParking: true,
-        amenities: ['Кәсіби дыбыс жүйесі', 'Жарық шоулары', '5 грим бөлмесі', 'Автотұрақ', 'Кейтеринг', 'VIP-аймақтар'],
-        ownerId: 'sample_owner1',
-        ownerName: 'Концерт залы "Олимп"',
-        createdAt: DateTime.now(),
-      ),
-      Stage(
-        id: 'sample2',
-        name: 'Театр сахнасы "Алтын маска"',
-        type: 'Театрлық',
-        description: 'Бай тарихы бар классикалық театр сахнасы. Театр қойылымдарына арналған тамаша акустика.',
-        pricePerHour: 8000,
-        pricePerDay: 50000,
-        imageUrls: ['https://images.unsplash.com/photo-1503095396549-807759245b35?w=800'],
-        rating: 4.8,
-        reviewsCount: 89,
-        location: 'Алматы, Абай',
-        address: 'Абай даңғылы, 45',
-        capacity: 500,
-        areaSquareMeters: 200,
-        hasSound: true,
-        hasLighting: true,
-        hasBackstage: true,
-        hasParking: true,
-        amenities: ['Театрлық акустика', 'Классикалық интерьер', '3 грим бөлмесі', 'Гардероб'],
-        ownerId: 'sample_owner2',
-        ownerName: 'Театр "Алтын маска"',
-        createdAt: DateTime.now(),
-      ),
-      Stage(
-        id: 'sample3',
-        name: 'Ашық сахна "Жазғы бақ"',
-        type: 'Ашық алаң',
-        description: 'Табиғат аясындағы романтикалық ашық сахна. Жаз фестивальдері мен концерттерге өте қолайлы.',
-        pricePerHour: 5000,
-        pricePerDay: 30000,
-        imageUrls: ['https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800'],
-        rating: 4.6,
-        reviewsCount: 67,
-        location: 'Алматы, Медеу',
-        address: 'Медеу ауданы, Көктөбе',
-        capacity: 1000,
-        areaSquareMeters: 300,
-        hasSound: true,
-        hasLighting: true,
-        hasBackstage: false,
-        hasParking: true,
-        amenities: ['Табиғи декорация', 'Дыбыс жүйесі', 'Жарық', 'Автотұрақ'],
-        ownerId: 'sample_owner3',
-        ownerName: 'Саябақ басқармасы',
-        createdAt: DateTime.now(),
-      ),
-    ];
-
     try {
       final response = await ApiService.getAllStages(
         search: _searchQuery.isNotEmpty ? _searchQuery : null,
       );
-
-      if (response['success']) {
+      if (response['success'] == true) {
         final stagesData = response['stages'] as List;
-        if (stagesData.isNotEmpty) {
-          final serverStages = stagesData.map((data) {
-            return Stage.fromJson(data);
-          }).toList();
-
-          setState(() {
-            _allStages = [...sampleStages, ...serverStages];
-            _filteredStages = [...sampleStages, ...serverStages];
-            _isLoading = false;
-          });
-
-          _applyFilters();
-          return;
-        }
+        final serverStages = stagesData
+            .map((data) {
+              try { return Stage.fromJson(data as Map<String, dynamic>); }
+              catch (e) { debugPrint('Stage parse error: $e'); return null; }
+            })
+            .whereType<Stage>()
+            .toList();
+        setState(() {
+          _allStages = serverStages;
+          _filteredStages = serverStages;
+          _isLoading = false;
+        });
+      } else {
+        setState(() { _allStages = []; _filteredStages = []; _isLoading = false; });
       }
     } catch (e) {
-      print('Error loading stages: $e');
+      debugPrint('Error loading stages: $e');
+      setState(() { _allStages = []; _filteredStages = []; _isLoading = false; });
     }
-
-    // Если не удалось загрузить с сервера или нет данных, показываем тестовые
-    setState(() {
-      _allStages = sampleStages;
-      _filteredStages = sampleStages;
-      _isLoading = false;
-    });
     _applyFilters();
-
-    // Старые закомментированные тестовые данные
-    /*
-    final oldSampleStages = [
-      Stage(
-        id: '1',
-        name: 'Үлкен Арена "Олимп"',
-        type: 'Концерттік',
-        description:
-            'Қазіргі заманғы жабдықтар мен тамаша акустикасы бар кәсіби концерт алаңы. Үлкен концерттер мен іс-шараларға өте қолайлы.',
-        pricePerHour: 15000,
-        pricePerDay: 100000,
-        imageUrls: ['https://via.placeholder.com/400x300'],
-        rating: 4.9,
-        reviewsCount: 156,
-        location: 'Мәскеу, Орталық',
-        address: 'Тверская көш., 10 үй',
-        capacity: 2000,
-        areaSquareMeters: 500,
-        hasSound: true,
-        hasLighting: true,
-        hasBackstage: true,
-        hasParking: true,
-        amenities: [
-          'Кәсіби дыбыс жүйесі',
-          'Жарық шоулары',
-          '5 грим бөлмесі',
-          'Жерасты автотұрағы',
-          'Кейтеринг қызметі',
-          'VIP-аймақтар',
-        ],
-        ownerId: 'owner1',
-        ownerName: 'Концерт залы "Олимп"',
-        createdAt: DateTime.now(),
-      ),
-      Stage(
-        id: '2',
-        name: 'Театр сахнасы "Алтын маска"',
-        type: 'Театрлық',
-        description:
-            'Бай тарихы бар классикалық театр сахнасы. Театр қойылымдарына арналған тамаша акустика мен атмосфера.',
-        pricePerHour: 8000,
-        pricePerDay: 50000,
-        imageUrls: ['https://via.placeholder.com/400x300'],
-        rating: 4.8,
-        reviewsCount: 89,
-        location: 'Мәскеу, Арбат',
-        address: 'Арбат, 25 үй',
-        capacity: 500,
-        areaSquareMeters: 200,
-        hasSound: true,
-        hasLighting: true,
-        hasBackstage: true,
-        hasParking: false,
-        amenities: [
-          'Театрлық дыбыс жүйесі',
-          'Классикалық жарықтандыру',
-          '3 грим бөлмесі',
-          'Оркестр шұңқыры',
-          'Реквизиттер',
-        ],
-        ownerId: 'owner2',
-        ownerName: 'Театр "Алтын маска"',
-        createdAt: DateTime.now(),
-      ),
-      Stage(
-        id: '3',
-        name: 'Клуб "Neon Nights"',
-        type: 'Клубтық',
-        description:
-            'Кәсіби дыбыс және жарық жабдықтары бар заманауи клуб залы. Концерттер мен кештер өткізуге өте ыңғайлы.',
-        pricePerHour: 12000,
-        pricePerDay: 70000,
-        imageUrls: ['https://via.placeholder.com/400x300'],
-        rating: 4.7,
-        reviewsCount: 234,
-        location: 'Мәскеу, Таганка',
-        address: 'Народная көш., 5 үй',
-        capacity: 800,
-        areaSquareMeters: 300,
-        hasSound: true,
-        hasLighting: true,
-        hasBackstage: true,
-        hasParking: true,
-        amenities: [
-          'DJ-жабдық',
-          'LED-экрандар',
-          'Түтін машинасы',
-          '2 грим бөлмесі',
-          'Бар',
-          'Би алаңы',
-        ],
-        ownerId: 'owner3',
-        ownerName: 'Neon Entertainment',
-        createdAt: DateTime.now(),
-      ),
-      Stage(
-        id: '4',
-        name: 'Ашық сахна "Горький саябағы"',
-        type: 'Ашық',
-        description:
-            'Жазғы концерттер мен фестивальдерге арналған саябақтағы ашық алаң. Өзен жағалауына көрінісі бар әдемі орын.',
-        pricePerHour: 10000,
-        pricePerDay: 60000,
-        imageUrls: ['https://via.placeholder.com/400x300'],
-        rating: 4.6,
-        reviewsCount: 112,
-        location: 'Мәскеу, Горький саябағы',
-        address: 'Крымский Вал көш., 9 үй',
-        capacity: 1500,
-        areaSquareMeters: 400,
-        hasSound: true,
-        hasLighting: true,
-        hasBackstage: false,
-        hasParking: true,
-        amenities: [
-          'Ашық аспан астында',
-          'Сыртқы дыбыс жүйесі',
-          'Жарық мачталары',
-          'Артистерге арналған автотұрақ',
-          'Жылжымалы грим бөлмелер',
-        ],
-        ownerId: 'owner4',
-        ownerName: 'Горький саябағы',
-        createdAt: DateTime.now(),
-      ),
-      Stage(
-        id: '5',
-        name: 'Кіші сахна "Камерлік зал"',
-        type: 'Кіші',
-        description:
-            'Шағын концерттер мен іс-шараларға арналған жайлы камерлік зал. Тамаша акустика және жылы атмосфера.',
-        pricePerHour: 5000,
-        pricePerDay: 30000,
-        imageUrls: ['https://via.placeholder.com/400x300'],
-        rating: 4.8,
-        reviewsCount: 67,
-        location: 'Мәскеу, Кузнецкий Мост',
-        address: 'Кузнецкий Мост, 12 үй',
-        capacity: 150,
-        areaSquareMeters: 80,
-        hasSound: true,
-        hasLighting: true,
-        hasBackstage: true,
-        hasParking: false,
-        amenities: [
-          'Камерлік дыбыс жүйесі',
-          'Жайлы жарықтандыру',
-          '1 грим бөлмесі',
-          'Steinway роялі',
-          'Кафе',
-        ],
-        ownerId: 'owner5',
-        ownerName: 'Мәдениет орталығы',
-        createdAt: DateTime.now(),
-      ),
-      Stage(
-        id: '6',
-        name: 'Мега Арена "Стадион"',
-        type: 'Үлкен',
-        description:
-            'Ауқымды шоулар мен фестивальдер өткізуге арналған үлкен концерт алаңы. 10000 көрерменге дейін сыйымдылығы бар.',
-        pricePerHour: 25000,
-        pricePerDay: 150000,
-        imageUrls: ['https://via.placeholder.com/400x300'],
-        rating: 5.0,
-        reviewsCount: 298,
-        location: 'Мәскеу, Лужники',
-        address: 'Лужники жағалауы, 24 үй',
-        capacity: 10000,
-        areaSquareMeters: 1000,
-        hasSound: true,
-        hasLighting: true,
-        hasBackstage: true,
-        hasParking: true,
-        amenities: [
-          'Стадиондық дыбыс жүйесі',
-          'Алып LED-экрандар',
-          '10 грим бөлмесі',
-          'Үлкен автотұрақ',
-          'Медпункт',
-          'Қауіпсіздік қызметі',
-          'Кейтеринг',
-        ],
-        ownerId: 'owner6',
-        ownerName: 'Спорт кешені "Лужники"',
-        createdAt: DateTime.now(),
-      ),
-    ];
-    */
   }
 
   void _applyFilters() {
     setState(() {
       _filteredStages = _allStages.where((stage) {
-        bool matchesType = _selectedType == 'Барлығы' || stage.type == _selectedType;
-        bool matchesSearch = _searchQuery.isEmpty ||
-            stage.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-            stage.description.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-            stage.location.toLowerCase().contains(_searchQuery.toLowerCase());
-        bool matchesCapacity =
+        final dbType = _typeToDb[_selectedType];
+        final matchType = _selectedType == 'Барлығы' || stage.type == dbType;
+        final q = _searchQuery.toLowerCase();
+        final matchSearch = q.isEmpty ||
+            stage.name.toLowerCase().contains(q) ||
+            stage.description.toLowerCase().contains(q) ||
+            stage.location.toLowerCase().contains(q);
+        final matchCapacity =
             stage.capacity >= _minCapacity && stage.capacity <= _maxCapacity;
-
-        return matchesType && matchesSearch && matchesCapacity;
+        return matchType && matchSearch && matchCapacity;
       }).toList();
 
       switch (_sortBy) {
-        case 'price_low':
-          _filteredStages.sort((a, b) => a.pricePerHour.compareTo(b.pricePerHour));
-          break;
-        case 'price_high':
-          _filteredStages.sort((a, b) => b.pricePerHour.compareTo(a.pricePerHour));
-          break;
-        case 'capacity_low':
-          _filteredStages.sort((a, b) => a.capacity.compareTo(b.capacity));
-          break;
-        case 'capacity_high':
-          _filteredStages.sort((a, b) => b.capacity.compareTo(a.capacity));
-          break;
-        case 'rating':
-          _filteredStages.sort((a, b) => b.rating.compareTo(a.rating));
-          break;
-        case 'popular':
-        default:
-          _filteredStages.sort((a, b) => b.reviewsCount.compareTo(a.reviewsCount));
+        case 'price_low':    _filteredStages.sort((a, b) => a.pricePerHour.compareTo(b.pricePerHour)); break;
+        case 'price_high':   _filteredStages.sort((a, b) => b.pricePerHour.compareTo(a.pricePerHour)); break;
+        case 'capacity_low': _filteredStages.sort((a, b) => a.capacity.compareTo(b.capacity)); break;
+        case 'capacity_high':_filteredStages.sort((a, b) => b.capacity.compareTo(a.capacity)); break;
+        case 'rating':       _filteredStages.sort((a, b) => b.rating.compareTo(a.rating)); break;
+        default:             _filteredStages.sort((a, b) => b.reviewsCount.compareTo(a.reviewsCount));
       }
     });
+  }
+
+  String _getSortLabel() {
+    switch (_sortBy) {
+      case 'price_low':    return 'Баға ↑';
+      case 'price_high':   return 'Баға ↓';
+      case 'capacity_low': return 'Сыйым ↑';
+      case 'capacity_high':return 'Сыйым ↓';
+      case 'rating':       return 'Рейтинг';
+      default:             return 'Танымал';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: _bg,
       body: SafeArea(
         child: Column(
           children: [
             _buildHeader(),
             _buildSearchBar(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             _buildTypeFilters(),
-            const SizedBox(height: 16),
-            _buildSortAndViewToggle(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
+            _buildSortRow(),
+            const SizedBox(height: 12),
             Expanded(
               child: _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Color(0xFFE94560)),
-                    )
+                  ? const Center(child: CircularProgressIndicator(color: _accent))
                   : _filteredStages.isEmpty
                       ? _buildEmptyState()
                       : _isGridView
@@ -416,55 +170,49 @@ class _StagesScreenState extends State<StagesScreen> {
     );
   }
 
+  // ── Header ───────────────────────────────────
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF16213E), Color(0xFF0F3460)],
+        ),
+      ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Сахналар',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Мінсіз алаңды табыңыз',
-                style: TextStyle(
-                  color: Color(0xFFE94560),
-                  fontSize: 14,
-                ),
-              ),
-            ],
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: _accent.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.theater_comedy_outlined, color: _accent, size: 22),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Сахналар',
+                    style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+                Text('Мінсіз алаңды табыңыз',
+                    style: TextStyle(color: _accent, fontSize: 12)),
+              ],
+            ),
           ),
           GestureDetector(
             onTap: _showFilterDialog,
             child: Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(9),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFE94560), Color(0xFFFF6B85)],
-                ),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFE94560).withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                color: _accent.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: _accent.withValues(alpha: 0.3)),
               ),
-              child: const Icon(
-                Icons.tune,
-                color: Colors.white,
-                size: 24,
-              ),
+              child: const Icon(Icons.tune_rounded, color: _accent, size: 20),
             ),
           ),
         ],
@@ -472,31 +220,27 @@ class _StagesScreenState extends State<StagesScreen> {
     );
   }
 
+  // ── Search ───────────────────────────────────
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          color: _surface.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
         ),
         child: TextField(
           controller: _searchController,
           style: const TextStyle(color: Colors.white),
-          onChanged: (value) {
-            setState(() {
-              _searchQuery = value;
-            });
-            _applyFilters();
-          },
+          onChanged: (v) { setState(() => _searchQuery = v); _applyFilters(); },
           decoration: InputDecoration(
             hintText: 'Сахналарды іздеу...',
-            hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-            prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.5)),
+            hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4)),
+            prefixIcon: Icon(Icons.search, color: Colors.white.withValues(alpha: 0.4), size: 20),
             suffixIcon: _searchQuery.isNotEmpty
                 ? IconButton(
-                    icon: Icon(Icons.clear, color: Colors.white.withOpacity(0.5)),
+                    icon: Icon(Icons.close, color: Colors.white.withValues(alpha: 0.4), size: 18),
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _searchQuery = '');
@@ -505,16 +249,17 @@ class _StagesScreenState extends State<StagesScreen> {
                   )
                 : null,
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
         ),
       ),
     );
   }
 
+  // ── Type chips ───────────────────────────────
   Widget _buildTypeFilters() {
     return SizedBox(
-      height: 50,
+      height: 38,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -522,38 +267,30 @@ class _StagesScreenState extends State<StagesScreen> {
         itemBuilder: (context, index) {
           final type = _types[index];
           final isSelected = _selectedType == type['name'];
-
           return GestureDetector(
-            onTap: () {
-              setState(() => _selectedType = type['name'] as String);
-              _applyFilters();
-            },
-            child: Container(
-              margin: const EdgeInsets.only(right: 12),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            onTap: () { setState(() => _selectedType = type['name'] as String); _loadStages(); },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 gradient: isSelected
-                    ? const LinearGradient(
-                        colors: [Color(0xFFE94560), Color(0xFFFF6B85)],
-                      )
+                    ? const LinearGradient(colors: [_accent, Color(0xFFFF6B85)])
                     : null,
-                color: isSelected ? null : Colors.white.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(25),
+                color: isSelected ? null : _surface.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isSelected ? Colors.transparent : Colors.white.withOpacity(0.1),
+                  color: isSelected ? Colors.transparent : Colors.white.withValues(alpha: 0.1),
                 ),
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(type['icon'] as IconData, color: Colors.white, size: 18),
-                  const SizedBox(width: 8),
+                  Icon(type['icon'] as IconData, color: Colors.white, size: 14),
+                  const SizedBox(width: 6),
                   Text(
                     type['name'] as String,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -564,92 +301,51 @@ class _StagesScreenState extends State<StagesScreen> {
     );
   }
 
-  Widget _buildSortAndViewToggle() {
+  // ── Sort row ─────────────────────────────────
+  Widget _buildSortRow() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Text(
-                'Табылды: ${_filteredStages.length}',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(width: 16),
-              PopupMenuButton<String>(
-                initialValue: _sortBy,
-                onSelected: (value) {
-                  setState(() => _sortBy = value);
-                  _applyFilters();
-                },
-                color: const Color(0xFF16213E),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.1)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.sort, color: Colors.white, size: 18),
-                      const SizedBox(width: 6),
-                      Text(
-                        _getSortLabel(),
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
-                      ),
-                    ],
-                  ),
-                ),
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'popular',
-                    child: Text('Танымал', style: TextStyle(color: Colors.white)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'price_low',
-                    child: Text('Бағасы: төмен', style: TextStyle(color: Colors.white)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'price_high',
-                    child: Text('Бағасы: жоғары', style: TextStyle(color: Colors.white)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'capacity_low',
-                    child: Text('Сыйымдылығы: төмен', style: TextStyle(color: Colors.white)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'capacity_high',
-                    child: Text('Сыйымдылығы: жоғары', style: TextStyle(color: Colors.white)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'rating',
-                    child: Text('Рейтинг', style: TextStyle(color: Colors.white)),
-                  ),
-                ],
-              ),
-            ],
+          Text(
+            '${_filteredStages.length} нәтиже',
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
           ),
           Row(
             children: [
-              IconButton(
-                icon: Icon(
-                  Icons.view_list,
-                  color: !_isGridView ? const Color(0xFFE94560) : Colors.white54,
+              PopupMenuButton<String>(
+                initialValue: _sortBy,
+                onSelected: (v) { setState(() => _sortBy = v); _applyFilters(); },
+                color: _card,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: _surface.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.sort_rounded, color: Colors.white, size: 16),
+                      const SizedBox(width: 6),
+                      Text(_getSortLabel(), style: const TextStyle(color: Colors.white, fontSize: 12)),
+                    ],
+                  ),
                 ),
-                onPressed: () => setState(() => _isGridView = false),
+                itemBuilder: (ctx) => [
+                  const PopupMenuItem(value: 'popular',      child: Text('Танымал',         style: TextStyle(color: Colors.white))),
+                  const PopupMenuItem(value: 'price_low',    child: Text('Баға: төмен',     style: TextStyle(color: Colors.white))),
+                  const PopupMenuItem(value: 'price_high',   child: Text('Баға: жоғары',    style: TextStyle(color: Colors.white))),
+                  const PopupMenuItem(value: 'capacity_low', child: Text('Сыйым: төмен',   style: TextStyle(color: Colors.white))),
+                  const PopupMenuItem(value: 'capacity_high',child: Text('Сыйым: жоғары',  style: TextStyle(color: Colors.white))),
+                  const PopupMenuItem(value: 'rating',       child: Text('Рейтинг',         style: TextStyle(color: Colors.white))),
+                ],
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.grid_view,
-                  color: _isGridView ? const Color(0xFFE94560) : Colors.white54,
-                ),
-                onPressed: () => setState(() => _isGridView = true),
-              ),
+              const SizedBox(width: 8),
+              _viewToggleBtn(Icons.view_list_rounded, !_isGridView, () => setState(() => _isGridView = false)),
+              const SizedBox(width: 4),
+              _viewToggleBtn(Icons.grid_view_rounded, _isGridView, () => setState(() => _isGridView = true)),
             ],
           ),
         ],
@@ -657,184 +353,134 @@ class _StagesScreenState extends State<StagesScreen> {
     );
   }
 
-  String _getSortLabel() {
-    switch (_sortBy) {
-      case 'price_low':
-        return 'Бағасы: төмен ↑';
-      case 'price_high':
-        return 'Бағасы: жоғары ↓';
-      case 'capacity_low':
-        return 'Сыйымдылығы: төмен ↑';
-      case 'capacity_high':
-        return 'Сыйымдылығы: жоғары ↓';
-      case 'rating':
-        return 'Рейтинг';
-      case 'popular':
-      default:
-        return 'Танымал';
-    }
+  Widget _viewToggleBtn(IconData icon, bool active, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(7),
+        decoration: BoxDecoration(
+          color: active ? _accent.withValues(alpha: 0.2) : _surface.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: active ? _accent.withValues(alpha: 0.5) : Colors.transparent),
+        ),
+        child: Icon(icon, color: active ? _accent : Colors.white38, size: 18),
+      ),
+    );
   }
 
+  // ── List ─────────────────────────────────────
   Widget _buildListView() {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: _filteredStages.length,
-      itemBuilder: (context, index) => _buildStageListCard(_filteredStages[index]),
+      itemBuilder: (ctx, i) => _listCard(_filteredStages[i]),
     );
   }
 
-  Widget _buildGridView() {
-    return GridView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.7,
-      ),
-      itemCount: _filteredStages.length,
-      itemBuilder: (context, index) => _buildStageGridCard(_filteredStages[index]),
-    );
-  }
-
-  Widget _buildStageListCard(Stage stage) {
+  Widget _listCard(Stage stage) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => StageDetailsScreen(stage: stage)),
-        );
-      },
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (_) => StageDetailsScreen(stage: stage))),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
+        margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          color: _card,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 8, offset: const Offset(0, 3))],
         ),
         child: Row(
           children: [
+            // Image
             ClipRRect(
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                bottomLeft: Radius.circular(20),
-              ),
-              child: CachedNetworkImage(
-                imageUrl: stage.imageUrls.isNotEmpty
-                    ? stage.imageUrls[0]
-                    : 'https://via.placeholder.com/150x150',
-                width: 120,
-                height: 160,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey.shade800,
-                  child: const Center(
-                    child: CircularProgressIndicator(color: Color(0xFFE94560)),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF0F3460), Color(0xFF16213E)],
-                    ),
-                  ),
-                  child: const Icon(Icons.theater_comedy, color: Colors.white54, size: 40),
-                ),
-              ),
+                  topLeft: Radius.circular(16), bottomLeft: Radius.circular(16)),
+              child: stage.imageUrls.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: stage.imageUrls[0],
+                      width: 110,
+                      height: 130,
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) => _imgPlaceholder(110, 130),
+                      errorWidget: (_, __, ___) => _imgPlaceholder(110, 130),
+                    )
+                  : _imgPlaceholder(110, 130),
             ),
+            // Info
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Type badge + Rating
                     Row(
                       children: [
-                        const Icon(Icons.star, color: Color(0xFFFFD700), size: 14),
-                        const SizedBox(width: 4),
-                        Text(
-                          stage.rating.toStringAsFixed(1),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE94560).withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(8),
+                            color: _accent.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: _accent.withValues(alpha: 0.4)),
                           ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.people, color: Color(0xFFE94560), size: 12),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${stage.capacity}',
-                                style: const TextStyle(
-                                  color: Color(0xFFE94560),
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      stage.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      stage.type,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontSize: 12,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.location_on, color: Colors.white.withOpacity(0.5), size: 12),
-                        const SizedBox(width: 4),
-                        Expanded(
                           child: Text(
-                            stage.location,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
-                              fontSize: 11,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            (_dbToLabel[stage.type] ?? stage.type).toUpperCase(),
+                            style: const TextStyle(color: _accent, fontSize: 9, fontWeight: FontWeight.bold),
                           ),
                         ),
+                        const Spacer(),
+                        const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 13),
+                        const SizedBox(width: 3),
+                        Text(stage.rating.toStringAsFixed(1),
+                            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
                     ),
                     const SizedBox(height: 8),
+                    Text(stage.name,
+                        style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 3),
                     Row(
                       children: [
-                        Text(
-                          '${stage.pricePerHour.toInt()} ₸',
-                          style: const TextStyle(
-                            color: Color(0xFFE94560),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        const Icon(Icons.people_outline, color: Colors.white38, size: 12),
+                        const SizedBox(width: 3),
+                        Text('${stage.capacity} орын',
+                            style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 11)),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(children: [
+                      Icon(Icons.location_on_outlined, color: Colors.white.withValues(alpha: 0.35), size: 12),
+                      const SizedBox(width: 3),
+                      Expanded(
+                        child: Text(stage.location,
+                            style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 11),
+                            maxLines: 1, overflow: TextOverflow.ellipsis),
+                      ),
+                    ]),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: '${stage.pricePerHour.toInt()} ₸',
+                              style: const TextStyle(color: _accent, fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(
+                              text: '/сағ',
+                              style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 11),
+                            ),
+                          ]),
                         ),
-                        const Text(
-                          '/сағат',
-                          style: TextStyle(color: Colors.white54, fontSize: 12),
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: _accent.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.arrow_forward_ios, color: _accent, size: 10),
                         ),
                       ],
                     ),
@@ -848,183 +494,179 @@ class _StagesScreenState extends State<StagesScreen> {
     );
   }
 
-  Widget _buildStageGridCard(Stage stage) {
+  // ── Grid ─────────────────────────────────────
+  Widget _buildGridView() {
+    return GridView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.72,
+      ),
+      itemCount: _filteredStages.length,
+      itemBuilder: (ctx, i) => _gridCard(_filteredStages[i]),
+    );
+  }
+
+  Widget _gridCard(Stage stage) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => StageDetailsScreen(stage: stage)),
-        );
-      },
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (_) => StageDetailsScreen(stage: stage))),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          borderRadius: BorderRadius.circular(16),
+          color: _card,
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 8, offset: const Offset(0, 3))],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: stage.imageUrls.isNotEmpty
-                        ? stage.imageUrls[0]
-                        : 'https://via.placeholder.com/200x150',
-                    height: 140,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: Colors.grey.shade800,
-                      child: const Center(
-                        child: CircularProgressIndicator(color: Color(0xFFE94560)),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xFF0F3460), Color(0xFF16213E)],
-                        ),
-                      ),
-                      child: const Icon(Icons.theater_comedy, color: Colors.white54, size: 40),
-                    ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Image
+              stage.imageUrls.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: stage.imageUrls[0],
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) => _imgPlaceholder(double.infinity, double.infinity),
+                      errorWidget: (_, __, ___) => _imgPlaceholder(double.infinity, double.infinity),
+                    )
+                  : _imgPlaceholder(double.infinity, double.infinity),
+
+              // Gradient overlay
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.3, 1.0],
+                    colors: [Colors.transparent, Colors.black.withValues(alpha: 0.88)],
                   ),
                 ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.favorite_border, color: Colors.white, size: 18),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE94560),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.people, color: Colors.white, size: 12),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${stage.capacity}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    stage.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.star, color: Color(0xFFFFD700), size: 12),
-                      const SizedBox(width: 4),
-                      Text(
-                        stage.rating.toStringAsFixed(1),
-                        style: const TextStyle(color: Colors.white, fontSize: 11),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '${stage.pricePerHour.toInt()} ₸/сағат',
-                          style: const TextStyle(
-                            color: Color(0xFFE94560),
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white.withOpacity(0.5),
-                        size: 14,
-                      ),
-                    ],
-                  ),
-                ],
               ),
-            ),
-          ],
+
+              // Capacity badge top-left
+              Positioned(
+                top: 8, left: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.55),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.people_rounded, color: Colors.white, size: 11),
+                      const SizedBox(width: 3),
+                      Text('${stage.capacity}',
+                          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Rating top-right
+              Positioned(
+                top: 8, right: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.55),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 12),
+                      const SizedBox(width: 3),
+                      Text(stage.rating.toStringAsFixed(1),
+                          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Bottom info
+              Positioned(
+                left: 0, right: 0, bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(stage.name,
+                          style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold,
+                              shadows: [Shadow(blurRadius: 4, color: Colors.black)]),
+                          maxLines: 1, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 2),
+                      Text(_dbToLabel[stage.type] ?? stage.type,
+                          style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 11),
+                          maxLines: 1, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 7),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(color: _accent, borderRadius: BorderRadius.circular(8)),
+                            child: Text('${stage.pricePerHour.toInt()} ₸',
+                                style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 9),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  // ── Empty state ──────────────────────────────
   Widget _buildEmptyState() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off, size: 80, color: Colors.white.withOpacity(0.3)),
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: _surface.withValues(alpha: 0.3),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.search_off_rounded, size: 50, color: Colors.white.withValues(alpha: 0.3)),
+          ),
           const SizedBox(height: 16),
-          Text(
-            'Сахналар табылмады',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Фильтрлерді өзгертіп көріңіз немесе басқа іздеу сөзін қолданыңыз.',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
-              fontSize: 14,
-            ),
-          ),
+          Text('Сахналар табылмады',
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 17, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 6),
+          Text('Фильтрлерді өзгертіп көріңіз',
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 13)),
         ],
       ),
     );
   }
 
+  // ── Filter dialog ────────────────────────────
   void _showFilterDialog() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF16213E),
+      backgroundColor: _card,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-      ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
@@ -1034,38 +676,31 @@ class _StagesScreenState extends State<StagesScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Фильтрлер',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                  // Handle
+                  Center(
+                    child: Container(
+                      width: 40, height: 4,
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
                   ),
+                  const Text('Фильтрлер',
+                      style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Алаңның сыйымдылығы',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  const Text('Алаңның сыйымдылығы',
+                      style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 12),
                   RangeSlider(
-                    values: RangeValues(
-                      _minCapacity.toDouble(),
-                      _maxCapacity.toDouble(),
-                    ),
+                    values: RangeValues(_minCapacity.toDouble(), _maxCapacity.toDouble()),
                     min: 0,
-                    max: 10000,
+                    max: 1000000,
                     divisions: 100,
-                    activeColor: const Color(0xFFE94560),
-                    inactiveColor: Colors.white.withOpacity(0.2),
-                    labels: RangeLabels(
-                      _minCapacity.toString(),
-                      _maxCapacity.toString(),
-                    ),
+                    activeColor: _accent,
+                    inactiveColor: Colors.white.withValues(alpha: 0.2),
+                    labels: RangeLabels('$_minCapacity', '$_maxCapacity'),
                     onChanged: (values) {
                       setModalState(() {
                         _minCapacity = values.start.toInt();
@@ -1076,45 +711,24 @@ class _StagesScreenState extends State<StagesScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '$_minCapacity адамнан',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
-                          fontSize: 14,
-                        ),
-                      ),
-                      Text(
-                        '$_maxCapacity адамға дейін',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
-                          fontSize: 14,
-                        ),
-                      ),
+                      Text('$_minCapacity адамнан',
+                          style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13)),
+                      Text('$_maxCapacity адамға дейін',
+                          style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13)),
                     ],
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 28),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _applyFilters();
-                      },
+                      onPressed: () { Navigator.pop(context); _applyFilters(); },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFE94560),
+                        backgroundColor: _accent,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       ),
-                      child: const Text(
-                        'Фильтрлерді қолдану',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: const Text('Қолдану',
+                          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -1123,6 +737,22 @@ class _StagesScreenState extends State<StagesScreen> {
           },
         );
       },
+    );
+  }
+
+  // ── Helpers ──────────────────────────────────
+  Widget _imgPlaceholder(double w, double h) {
+    return Container(
+      width: w == double.infinity ? null : w,
+      height: h == double.infinity ? null : h,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF0F3460), Color(0xFF16213E)],
+        ),
+      ),
+      child: const Icon(Icons.theater_comedy_outlined, color: Colors.white24, size: 40),
     );
   }
 }
