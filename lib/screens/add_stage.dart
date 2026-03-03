@@ -109,7 +109,7 @@ class _AddStageScreenState extends State<AddStageScreen> {
   }
 
   static String _absUrl(String url) =>
-      (url.isEmpty || url.startsWith('http')) ? url : 'http://localhost:5000$url';
+      (url.isEmpty || url.startsWith('http')) ? url : 'https://rentmuss-production.up.railway.app$url';
 
   void _removeImage(int index) {
     setState(() {

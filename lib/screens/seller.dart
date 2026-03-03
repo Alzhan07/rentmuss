@@ -175,7 +175,7 @@ class _SellerScreenState extends State<SellerScreen>
 
   String _absoluteUrl(String url) {
     if (url.isEmpty || url.startsWith('http')) return url;
-    return 'http://localhost:5000$url';
+    return 'https://rentmuss-production.up.railway.app$url';
   }
 
   @override

@@ -49,7 +49,7 @@ class Stage {
 
   bool get hourlyAvailable => pricePerHour > 0;
 
-  static const _base = 'http://localhost:5000';
+  static const _base = 'https://rentmuss-production.up.railway.app';
   static String _absUrl(String url) =>
       (url.isEmpty || url.startsWith('http')) ? url : '$_base$url';
 

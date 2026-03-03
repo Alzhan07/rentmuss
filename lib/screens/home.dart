@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   String _absoluteUrl(String url) {
     if (url.isEmpty || url.startsWith('http')) return url;
-    return 'http://localhost:5000$url';
+    return 'https://rentmuss-production.up.railway.app$url';
   }
 
   Widget _getSelectedScreen() {
