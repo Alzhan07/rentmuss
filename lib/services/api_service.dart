@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://rentmuss-production.up.railway.app/api';
+  static const String baseUrl = 'https://rentmuss.onrender.com/api';
 
   static Future<Map<String, String>> _getHeaders() async {
     final prefs = await SharedPreferences.getInstance();
