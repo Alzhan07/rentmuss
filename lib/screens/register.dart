@@ -103,15 +103,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!mounted) return;
 
     if (result['success'] == true) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => EmailVerificationScreen(
-            userId: result['userId'] ?? '',
-            email: result['email'] ?? _emailController.text.trim(),
+      if (result['requiresVerification'] == true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EmailVerificationScreen(
+              userId: result['userId'] ?? '',
+              email: result['email'] ?? _emailController.text.trim(),
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Тіркелу сәтті! Кіріңіз.'),
+            backgroundColor: Color(0xFF00D9A5),
+          ),
+        );
+        Navigator.pop(context);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result['message']), backgroundColor: Colors.red),
@@ -404,7 +414,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 return 'Құпия сөзді енгізіңіз';
                               }
                               if (value.length < 8) {
-                                return 'Құпия сөз кем дегенде 8 символдан тұруы тиіс';
+                                return 'Құпия сөз кем дегенде 8 символ';
                               }
                               if (!RegExp(r'[A-Z]').hasMatch(value)) {
                                 return 'Құпия сөзде үлкен әріп болуы тиіс';
@@ -448,7 +458,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 _buildPasswordRequirement(
-                                  'Құпия сөз кем дегенде 8 символдан тұруы тиіс',
+                                  'Құпия сөз кем дегенде 8 символ',
                                   _hasMinLength,
                                 ),
                                 _buildPasswordRequirement(
