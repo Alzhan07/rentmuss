@@ -21,7 +21,7 @@ class ApiService {
     if (relativeUrl.startsWith('http')) return relativeUrl;
 
     final uri = Uri.parse(baseUrl);
-    return '${uri.scheme}://${uri.host}:${uri.port}$relativeUrl';
+    return '${uri.scheme}://${uri.host}$relativeUrl';
   }
 
   static Map<String, dynamic> _processUserData(Map<String, dynamic> userData) {
@@ -45,7 +45,7 @@ class ApiService {
           'password': password,
           'email': email,
         }),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -77,7 +77,7 @@ class ApiService {
         Uri.parse('$baseUrl/auth/verify-email'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'userId': userId, 'code': code}),
-      );
+      ).timeout(const Duration(seconds: 30));
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
         if (data['token'] != null) {
@@ -105,7 +105,7 @@ class ApiService {
         Uri.parse('$baseUrl/auth/resend-verification'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'userId': userId}),
-      );
+      ).timeout(const Duration(seconds: 30));
       final data = jsonDecode(response.body);
       return {
         'success': response.statusCode == 200,
@@ -125,7 +125,7 @@ class ApiService {
         Uri.parse('$baseUrl/auth/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'username': username, 'password': password}),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -182,7 +182,7 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/auth/profile'),
         headers: headers,
-      );
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -212,7 +212,7 @@ class ApiService {
           'shopName': shopName,
           if (shopDescription != null) 'shopDescription': shopDescription,
         }),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -239,7 +239,7 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/auth/seller-applications'),
         headers: headers,
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -269,7 +269,7 @@ class ApiService {
           'approved': approved,
           if (rejectionReason != null) 'rejectionReason': rejectionReason,
         }),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -294,7 +294,7 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/auth/check-name/$name'),
         headers: {'Content-Type': 'application/json'},
-      );
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -332,9 +332,7 @@ class ApiService {
         
         String avatarUrl = data['avatarUrl'] ?? '';
         if (avatarUrl.isNotEmpty && !avatarUrl.startsWith('http')) {
-          
-          final uri = Uri.parse(baseUrl);
-          avatarUrl = '${uri.scheme}://${uri.host}:${uri.port}$avatarUrl';
+          avatarUrl = _toAbsoluteUrl(avatarUrl);
         }
 
         return {
@@ -366,7 +364,7 @@ class ApiService {
           'oldPassword': oldPassword,
           'newPassword': newPassword,
         }),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -447,7 +445,7 @@ class ApiService {
                 .join('&');
       }
 
-      final response = await http.get(Uri.parse(url), headers: headers);
+      final response = await http.get(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -467,7 +465,7 @@ class ApiService {
         url += '?type=$type';
       }
 
-      final response = await http.get(Uri.parse(url), headers: headers);
+      final response = await http.get(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -505,7 +503,7 @@ class ApiService {
           'itemId': itemId,
           'itemData': itemData,
         }),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -529,7 +527,7 @@ class ApiService {
         Uri.parse('$baseUrl/favorites/remove'),
         headers: headers,
         body: jsonEncode({'itemType': itemType, 'itemId': itemId}),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -552,7 +550,7 @@ class ApiService {
         Uri.parse('$baseUrl/favorites/check'),
         headers: headers,
         body: jsonEncode({'itemType': itemType, 'itemId': itemId}),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -577,7 +575,7 @@ class ApiService {
           if (username != null) 'username': username,
           'email': email,
         }),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -605,7 +603,7 @@ class ApiService {
         Uri.parse('$baseUrl/auth/forgot-password'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email}),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -627,7 +625,7 @@ class ApiService {
         Uri.parse('$baseUrl/auth/verify-reset-code'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'code': code}),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -654,7 +652,7 @@ class ApiService {
           'code': code,
           'newPassword': newPassword,
         }),
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
 
@@ -673,7 +671,7 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/listings/instruments/my'),
         headers: headers,
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
       return {
@@ -691,7 +689,7 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/listings/stages/my'),
         headers: headers,
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
       return {
@@ -709,7 +707,7 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/listings/studios/my'),
         headers: headers,
-      );
+      ).timeout(const Duration(seconds: 30));
 
       final data = jsonDecode(response.body);
       return {

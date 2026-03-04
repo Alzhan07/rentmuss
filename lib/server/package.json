@@ -8,8 +8,10 @@
     "express-rate-limit": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.1",
+    "cloudinary": "^2.5.1",
     "multer": "^2.0.2",
-    "nodemailer": "^7.0.10"
+    "nodemailer": "^7.0.10",
+    "streamifier": "^0.1.1"
   },
   "name": "server",
   "version": "1.0.0",
